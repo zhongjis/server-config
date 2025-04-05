@@ -20,6 +20,9 @@
       tags = tags;
     };
     nixpkgs.system = system;
+
+    specialArgs = {inherit hostName;};
+
     imports =
       [
         sops-nix.nixosModules.sops
