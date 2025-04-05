@@ -35,10 +35,10 @@
       };
       demo = {pkgs, ...}: {
         deployment = {
-          targetHost = "demo";
+          targetHost = "192.168.50.219";
           targetPort = 22;
-          targetUser = "fomm";
-          buildOnTarget = true;
+          targetUser = "root";
+          buildOnTarget = false;
           tags = ["homelab"];
         };
         nixpkgs.system = "x86_64-linux";
