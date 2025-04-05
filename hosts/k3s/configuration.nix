@@ -2,7 +2,7 @@
   modulesPath,
   lib,
   pkgs,
-  hostName ? throw "hostName is required",
+  hostName,
   ...
 }: {
   imports =
