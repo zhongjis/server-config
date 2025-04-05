@@ -20,56 +20,34 @@
     sops-nix,
     ...
   }: let
-    mkColmenaConfig = {
-      user ? "nixos",
-      host,
-      buildOnTarget ? false,
-      tags ? [],
-      system ? "x86_64-linux",
-      extraModules ? [],
-      hostModule,
-    }: {
-      deployment = {
-        targetHost = host;
-        targetPort = 22;
-        targetUser = user;
-        buildOnTarget = buildOnTarget;
-        tags = tags;
-      };
-      nixpkgs.system = system;
-      imports =
-        [
+    myLib = import ./lib/defaults.nix {inherit nixpkgs disko sops-nix;};
+  in
+    with myLib; {
+      nixosConfigurations.demo = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
           disko.nixosModules.disko
-          hostModule
-        ]
-        ++ extraModules;
-    };
-  in {
-    nixosConfigurations.demo = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        disko.nixosModules.disko
-        ./hosts/k3s/configuration.nix
-      ];
-    };
-    colmena = {
-      meta = {
-        nixpkgs = import nixpkgs {
-          system = "x86_64-linux";
-        };
-      };
-
-      defaults = {pkgs, ...}: {
-        environment.systemPackages = [
-          pkgs.curl
+          ./hosts/k3s/configuration.nix
         ];
       };
-      demo = mkColmenaConfig {
-        host = "192.168.50.203";
-        user = "root";
-        tags = ["homelab"];
-        hostModule = ./hosts/k3s/configuration.nix;
+      colmena = {
+        meta = {
+          nixpkgs = import nixpkgs {
+            system = "x86_64-linux";
+          };
+        };
+
+        defaults = {pkgs, ...}: {
+          environment.systemPackages = [
+            pkgs.curl
+          ];
+        };
+        demo = mkColmenaConfig {
+          host = "192.168.50.203";
+          user = "root";
+          tags = ["homelab"];
+          hostModule = ./hosts/k3s/configuration.nix;
+        };
       };
     };
-  };
 }
