@@ -35,6 +35,9 @@
           nixpkgs = import nixpkgs {
             system = "x86_64-linux";
           };
+          specialArgs = {
+            inputs = inputs;
+          };
         };
 
         defaults = {pkgs, ...}: {
