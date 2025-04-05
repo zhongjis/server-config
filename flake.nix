@@ -42,7 +42,7 @@
             pkgs.curl
           ];
         };
-        demo = mkColmenaConfig {
+        demo = mkColmenaConfig "demo" {
           host = "192.168.50.203";
           user = "root";
           tags = ["homelab"];

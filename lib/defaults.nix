@@ -3,7 +3,7 @@
   disko,
   ...
 }: {
-  mkColmenaConfig = {
+  mkColmenaConfig = hostName: {
     user ? "nixos",
     host,
     buildOnTarget ? false,
