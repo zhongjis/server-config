@@ -19,7 +19,7 @@
     disko,
     sops-nix,
     ...
-  }: let
+  } @ inputs: let
     myLib = import ./lib/defaults.nix {inherit nixpkgs disko sops-nix;};
   in
     with myLib; {
