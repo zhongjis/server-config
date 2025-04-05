@@ -35,7 +35,7 @@
       };
       demo = {pkgs, ...}: {
         deployment = {
-          targetHost = "192.168.50.219";
+          targetHost = "192.168.50.203";
           targetPort = 22;
           targetUser = "root";
           buildOnTarget = false;
