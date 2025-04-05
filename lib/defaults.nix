@@ -22,7 +22,7 @@
     nixpkgs.system = system;
     imports =
       [
-        sops-nix
+        sops-nix.nixosModules.sops
         disko.nixosModules.disko
         hostModule
       ]
