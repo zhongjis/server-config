@@ -19,7 +19,32 @@
     disko,
     sops-nix,
     ...
-  }: {
+  }: let
+    mkColmenaConfig = {
+      user ? "nixos",
+      host,
+      buildOnTarget ? false,
+      tags ? [],
+      system ? "x86_64-linux",
+      extraModules ? [],
+      hostModule,
+    }: {
+      deployment = {
+        targetHost = host;
+        targetPort = 22;
+        targetUser = user;
+        buildOnTarget = buildOnTarget;
+        tags = tags;
+      };
+      nixpkgs.system = system;
+      imports =
+        [
+          disko.nixosModules.disko
+          hostModule
+        ]
+        ++ extraModules;
+    };
+  in {
     nixosConfigurations.demo = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -39,20 +64,11 @@
           pkgs.curl
         ];
       };
-      demo = {pkgs, ...}: {
-        deployment = {
-          targetHost = "192.168.50.203";
-          targetPort = 22;
-          targetUser = "root";
-          buildOnTarget = false;
-          tags = ["homelab"];
-        };
-        nixpkgs.system = "x86_64-linux";
-        imports = [
-          disko.nixosModules.disko
-          ./hosts/k3s/configuration.nix
-        ];
-        time.timeZone = "Australia/Melbourne";
+      demo = mkColmenaConfig {
+        host = "192.168.50.203";
+        user = "root";
+        tags = ["homelab"];
+        hostModule = ./hosts/k3s/configuration.nix;
       };
     };
   };
