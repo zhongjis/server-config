@@ -24,7 +24,9 @@
       [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        hostModule
+        (hostModule {
+          hostName = hostName;
+        })
       ]
       ++ extraModules;
   };

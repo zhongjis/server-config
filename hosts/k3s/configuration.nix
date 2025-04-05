@@ -2,6 +2,7 @@
   modulesPath,
   lib,
   pkgs,
+  hostName ? throw "hostName is required",
   ...
 }: {
   imports =
@@ -10,7 +11,7 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       (import ./disko-config.nix {device = "/dev/sda";})
     ]
-    ++ lib.optional (builtins.pathExists ./hardware-configuration-demo.nix) ./hardware-configuration-demo.nix;
+    ++ lib.optional (builtins.pathExists ./hardware-configuration-${hostName}.nix) ./hardware-configuration-${hostName}.nix;
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
@@ -19,6 +20,10 @@
     efiInstallAsRemovable = true;
   };
   services.openssh.enable = true;
+
+  networking.hostName = hostName;
+
+  time.timeZone = "America/Denver";
 
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl
