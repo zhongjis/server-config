@@ -24,7 +24,7 @@
       [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        (hostModule {
+        (import hostModule {
           hostName = hostName;
         })
       ]
