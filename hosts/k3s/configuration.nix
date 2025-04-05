@@ -10,7 +10,7 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       (import ./disko-config.nix {device = "/dev/sda";})
     ]
-    ++ lib.optional (builtins.pathExists ./hardware-configuration-${meta.hostname}.nix) ./hardware-configuration-${meta.hostname}.nix;
+    ++ lib.optional (builtins.pathExists ./hardware-configuration-demo.nix) ./hardware-configuration-demo.nix;
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
