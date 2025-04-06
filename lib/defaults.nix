@@ -47,7 +47,7 @@
       [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        hostModule
+        (nixpkgs.lib.modules.importApply hostModule hostName)
       ]
       ++ extraModules;
   };

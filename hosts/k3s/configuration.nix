@@ -1,8 +1,7 @@
-{
+hostName: {
   modulesPath,
   lib,
   pkgs,
-  hostName,
   ...
 }: {
   imports =
