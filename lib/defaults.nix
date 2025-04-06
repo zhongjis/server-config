@@ -22,7 +22,7 @@
     nixpkgs.system = system;
 
     specialArgs = {
-      inherit hostName;
+      hostName = hostName;
     };
 
     imports =
