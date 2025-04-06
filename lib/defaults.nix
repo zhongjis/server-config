@@ -39,10 +39,6 @@
     };
     nixpkgs.system = system;
 
-    specialArgs = {
-      hostName = hostName;
-    };
-
     imports =
       [
         sops-nix.nixosModules.sops
