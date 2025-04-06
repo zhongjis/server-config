@@ -1,8 +1,26 @@
 {
   sops-nix,
   disko,
+  nixpkgs,
   ...
 }: {
+  mkNixOS = hostName: {
+    system ? "x86_64-linux",
+    hostModule,
+  }:
+    nixpkgs.lib.nixosSystem {
+      system = system;
+      specialArgs = {
+        inherit hostName;
+      };
+
+      modules = [
+        sops-nix.nixosModules.sops
+        disko.nixosModules.disko
+        hostModule
+      ];
+    };
+
   mkColmenaConfig = hostName: {
     user ? "nixos",
     host,

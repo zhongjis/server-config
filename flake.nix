@@ -23,13 +23,12 @@
     myLib = import ./lib/defaults.nix {inherit nixpkgs disko sops-nix;};
   in
     with myLib; {
-      nixosConfigurations.demo = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          disko.nixosModules.disko
-          ./hosts/k3s/configuration.nix
-        ];
+      nixosConfigurations = {
+        demo = mkNixOS "demo" {
+          hostModule = ./hosts/k3s/configuration.nix;
+        };
       };
+
       colmena = {
         meta = {
           nixpkgs = import nixpkgs {
