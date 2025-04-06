@@ -36,9 +36,12 @@
       targetUser = user;
       buildOnTarget = buildOnTarget;
       tags = tags;
-      hostName = hostName;
     };
     nixpkgs.system = system;
+
+    specialArgs = {
+      hostName = hostName;
+    };
 
     imports =
       [
