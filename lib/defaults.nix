@@ -21,8 +21,8 @@
     };
     nixpkgs.system = system;
 
-    _module.args = {
-      hostName = hostName;
+    specialArgs = {
+      inherit hostName;
     };
 
     imports =
