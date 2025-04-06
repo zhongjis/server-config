@@ -5,9 +5,15 @@
   ...
 }: {
   mkNixOS = hostName: {
+    user ? "nixos",
     system ? "x86_64-linux",
     hostModule,
-  }:
+  }: let
+    custHostConfig = {
+      hostName = hostName;
+      hostUser = user;
+    };
+  in
     nixpkgs.lib.nixosSystem {
       system = system;
       specialArgs = {
@@ -17,7 +23,7 @@
       modules = [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        hostModule
+        (nixpkgs.lib.modules.importApply hostModule custHostConfig)
       ];
     };
 

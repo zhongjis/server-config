@@ -46,7 +46,6 @@
         };
         demo = mkColmenaConfig "demo" {
           host = "192.168.50.100";
-          user = "nixos";
           tags = ["homelab"];
           hostModule = ./hosts/k3s/configuration.nix;
         };
