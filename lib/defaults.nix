@@ -21,11 +21,15 @@
     };
     nixpkgs.system = system;
 
+    _module.args = {
+      hostName = hostName;
+    };
+
     imports =
       [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        (import hostModule {inherit hostName;})
+        hostModule
       ]
       ++ extraModules;
   };
