@@ -1,4 +1,4 @@
-hostName: {
+custHostConfig: {
   modulesPath,
   lib,
   pkgs,
@@ -10,7 +10,7 @@ hostName: {
       (modulesPath + "/profiles/qemu-guest.nix")
       (import ./disko-config.nix {device = "/dev/sda";})
     ]
-    ++ lib.optional (builtins.pathExists ./hardware-configuration-${hostName}.nix) ./hardware-configuration-${hostName}.nix;
+    ++ lib.optional (builtins.pathExists ./hardware-configuration-${custHostConfig.hostName}.nix) ./hardware-configuration-${custHostConfig.hostName}.nix;
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
@@ -20,7 +20,7 @@ hostName: {
   };
   services.openssh.enable = true;
 
-  networking.hostName = hostName;
+  networking.hostName = custHostConfig.hostName;
 
   time.timeZone = "America/Denver";
 

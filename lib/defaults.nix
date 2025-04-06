@@ -29,7 +29,12 @@
     system ? "x86_64-linux",
     extraModules ? [],
     hostModule,
-  }: {
+  }: let
+    custHostConfig = {
+      hostName = hostName;
+      hostUser = user;
+    };
+  in {
     deployment = {
       targetHost = host;
       targetPort = 22;
@@ -43,7 +48,7 @@
       [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        (nixpkgs.lib.modules.importApply hostModule hostName)
+        (nixpkgs.lib.modules.importApply hostModule custHostConfig)
       ]
       ++ extraModules;
   };
