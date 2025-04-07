@@ -3,6 +3,7 @@ custHostConfig: {
   lib,
   pkgs,
   config,
+  inputs,
   ...
 }: let
   sopsFile = ../../secrets/homelab.yaml;
