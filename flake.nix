@@ -48,7 +48,6 @@
           host = "192.168.50.203";
           tags = ["homelab"];
           hostModule = ./hosts/k3s/configuration.nix;
-          buildOnTarget = true;
         };
       };
     };

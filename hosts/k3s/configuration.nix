@@ -3,7 +3,6 @@ custHostConfig: {
   lib,
   pkgs,
   config,
-  inputs,
   ...
 }: let
   sopsFile = ../../secrets/homelab.yaml;
@@ -14,7 +13,7 @@ in {
       (modulesPath + "/profiles/qemu-guest.nix")
       (import ./disko-config.nix {device = "/dev/sda";})
 
-      ../../modules
+      (pkgs.lib.modules.importApply ../../modules custHostConfig)
     ]
     ++ lib.optional (builtins.pathExists ./hardware-configuration-${custHostConfig.hostName}.nix) ./hardware-configuration-${custHostConfig.hostName}.nix;
 
