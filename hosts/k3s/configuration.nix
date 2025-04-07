@@ -17,9 +17,6 @@ in {
     ]
     ++ lib.optional (builtins.pathExists ./hardware-configuration-${custHostConfig.hostName}.nix) ./hardware-configuration-${custHostConfig.hostName}.nix;
 
-  myNixOS.bundles.global.enable = lib.mkDefault true;
-  myNixOS.bundles.k3s.enable = lib.mkDefault true;
-
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
     # devices = [ ];
