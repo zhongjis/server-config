@@ -2,6 +2,7 @@
   sops-nix,
   disko,
   nixpkgs,
+  inputs,
   ...
 }: {
   mkNixOS = hostName: {
@@ -17,7 +18,7 @@
     nixpkgs.lib.nixosSystem {
       system = system;
       specialArgs = {
-        inherit hostName;
+        inherit inputs hostName;
       };
 
       modules = [

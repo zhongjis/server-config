@@ -20,7 +20,7 @@
     sops-nix,
     ...
   } @ inputs: let
-    myLib = import ./lib/defaults.nix {inherit nixpkgs disko sops-nix;};
+    myLib = import ./lib/defaults.nix {inherit inputs nixpkgs disko sops-nix;};
   in
     with myLib; {
       nixosConfigurations = {
