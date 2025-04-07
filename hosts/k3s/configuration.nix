@@ -12,8 +12,12 @@ in {
       (modulesPath + "/installer/scan/not-detected.nix")
       (modulesPath + "/profiles/qemu-guest.nix")
       (import ./disko-config.nix {device = "/dev/sda";})
+
+      ../../modules
     ]
     ++ lib.optional (builtins.pathExists ./hardware-configuration-${custHostConfig.hostName}.nix) ./hardware-configuration-${custHostConfig.hostName}.nix;
+
+  myNixOS.bundles.k3s.enable = lib.mkDefault true;
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
