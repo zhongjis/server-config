@@ -24,29 +24,13 @@
   in
     with myLib; {
       nixosConfigurations = {
-        demo = mkNixOS "demo" {
+        homelab-0 = mkNixOS "homelab-0" {
           hostModule = ./hosts/k3s/configuration.nix;
         };
-      };
-
-      colmena = {
-        meta = {
-          nixpkgs = import nixpkgs {
-            system = "x86_64-linux";
-          };
-          specialArgs = {
-            inputs = inputs;
-          };
+        homelab-1 = mkNixOS "homelab-1" {
+          hostModule = ./hosts/k3s/configuration.nix;
         };
-
-        defaults = {pkgs, ...}: {
-          environment.systemPackages = [
-            pkgs.curl
-          ];
-        };
-        demo = mkColmenaConfig "demo" {
-          host = "192.168.50.203";
-          tags = ["homelab"];
+        homelab-2 = mkNixOS "homelab-2" {
           hostModule = ./hosts/k3s/configuration.nix;
         };
       };

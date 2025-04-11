@@ -1,8 +1,9 @@
-custHostConfig: {
+{
   modulesPath,
   lib,
   pkgs,
   config,
+  custHostConfig,
   ...
 }: let
   sopsFile = ../../secrets/homelab.yaml;

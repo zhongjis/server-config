@@ -18,16 +18,17 @@
     nixpkgs.lib.nixosSystem {
       system = system;
       specialArgs = {
-        inherit inputs hostName;
+        inherit inputs hostName custHostConfig;
       };
 
       modules = [
         sops-nix.nixosModules.sops
         disko.nixosModules.disko
-        (nixpkgs.lib.modules.importApply hostModule custHostConfig)
+        hostModule
       ];
     };
 
+  # FIXME: not working
   mkColmenaConfig = hostName: {
     user ? "nixos",
     host,
