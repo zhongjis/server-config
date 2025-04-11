@@ -1,9 +1,9 @@
 {
   config,
-  customConfig,
+  custHostConfig,
   ...
 }: let
-  sopsFile = ../../secrets/homelab.yaml;
+  sopsFile = ../secrets/homelab.yaml;
 in {
   # NOTE: Fixes for longhorn
   systemd.tmpfiles.rules = [
@@ -30,19 +30,19 @@ in {
         "--disable traefik"
       ]
       ++ (
-        if customConfig.isK3sMaster
+        if custHostConfig.isK3sMaster
         then []
         else [
-          "--server https://${customConfig.masterAddr}:6443"
+          "--server https://${custHostConfig.masterAddr}:6443"
         ]
       ));
-    clusterInit = customConfig.isK3sMaster;
+    clusterInit = custHostConfig.isK3sMaster;
   };
 
   # NOTE: storage - setup iscsi
   services.openiscsi.enable = true;
   services.openiscsi.discoverPortal = "ip:3260";
-  services.openiscsi.name = "iqn.2016-04.com.open-iscsi:${customConfig.hostname}";
+  services.openiscsi.name = "iqn.2016-04.com.open-iscsi:${custHostConfig.hostName}";
 
   # NOTE: storage - setup nfs
   boot.supportedFilesystems = ["nfs"];

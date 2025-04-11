@@ -10,7 +10,7 @@
     system ? "x86_64-linux",
     hostModule,
     isMaster ? false,
-    masterAddr,
+    masterAddr ? "",
   }: let
     custHostConfig = {
       hostName = hostName;
