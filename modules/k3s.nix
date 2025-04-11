@@ -2,12 +2,22 @@
   config,
   customConfig,
   ...
-}: {
+}: let
+  sopsFile = ../../secrets/homelab.yaml;
+in {
   # NOTE: Fixes for longhorn
   systemd.tmpfiles.rules = [
     "L+ /usr/local/bin - - - - /run/current-system/sw/bin/"
   ];
   virtualisation.docker.logDriver = "json-file";
+
+  # NOTE: below is the age key to decrypt
+  sops.age.keyFile = "keys.txt";
+  sops.secrets = {
+    k3s_token = {
+      inherit sopsFile;
+    };
+  };
 
   # NOTE: k3s config
   services.k3s = {
