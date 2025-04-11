@@ -5,14 +5,18 @@
   inputs,
   ...
 }: {
-  mkNixOS = hostName: {
+  mkK3sNode = hostName: {
     user ? "nixos",
     system ? "x86_64-linux",
     hostModule,
+    isMaster ? false,
+    masterAddr,
   }: let
     custHostConfig = {
       hostName = hostName;
       hostUser = user;
+      isK3sMaster = isMaster;
+      masterAddr = masterAddr;
     };
   in
     nixpkgs.lib.nixosSystem {
