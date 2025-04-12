@@ -14,7 +14,7 @@
 
       ../../modules
       ../../modules/user.nix
-      ../../modules/k3s.nix
+      ../../modules/k3s
       ../../modules/sops.nix
     ]
     ++ lib.optional (builtins.pathExists ./hardware-configuration-${custHostConfig.hostName}.nix) ./hardware-configuration-${custHostConfig.hostName}.nix;
