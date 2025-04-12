@@ -5,9 +5,7 @@
   config,
   custHostConfig,
   ...
-}: let
-  sopsFile = ../../secrets/homelab.yaml;
-in {
+}: {
   imports =
     [
       (modulesPath + "/installer/scan/not-detected.nix")

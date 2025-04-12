@@ -8,9 +8,9 @@
     [ (modulesPath + "/profiles/qemu-guest.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "xhci_pci" "usb_storage" "sd_mod" "sr_mod" ];
+  boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
