@@ -3,7 +3,7 @@
   custHostConfig,
   ...
 }: let
-  sopsFile = ../secrets/homelab.yaml;
+  sopsFile = ../../secrets/homelab.yaml;
 in {
   imports = [
     ./longhorn.nix
