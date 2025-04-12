@@ -15,6 +15,7 @@ in {
       (import ./disko-config.nix {device = "/dev/sda";})
 
       ../../modules
+      ../../modules/user.nix
       ../../modules/k3s.nix
       ../../modules/sops.nix
     ]
@@ -44,7 +45,6 @@ in {
     pkgs.curl
     pkgs.gitMinimal
   ];
-
 
   system.stateVersion = "24.05";
 }
