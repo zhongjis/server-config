@@ -4,7 +4,7 @@
   config,
   ...
 }: let
-  sopsFile = ../../secrets/homelab.yaml;
+  sopsFile = ../secrets/homelab.yaml;
 in {
   sops.secrets = {
     server_password_sha256 = {
