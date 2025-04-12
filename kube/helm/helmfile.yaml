@@ -1,0 +1,65 @@
+repositories:
+  - name: metallb
+    url: https://metallb.github.io/metallb
+  - name: mojo2600
+    url: https://mojo2600.github.io/pihole-kubernetes/
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  - name: democratic-csi
+    url: https://democratic-csi.github.io/charts/
+  - name: dify
+    url: https://borispolonsky.github.io/dify-helm
+---
+releases:
+  # Load balancer
+  - name: metallb
+    chart: metallb/metallb
+    namespace: metallb-system
+    version: 0.14.9
+
+  # Ingress for local network
+  - name: ingress-nginx-internal
+    namespace: nginx-system
+    chart: ingress-nginx/ingress-nginx
+    version: 4.12.1
+    values:
+      - ./values/nginx-internal.values.yaml
+
+  # pihole
+  - name: pihole
+    namespace: pihole-system
+    chart: mojo2600/pihole
+    version: 2.18.0
+    values:
+      - ./values/pihole.values.yaml
+
+  # Automatic DNS for pihole
+  - name: externaldns-pihole-bitnami
+    namespace: pihole-system
+    chart: bitnami/external-dns
+    version: 8.0.1
+    values:
+      - ./values/externaldns-bitnami.values.yaml
+
+  - name: democratic-csi-nfs
+    namespace: storage
+    createNamespace: true
+    chart: democratic-csi/democratic-csi
+    values:
+      - ./values/democratic-csi-nfs.yaml
+
+  - name: democratic-csi-iscsi
+    namespace: storage
+    createNamespace: true
+    chart: democratic-csi/democratic-csi
+    values:
+      - ./values/democratic-csi-iscsi.yaml
+
+  - name: dify
+    namespace: dify
+    createNamespace: true
+    chart: dify/dify
+    values:
+      - ./values/dify.values.yaml

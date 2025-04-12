@@ -1,0 +1,32 @@
+---
+DNS1: 192.168.50.1
+persistentVolumeClaim:
+  enabled: true
+  storageClass: truenas-nfs
+
+ingress:
+  enabled: true
+  ingressClassName: nginx-internal
+  hosts:
+    - "pihole.home"
+  annotations:
+    kubernetes.io/ingress.class: "nginx-internal"
+
+serviceWeb:
+  loadBalancerIP: 192.168.50.130
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
+  type: LoadBalancer
+
+serviceDns:
+  loadBalancerIP: 192.168.50.130
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
+  type: LoadBalancer
+
+replicaCount: 1
+
+# 2024.02.0 and after is having issue to work with external dns
+# ISSUE PR: https://github.com/kubernetes-sigs/external-dns/pull/5226
+image:
+  tag: 2024.07.0
