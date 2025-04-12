@@ -56,10 +56,3 @@ releases:
     chart: democratic-csi/democratic-csi
     values:
       - ./values/democratic-csi-iscsi.yaml
-
-  - name: dify
-    namespace: dify
-    createNamespace: true
-    chart: dify/dify
-    values:
-      - ./values/dify.values.yaml
