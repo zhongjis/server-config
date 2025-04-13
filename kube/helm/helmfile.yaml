@@ -31,7 +31,7 @@ releases:
   - name: pihole
     namespace: pihole-system
     chart: mojo2600/pihole
-    version: 2.18.0
+    version: 2.29.1
     values:
       - ./values/pihole.values.yaml
 
@@ -39,9 +39,9 @@ releases:
   - name: externaldns-pihole-bitnami
     namespace: pihole-system
     chart: bitnami/external-dns
-    version: 8.0.1
+    version: 8.7.11
     values:
-      - ./values/externaldns-bitnami.values.yaml
+      - ./values/externaldns.values.yaml
 
   - name: democratic-csi-nfs
     namespace: storage

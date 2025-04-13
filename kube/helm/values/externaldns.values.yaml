@@ -1,4 +1,14 @@
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: gcr.io
+  repository: k8s-staging-external-dns/external-dns
+  tag: v20250411-v0.16.1-87-g0d975217
 provider: pihole
+extraArgs:
+  pihole-api-version: 6
 policy: upsert-only
 txtOwnerId: "homelab"
 pihole:
@@ -14,3 +24,5 @@ serviceAccount:
   name: "external-dns"
 ingressClassFilters:
   - nginx-internal
+
+logLevel: debug
