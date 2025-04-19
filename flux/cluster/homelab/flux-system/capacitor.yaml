@@ -26,3 +26,41 @@ spec:
   sourceRef:
     kind: OCIRepository
     name: capacitor
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: capacitor-ingress
+  namespace: flux-system
+spec:
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: capacitor
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx-internal
+  name: capacitor
+  namespace: flux-system
+spec:
+  ingressClassName: nginx-internal
+  rules:
+    - host: capacitor.home
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            path: /
+            backend:
+              service:
+                name: capacitor
+                port:
+                  number: 9000
