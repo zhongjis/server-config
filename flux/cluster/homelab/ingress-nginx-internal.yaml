@@ -1,0 +1,44 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: ingress-nginx
+  namespace: nginx-system
+spec:
+  interval: 1m0s
+  url: https://mojo2600.github.io/pihole-kubernetes/
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ingress-nginx-internal
+  namespace: nginx-system
+spec:
+  interval: 1m0s
+  chart:
+    spec:
+      chart: ingress-nginx/ingress-nginx
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: nginx-system
+      version: 4.12.1
+  values:
+    controller:
+      ingressClassResource:
+        # -- Name of the ingressClass
+        name: nginx-internal
+        # -- Is this ingressClass enabled or not
+        enabled: true
+        # -- Is this the default ingressClass for the cluster
+        default: true
+        # -- Controller-value of the controller that is processing this ingressClass
+        controllerValue: "k8s.io/ingress-nginx"
+        # -- Parameters is a link to a custom resource containing additional
+        # configuration for the controller. This is optional if the controller
+        # does not require extra parameters.
+        parameters: {}
+      # -- For backwards compatibility with ingress.class annotation, use ingressClass.
+      # Algorithm is as follows, first ingressClassName is considered, if not present, controller looks for ingress.class annotation
+      ingressClass: nginx-internal
