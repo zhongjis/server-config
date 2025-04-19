@@ -1,0 +1,34 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: rancher-latest
+  namespace: rancher-system
+spec:
+  interval: 1m0s
+  url: https://releases.rancher.com/server-charts/latest
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: rancher
+  namespace: rancher-system
+spec:
+  interval: 1m0s
+  chart:
+    spec:
+      chart: rancher-latest/rancher
+      sourceRef:
+        kind: HelmRepository
+        name: rancher-latest
+        namespace: rancher-system
+      version: 2.11.0
+  values:
+    ingress:
+      enabled: true
+      ingressClassName: nginx-internal
+      hosts:
+        - "pihole.home"
+      extraAnnotations:
+        kubernetes.io/ingress.class: "nginx-internal"
