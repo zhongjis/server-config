@@ -1,0 +1,4 @@
+- [ ] capacitor ip setup
+- [ ] sops setup
+- [ ] truenas democratic-csi fix
+- [ ] pihole setup
