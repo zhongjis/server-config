@@ -30,11 +30,7 @@
         };
         homelab-1 = mkK3sNode "homelab-1" {
           hostModule = ./hosts/k3s/configuration.nix;
-          masterAddr = "192.168.50.201";
-        };
-        homelab-2 = mkK3sNode "homelab-2" {
-          hostModule = ./hosts/k3s/configuration.nix;
-          masterAddr = "192.168.50.201";
+          masterAddr = "192.168.50.104";
         };
       };
     };
