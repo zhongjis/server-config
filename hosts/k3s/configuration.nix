@@ -10,7 +10,7 @@
     [
       (modulesPath + "/installer/scan/not-detected.nix")
       (modulesPath + "/profiles/qemu-guest.nix")
-      (import ./disko-config.nix {device = "/dev/sda";})
+      (import ./disko-config.nix {device = "/dev/nvme0n1";})
 
       ../../modules
       ../../modules/user.nix
