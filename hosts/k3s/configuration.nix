@@ -28,14 +28,13 @@
   services.openssh.enable = true;
 
   networking.hostName = custHostConfig.hostName;
-  networking.firewall.enable = false;
   # NOTE: for more defined firewall configurations
   # https://docs.k3s.io/installation/requirements#inbound-rules-for-k3s-nodes
-  # networking.firewall = {
-  #   enable = true;
-  #   allowedTCPPorts = [2379 2380 6443 10250 5001 6443];
-  #   allowedUDPPorts = [8472 51820 51821];
-  # };
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [2379 2380 6443 10250 5001 6443];
+    allowedUDPPorts = [8472 51820 51821];
+  };
 
   time.timeZone = "America/Denver";
 
