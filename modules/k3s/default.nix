@@ -31,7 +31,7 @@ in {
     clusterInit = custHostConfig.isK3sMaster;
     serverAddr =
       if custHostConfig.isK3sMaster
-      then "https://${custHostConfig.masterAddr}:6443"
-      else "";
+      then ""
+      else "https://${custHostConfig.masterAddr}:6443";
   };
 }
