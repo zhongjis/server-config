@@ -29,7 +29,7 @@ spec:
         kind: HelmRepository
         name: rancher-latest
         namespace: cattle-system
-      version: 2.11.0
+      version: 2.11.1
   values:
     ingress:
       enabled: true
