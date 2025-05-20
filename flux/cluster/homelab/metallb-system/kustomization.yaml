@@ -1,32 +1,5 @@
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-metadata:
-  name: metallb-controller
-  namespace: flux-system
-spec:
-  interval: 10m
-  path: ./flux/infra/metallb
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  wait: true
-
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: metallb-resources
-  namespace: flux-system
-spec:
-  interval: 10m
-  path: ./flux/cluster/homelab/metallb-system/resource
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  dependsOn:
-    - name: metallb-controller
-  wait: true
-
+resources:
+  - ./01-ipaddresspool.yaml
+  - ./02-l2advertisement.yaml
