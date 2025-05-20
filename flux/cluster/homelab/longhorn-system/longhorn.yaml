@@ -24,7 +24,7 @@ spec:
   interval: 1m0s
   chart:
     spec:
-      chart: longhorn/longhorn
+      chart: longhorn
       sourceRef:
         kind: HelmRepository
         name: longhorn
