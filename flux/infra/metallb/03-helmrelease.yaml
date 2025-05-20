@@ -8,7 +8,7 @@ spec:
   interval: 1m0s
   chart:
     spec:
-      chart: metallb/metallb
+      chart: metallb
       sourceRef:
         kind: HelmRepository
         name: metallb

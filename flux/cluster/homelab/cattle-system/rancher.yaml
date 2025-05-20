@@ -24,7 +24,7 @@ spec:
   interval: 1m0s
   chart:
     spec:
-      chart: rancher-latest/rancher
+      chart: rancher
       sourceRef:
         kind: HelmRepository
         name: rancher-latest
