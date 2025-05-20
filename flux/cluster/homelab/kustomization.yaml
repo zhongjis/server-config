@@ -4,6 +4,5 @@ resources:
   - ./cattle-system
   - ./flux-system
   - ./longhorn-system
-  - ../../infra/metallb
   - ./metallb-system
   - ./nginx-system
