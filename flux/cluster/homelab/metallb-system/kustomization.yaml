@@ -21,7 +21,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./flux/cluster/homelab/metallb-system
+  path: ./flux/cluster/homelab/metallb-system/resource
   prune: true
   sourceRef:
     kind: GitRepository
