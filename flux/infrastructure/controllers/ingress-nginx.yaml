@@ -29,7 +29,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: nginx-system
-      version: 4.12.1
+      version: 4.12.2
   values:
     controller:
       ingressClassResource:
