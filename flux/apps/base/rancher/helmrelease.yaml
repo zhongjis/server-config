@@ -1,0 +1,24 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rancher
+  namespace: cattle-system
+spec:
+  interval: 1m0s
+  chart:
+    spec:
+      chart: rancher
+      sourceRef:
+        kind: HelmRepository
+        name: rancher-latest
+        namespace: cattle-system
+      version: 2.11.1
+#  values:
+#    ingress:
+#      enabled: true
+#      ingressClassName: nginx-internal
+#      hosts:
+#        - "pihole.home"
+#      extraAnnotations:
+#        kubernetes.io/ingress.class: "nginx-internal"
