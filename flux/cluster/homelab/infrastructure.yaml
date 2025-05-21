@@ -32,11 +32,11 @@ spec:
     name: flux-system
   path: ./flux/infrastructure/configs
   prune: true
-#   patches:
-#     - patch: |
-#         - op: replace
-#           path: /spec/acme/server
-#           value: https://acme-v02.api.letsencrypt.org/directory
-#       target:
-#         kind: ClusterIssuer
-#         name: letsencrypt
+  patches:
+    - patch: |
+        - op: replace
+          path: /spec/acme/server
+          value: https://acme-v02.api.letsencrypt.org/directory
+      target:
+        kind: ClusterIssuer
+        name: letsencrypt
