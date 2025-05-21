@@ -22,6 +22,7 @@ metadata:
   namespace: nginx-system
 spec:
   interval: 1m0s
+  timeout: 15m0s
   chart:
     spec:
       chart: ingress-nginx
@@ -30,6 +31,14 @@ spec:
         name: ingress-nginx
         namespace: nginx-system
       version: 4.12.2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      strategy: rollback
+    cleanupOnFail: true
   values:
     controller:
       ingressClassResource:
