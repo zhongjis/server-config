@@ -5,3 +5,5 @@ resources:
   - ./flux-system
   - ./longhorn-system
   - ./nginx-system
+  - ./metallb-controller.yaml
+  - ./metallb-resource.yaml
