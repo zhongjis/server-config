@@ -11,7 +11,7 @@ metadata:
   name: ingress-nginx
   namespace: nginx-system
 spec:
-  interval: 1m0s
+  interval: 24h
   url: https://kubernetes.github.io/ingress-nginx
 
 ---
@@ -21,8 +21,7 @@ metadata:
   name: ingress-nginx-internal
   namespace: nginx-system
 spec:
-  interval: 1m0s
-  timeout: 15m0s
+  interval: 30m
   chart:
     spec:
       chart: ingress-nginx
@@ -31,29 +30,22 @@ spec:
         name: ingress-nginx
         namespace: nginx-system
       version: 4.12.2
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    remediation:
-      retries: 3
-      strategy: rollback
-    cleanupOnFail: true
-  # values:
-  #   controller:
-  #     ingressClassResource:
-  #       # -- Name of the ingressClass
-  #       name: nginx-internal
-  #       # -- Is this ingressClass enabled or not
-  #       enabled: true
-  #       # -- Is this the default ingressClass for the cluster
-  #       default: true
-  #       # -- Controller-value of the controller that is processing this ingressClass
-  #       controllerValue: "k8s.io/ingress-nginx"
-  #       # -- Parameters is a link to a custom resource containing additional
-  #       # configuration for the controller. This is optional if the controller
-  #       # does not require extra parameters.
-  #       parameters: {}
-  #     # -- For backwards compatibility with ingress.class annotation, use ingressClass.
-  #     # Algorithm is as follows, first ingressClassName is considered, if not present, controller looks for ingress.class annotation
-  #     ingressClass: nginx-internal
+      interval: 12h
+  values:
+    controller:
+      ingressClassResource:
+        # -- Name of the ingressClass
+        name: nginx-internal
+        # -- Is this ingressClass enabled or not
+        enabled: true
+        # -- Is this the default ingressClass for the cluster
+        default: true
+        # -- Controller-value of the controller that is processing this ingressClass
+        controllerValue: "k8s.io/ingress-nginx"
+        # -- Parameters is a link to a custom resource containing additional
+        # configuration for the controller. This is optional if the controller
+        # does not require extra parameters.
+        parameters: {}
+      # -- For backwards compatibility with ingress.class annotation, use ingressClass.
+      # Algorithm is as follows, first ingressClassName is considered, if not present, controller looks for ingress.class annotation
+      ingressClass: nginx-internal
