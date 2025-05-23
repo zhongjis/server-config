@@ -29,7 +29,6 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: nginx-system
-      version: 4.12.2
       interval: 12h
   values:
     controller:
