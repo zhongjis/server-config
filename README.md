@@ -2,12 +2,10 @@
 
 ## hosts
 
-| hostname  | ip             | usage    | where?                      |
-| --------- | -------------- | -------- | --------------------------- |
-| homelab-0 | 192.168.50.201 | k3s node | proxmox vm - thinkcentre-i7 |
-| homelab-1 | 192.168.50.202 | k3s node | proxmox vm - thinkcentre-i5 |
-| homelab-2 | 192.168.50.203 | k3s node | proxmox vm - thinkpad-t480  |
-| vultr-lab | 45.77.189.121  | general  | vultr.com                   |
+| hostname  | usage    | where?         |
+| --------- | -------- | -------------- |
+| homelab-0 | k3s node | thinkcentre-i7 |
+| homelab-1 | k3s node | thinkcentre-i5 |
 
 ## commands
 
@@ -36,10 +34,6 @@ nixos@192.168.50.192
 ### deployment/remote switch
 
 #### colmena
-
-```nix
-colmena apply --on @homelab
-```
 
 #### `--target-host`
 
