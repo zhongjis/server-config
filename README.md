@@ -33,8 +33,6 @@ nixos@192.168.50.192
 
 ### deployment/remote switch
 
-#### colmena
-
 #### `--target-host`
 
 ```nix
