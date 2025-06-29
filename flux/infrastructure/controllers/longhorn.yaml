@@ -29,4 +29,4 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: longhorn-system
-      version: 1.8.1
+      version: 1.9.*

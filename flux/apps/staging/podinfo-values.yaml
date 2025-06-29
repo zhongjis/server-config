@@ -1,4 +1,3 @@
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -7,11 +6,13 @@ metadata:
 spec:
   chart:
     spec:
-      version: ">=1.0.0"
+      version: ">=1.0.0-alpha"
+  test:
+    enable: false
   values:
     ingress:
       hosts:
-        - host: podinfo.production
+        - host: podinfo.staging
           paths:
             - path: /
               pathType: ImplementationSpecific

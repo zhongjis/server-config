@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+  labels:
+    toolkit.fluxcd.io/tenant: sre-team
+
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  interval: 12h
+  url: oci://registry-1.docker.io/bitnamicharts/external-dns
+  ref:
+    semver: "8.8.x"
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: external-dns
+    namespace: external-dns
+  values:
+    provider: pihole
+    extraArgs:
+      pihole-api-version: 6
+    policy: upsert-only
+    txtOwnerId: "homelab"
+    pihole:
+      server: http://192.168.50.2
+    extraEnvVars:
+      - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+        value: admin
+    serviceAccount:
+      create: true
+      name: "external-dns"
+    ingressClassFilters:
+      - nginx
+    logLevel: debug
