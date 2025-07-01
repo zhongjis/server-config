@@ -17,6 +17,8 @@ spec:
         namespace: freshrss
       interval: 12h
   values:
+    service:
+      type: LoadBalancer
     ingress:
       enabled: true
       annotations:
