@@ -28,28 +28,7 @@ spec:
           paths:
             - path: /
               pathType: ImplementationSpecific
-        # - host: dify-example2.local
-        #   paths:
-        #     - path: /
-        #       pathType: Prefix
       tls: []
       #  - secretName: chart-example-tls
       #    hosts:
       #      - dify-example.local
-    api:
-      persistence:
-        persistenceVolumeClaim:
-          storageClass: longhorn
-    pluginDaemon:
-      persistence:
-        persistenceVolumeClaim:
-          storageClass: longhorn
-    postgresql:
-      primary:
-        persistence:
-          persistenceVolumeClaim:
-            storageClass: longhorn
-      readReplicas:
-        persistence:
-          persistenceVolumeClaim:
-            storageClass: longhorn
