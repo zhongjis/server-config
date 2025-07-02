@@ -4,4 +4,4 @@ resources:
   - ../base/capacitor
   - ../base/homepage
   - ../base/dify
-  - ../base/freshrss
+  # - ../base/freshrss
