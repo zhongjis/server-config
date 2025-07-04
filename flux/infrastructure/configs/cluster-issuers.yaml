@@ -12,8 +12,8 @@ spec:
       name: cluster-issuer-account-key
     solvers:
       - dns01:
-        cloudflare:
-          email: jasonshen96115@gmail.com
-          apiTokenSecretRef:
-            name: cert-manager-secrets
-            key: cloudflare-api-token
+          cloudflare:
+            email: jasonshen96115@gmail.com
+            apiTokenSecretRef:
+              name: cert-manager-secrets
+              key: cloudflare-api-token
