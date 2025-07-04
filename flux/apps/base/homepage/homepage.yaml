@@ -168,7 +168,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
-              value: index.home
+              value: home.zshen.me
           ports:
             - name: http
               containerPort: 3000
