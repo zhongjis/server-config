@@ -37,11 +37,6 @@ spec:
       #    hosts:
       #      - dify-example.local
     freshrss:
-      initialization:
-        admin:
-          username: zshen
-          apiPassword:
-          password:
       timezone: America/Los_Angeles
     valuesFrom:
       - kind: Secret
