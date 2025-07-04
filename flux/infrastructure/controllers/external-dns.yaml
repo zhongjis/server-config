@@ -40,7 +40,7 @@ spec:
       server: http://192.168.50.2
     extraEnvVars:
       - name: EXTERNAL_DNS_PIHOLE_PASSWORD
-        valueForm:
+        valueFrom:
           secretKeyRef:
             name: external-dns-secrets
             key: pihole-password
