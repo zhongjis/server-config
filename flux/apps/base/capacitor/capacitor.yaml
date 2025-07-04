@@ -58,7 +58,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: gitops.home
+    - host: gitops.zshen.me
       http:
         paths:
           - pathType: Prefix
@@ -68,3 +68,7 @@ spec:
                 name: capacitor
                 port:
                   number: 9000
+  tls:
+    - secretName: capacitor-tls
+      hosts:
+        - gitops.zshen.me

@@ -47,7 +47,11 @@ spec:
           gethomepage.dev/name: AlertManager
         ingressClassName: nginx
         hosts:
-          - alertmanager.monitoring.home
+          - alertmanager.monitoring.zshen.me
+        tls:
+          - secretName: alertmanager-tls
+            hosts:
+              - alertmanager.monitoring.zshen.me
     grafana:
       ingress:
         enabled: true
@@ -59,7 +63,11 @@ spec:
           gethomepage.dev/name: Grafana
         ingressClassName: nginx
         hosts:
-          - grafana.monitoring.home
+          - grafana.monitoring.zshen.me
+        tls:
+          - secretName: grafana-tls
+            hosts:
+              - grafana.monitoring.zshen.me
     prometheus:
       ingress:
         enabled: true
@@ -71,4 +79,8 @@ spec:
           gethomepage.dev/name: Prometheus
         ingressClassName: nginx
         hosts:
-          - prometheus.monitoring.home
+          - prometheus.monitoring.zshen.me
+        tls:
+          - secretName: prometheus-tls
+            hosts:
+              - prometheus.monitoring.zshen.me

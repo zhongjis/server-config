@@ -38,7 +38,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "index.home"
+    - host: home.zshen.me
       http:
         paths:
           - path: "/"
@@ -48,6 +48,10 @@ spec:
                 name: homepage
                 port:
                   number: 3000
+  tls:
+    - secretName: homepage-tls
+      hosts:
+        - home.zshen.me
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1

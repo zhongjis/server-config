@@ -39,4 +39,6 @@ spec:
         gethomepage.dev/enabled: true
         gethomepage.dev/group: Cluster Management
         gethomepage.dev/name: Longhorn
-      host: longhorn.home
+      host: longhorn.zshen.me
+      tls: true
+      tlsSecret: longhorn-tls
