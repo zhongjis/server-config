@@ -30,3 +30,13 @@ spec:
         name: longhorn
         namespace: longhorn-system
       version: 1.9.*
+  values:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        gethomepage.dev/description: A distributed block storage system for Kubernetes.
+        gethomepage.dev/enabled: true
+        gethomepage.dev/group: Cluster Management
+        gethomepage.dev/name: Longhorn
+      host: longhorn.home
