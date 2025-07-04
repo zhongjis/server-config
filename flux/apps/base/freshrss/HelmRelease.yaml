@@ -36,3 +36,27 @@ spec:
       #  - secretName: chart-example-tls
       #    hosts:
       #      - dify-example.local
+    freshrss:
+      initialization:
+        admin:
+          username: zshen
+          apiPassword:
+          password:
+      timezone: America/Los_Angeles
+    valuesFrom:
+      - kind: Secret
+        name: freshrss-secrets
+        valuesKey: admin_email
+        targetPath: freshrss.initialization.admin.email
+      - kind: Secret
+        name: freshrss-secrets
+        valuesKey: admin_username
+        targetPath: freshrss.initialization.admin.username
+      - kind: Secret
+        name: freshrss-secrets
+        valuesKey: admin_password
+        targetPath: freshrss.initialization.admin.password
+      - kind: Secret
+        name: freshrss-secrets
+        valuesKey: admin_apiPassword
+        targetPath: freshrss.initialization.admin.apiPassword
