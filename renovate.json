@@ -8,8 +8,12 @@
       "/flux/.+\\.yaml$/"
     ],
     "ignorePaths": [
-      "flux/clusters/production/flux-system/**",
-      "flux/clusters/staging/flux-system/**"
+      "/(?:^|/)gotk-components\\.ya?ml$/"
+    ]
+  },
+  "flux": {
+    "managerFilePatterns": [
+      "/(?:^|/)gotk-components\\.ya?ml$/"
     ]
   },
   "extends": [
