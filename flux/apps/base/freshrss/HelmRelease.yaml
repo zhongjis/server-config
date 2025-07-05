@@ -26,6 +26,7 @@ spec:
         gethomepage.dev/enabled: "true"
         gethomepage.dev/group: Applications
         gethomepage.dev/name: FreshRSS
+        kubernetes.io/tls-acme: "true"
       className: nginx
       hosts:
         - host: rss.zshen.me

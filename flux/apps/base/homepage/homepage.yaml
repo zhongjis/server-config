@@ -33,6 +33,8 @@ kind: Ingress
 metadata:
   name: homepage
   namespace: homepage-system
+  annotations:
+    kubernetes.io/tls-acme: "true"
   labels:
     app.kubernetes.io/name: homepage
 spec:
@@ -126,7 +128,6 @@ metadata:
   namespace: homepage-system
   labels:
     app.kubernetes.io/name: homepage
-  annotations:
 spec:
   type: ClusterIP
   ports:

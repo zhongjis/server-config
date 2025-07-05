@@ -23,6 +23,7 @@ spec:
         gethomepage.dev/enabled: "true"
         gethomepage.dev/group: Applications
         gethomepage.dev/name: Dify
+        kubernetes.io/tls-acme: "true"
       className: nginx
       hosts:
         - host: dify.zshen.me

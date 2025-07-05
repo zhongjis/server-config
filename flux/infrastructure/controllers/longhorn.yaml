@@ -39,6 +39,7 @@ spec:
         gethomepage.dev/enabled: true
         gethomepage.dev/group: Cluster Management
         gethomepage.dev/name: Longhorn
+        kubernetes.io/tls-acme: "true"
       host: longhorn.zshen.me
       tls: true
       tlsSecret: longhorn-tls
