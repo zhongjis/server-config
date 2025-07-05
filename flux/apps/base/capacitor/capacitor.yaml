@@ -51,11 +51,11 @@ metadata:
   name: capacitor-ingress
   namespace: flux-system
   annotations:
-    kubernetes.io/tls-acme: "true"
     gethomepage.dev/description: A general purpose UI for FluxCD.
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Cluster Management
     gethomepage.dev/name: Capacitor
+    kubernetes.io/tls-acme: "true"
 spec:
   ingressClassName: nginx
   rules:
