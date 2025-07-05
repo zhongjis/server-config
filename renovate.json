@@ -6,6 +6,10 @@
   "kubernetes": {
     "managerFilePatterns": [
       "/flux/.+\\.yaml$/"
+    ],
+    "ignorePaths": [
+      "flux/clusters/production/flux-system/**",
+      "flux/clusters/staging/flux-system/**"
     ]
   },
   "extends": [
