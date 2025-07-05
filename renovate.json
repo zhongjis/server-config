@@ -1,5 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "nix": {
+    "enabled": true
+  },
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/k8s/.+\\.yaml$/"
+    ]
+  }
   "extends": [
     "config:recommended"
   ]
