@@ -5,9 +5,9 @@
   },
   "kubernetes": {
     "managerFilePatterns": [
-      "/k8s/.+\\.yaml$/"
+      "/flux/.+\\.yaml$/"
     ]
-  }
+  },
   "extends": [
     "config:recommended"
   ]
