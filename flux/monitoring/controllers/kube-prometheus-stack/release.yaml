@@ -53,11 +53,11 @@ spec:
           kubernetes.io/tls-acme: "true"
         ingressClassName: nginx
         hosts:
-          - prometheus.monitoring.zshen.me
+          - prometheus.zshen.me
         tls:
           - secretName: prometheus-tls
             hosts:
-              - prometheus.monitoring.zshen.me
+              - prometheus.zshen.me
     grafana:
       defaultDashboardsEnabled: false
       ingress:
@@ -71,8 +71,8 @@ spec:
           kubernetes.io/tls-acme: "true"
         ingressClassName: nginx
         hosts:
-          - grafana.monitoring.zshen.me
+          - grafana.zshen.me
         tls:
           - secretName: grafana-tls
             hosts:
-              - grafana.monitoring.zshen.me
+              - grafana.zshen.me
