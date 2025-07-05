@@ -5,5 +5,5 @@ resources:
   - ingress-nginx.yaml
   - longhorn.yaml
   - metallb.yaml
-  - kube-prometheus.yaml
+  # - kube-prometheus.yaml
   - external-dns.yaml
