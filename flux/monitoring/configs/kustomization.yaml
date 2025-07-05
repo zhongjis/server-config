@@ -10,6 +10,7 @@ configMapGenerator:
       - dashboards/cluster.json
       - dashboards/logs.json
       - dashboards/k8s-coredns.json
+      - dashboards/k8s-namespace.json
     options:
       labels:
         grafana_dashboard: "1"
