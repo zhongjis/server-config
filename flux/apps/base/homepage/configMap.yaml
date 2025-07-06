@@ -21,21 +21,27 @@ data:
         - Github:
             - abbr: GH
               href: https://github.com/zhongjis
+        - Github/Server-Config:
+            - abbr: GH
+              href: https://github.com/zhongjis/nix-config
+        - Github/Nix-Config:
+            - abbr: GH
+              href: https://github.com/zhongjis/server-config
   services.yaml: |
     - Network:
         - Pi-hole:
             href: http://pihole.home/admin
             description: Homepage is awesome
         - Unifi Network:
-            href: http://network.home/
+            href: http://network.home
             description: Homepage is awesome
     - NAS:
         - TrueNAS:
-            href: http://truenas.home/
+            href: http://truenas.home
             description: Homepage is the best
     - Applications:
         - Nextcloud:
-            href: http://nextcloud.home/
+            href: http://truenas.home:30027
             description: A suite of client-server software for creating and using file hosting services.
   widgets.yaml: |
     - kubernetes:
