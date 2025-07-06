@@ -8,7 +8,7 @@ creation_rules:
     key_groups:
       - age:
           - *primary
-  - path_regex: ^flux/clusters/production/secrets/.*\.yaml$
+  - path_regex: ^flux/secrets/production/.*\.yaml$
     encrypted_regex: ^(data|stringData)$
     key_groups:
       - age:
