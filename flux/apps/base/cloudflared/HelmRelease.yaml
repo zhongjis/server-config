@@ -39,10 +39,10 @@ spec:
       gracePeriod: "30s"
 
     # Ingress rules
-    # ingress:
-    #   - hostname: zshen.me
-    #     service: http://your-service.namespace.svc.cluster.local:80
-    #   - service: http_status:404
+    ingress:
+      - hostname: rss.zshen.me
+        service: http://freshrss.freshrss.svc.cluster.local:8080
+      - service: http_status:404
 
     replica:
       allNodes: true
