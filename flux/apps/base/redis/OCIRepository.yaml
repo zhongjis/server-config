@@ -1,0 +1,11 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: redis
+  namespace: redis
+spec:
+  interval: 12h
+  url: oci://registry-1.docker.io/bitnamicharts/redis
+  ref:
+    semver: "21.2.x"

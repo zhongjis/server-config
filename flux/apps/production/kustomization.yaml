@@ -7,3 +7,4 @@ resources:
   - ../base/freshrss
   - ../base/cloudflared
   - ../base/manyfold
+  - ../base/redis
