@@ -13,11 +13,11 @@ spec:
 
   valuesFrom:
     - kind: Secret
-      name: microrealestate-secrets
+      name: mongodb-secrets
       valuesKey: root-password
       targetPath: auth.rootPassword
     - kind: Secret
-      name: microrealestate-secrets
+      name: mongodb-secrets
       valuesKey: user-passwords
       targetPath: auth.passwords
 
