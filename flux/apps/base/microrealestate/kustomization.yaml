@@ -9,6 +9,7 @@ resources:
   - authenticator-service.yaml
   - emailer-deployment.yaml
   - emailer-service.yaml
+  - frontend-ingress.yaml
   - gateway-deployment.yaml
   - gateway-service.yaml
   - landlord-frontend-deployment.yaml
