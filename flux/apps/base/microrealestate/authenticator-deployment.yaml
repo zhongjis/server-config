@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.36.0 (HEAD)
+  labels:
+    io.kompose.service: authenticator
+  name: authenticator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: authenticator
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose.yml convert
+        kompose.version: 1.36.0 (HEAD)
+      labels:
+        io.kompose.service: authenticator
+    spec:
+      containers:
+        - env:
+            - name: ACCESS_TOKEN_SECRET
+              value: access_token_secret
+            - name: APPCREDZ_TOKEN_SECRET
+              value: appcredz_token_secret
+            - name: APP_DOMAIN
+              value: microrealestate.zshen.me
+            - name: APP_PROTOCOL
+              value: http
+            - name: EMAILER_URL
+              value: http://emailer:8400/emailer
+            - name: LOGGER_LEVEL
+              value: info
+            - name: MONGO_URL
+              value: mongodb://mongo/mredb
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "8000"
+            - name: REDIS_PASSWORD
+              value:
+            - name: REDIS_URL
+              value: redis://redis.redis.svc.cluster.local
+            - name: REFRESH_TOKEN_SECRET
+              value: refresh_token_secret
+            - name: RESET_TOKEN_SECRET
+              value: reset_token_secret
+            - name: SIGNUP
+              value: "true"
+          image: ghcr.io/microrealestate/microrealestate/authenticator:latest
+          name: authenticator
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+      restartPolicy: Always

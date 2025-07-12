@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.36.0 (HEAD)
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose.yml convert
+        kompose.version: 1.36.0 (HEAD)
+      labels:
+        io.kompose.service: api
+    spec:
+      containers:
+        - env:
+            - name: ACCESS_TOKEN_SECRET
+              value: access_token_secret
+            - name: CIPHER_IV_KEY
+              value: cipher_iv_key
+            - name: CIPHER_KEY
+              value: cipher_key
+            - name: EMAILER_URL
+              value: http://emailer:8400/emailer
+            - name: LOGGER_LEVEL
+              value: info
+            - name: MONGO_URL
+              value: mongodb://mongo/mredb
+            - name: NODE_ENV
+              value: production
+            - name: PDFGENERATOR_URL
+              value: http://pdfgenerator:8300/pdfgenerator
+            - name: PORT
+              value: "8200"
+            - name: RESTORE_DB
+              value: "false"
+          image: ghcr.io/microrealestate/microrealestate/api:latest
+          name: api
+          ports:
+            - containerPort: 8200
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /usr/app/backup
+              name: api-cm0
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            name: api-cm0
+          name: api-cm0

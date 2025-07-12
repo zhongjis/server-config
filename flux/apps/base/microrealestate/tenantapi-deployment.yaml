@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.36.0 (HEAD)
+  labels:
+    io.kompose.service: tenantapi
+  name: tenantapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: tenantapi
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose.yml convert
+        kompose.version: 1.36.0 (HEAD)
+      labels:
+        io.kompose.service: tenantapi
+    spec:
+      containers:
+        - env:
+            - name: ACCESS_TOKEN_SECRET
+              value: access_token_secret
+            - name: LOGGER_LEVEL
+              value: info
+            - name: MONGO_URL
+              value: mongodb://mongo/mredb
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "8250"
+          image: ghcr.io/microrealestate/microrealestate/tenantapi:latest
+          name: tenantapi
+          ports:
+            - containerPort: 8250
+              protocol: TCP
+      restartPolicy: Always

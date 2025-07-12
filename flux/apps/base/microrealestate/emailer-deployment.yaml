@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose --file docker-compose.yml convert
+    kompose.version: 1.36.0 (HEAD)
+  labels:
+    io.kompose.service: emailer
+  name: emailer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: emailer
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose --file docker-compose.yml convert
+        kompose.version: 1.36.0 (HEAD)
+      labels:
+        io.kompose.service: emailer
+    spec:
+      containers:
+        - env:
+            - name: ACCESS_TOKEN_SECRET
+              value: access_token_secret
+            - name: ALLOW_SENDING_EMAILS
+              value: "true"
+            - name: CIPHER_IV_KEY
+              value: cipher_iv_key
+            - name: CIPHER_KEY
+              value: cipher_key
+            - name: EMAIL_BCC
+            - name: EMAIL_FROM
+            - name: EMAIL_REPLY_TO
+            - name: GMAIL_APP_PASSWORD
+            - name: GMAIL_EMAIL
+            - name: LANDLORD_APP_URL
+              value: http://localhost/landlord
+            - name: LOGGER_LEVEL
+              value: info
+            - name: MAILGUN_API_KEY
+            - name: MAILGUN_DOMAIN
+            - name: MONGO_URL
+              value: mongodb://mongo/mredb
+            - name: NODE_ENV
+              value: production
+            - name: PDFGENERATOR_URL
+              value: http://pdfgenerator:8300/pdfgenerator
+            - name: PORT
+              value: "8400"
+            - name: SMTP_PASSWORD
+            - name: SMTP_PORT
+            - name: SMTP_SECURE
+            - name: SMTP_SERVER
+            - name: SMTP_USERNAME
+            - name: TENANT_APP_URL
+              value: http://localhost/tenant
+          image: ghcr.io/microrealestate/microrealestate/emailer:latest
+          name: emailer
+          ports:
+            - containerPort: 8400
+              protocol: TCP
+      restartPolicy: Always
