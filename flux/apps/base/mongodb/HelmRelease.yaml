@@ -10,3 +10,21 @@ spec:
     kind: OCIRepository
     name: mongodb
     namespace: mongodb
+
+  valuesFrom:
+    - kind: Secret
+      name: microrealestate-secrets
+      valuesKey: root-password
+      targetPath: auth.rootPassword
+    - kind: Secret
+      name: microrealestate-secrets
+      valuesKey: user-passwords
+      targetPath: auth.passwords
+
+  values:
+    passwordUpdateJob:
+      enabled: true
+    usernames:
+      - microrealestate
+    databases:
+      - mredb
