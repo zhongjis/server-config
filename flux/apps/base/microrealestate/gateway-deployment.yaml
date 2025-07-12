@@ -27,31 +27,31 @@ spec:
             - name: APP_DOMAIN
               value: localhost
             - name: AUTHENTICATOR_URL
-              value: http://authenticator:8000
+              value: http://authenticator.microrealestate.svc.cluster.local:8000
             - name: CORS_ENABLED
               value: "true"
             - name: EMAILER_URL
-              value: http://emailer:8400/emailer
+              value: http://emailer.microrealestate.svc.cluster.local:8400/emailer
             - name: EXPOSE_FRONTENDS
               value: "true"
             - name: LANDLORD_BASE_PATH
               value: /landlord
             - name: LANDLORD_FRONTEND_URL
-              value: http://landlord-frontend:8180
+              value: http://landlord-frontend.microrealestate.svc.cluster.local:8180
             - name: LOGGER_LEVEL
               value: info
             - name: NODE_ENV
               value: production
             - name: PDFGENERATOR_URL
-              value: http://pdfgenerator:8300/pdfgenerator
+              value: http://pdfgenerator.microrealestate.svc.cluster.local:8300/pdfgenerator
             - name: PORT
               value: "8080"
             - name: TENANTAPI_URL
-              value: http://tenantapi:8250/tenantapi
+              value: http://tenantapi.microrealestate.svc.cluster.local:8250/tenantapi
             - name: TENANT_BASE_PATH
               value: /tenant
             - name: TENANT_FRONTEND_URL
-              value: http://tenant-frontend:8190
+              value: http://tenant-frontend.microrealestate.svc.cluster.local:8190
           image: ghcr.io/microrealestate/microrealestate/gateway:latest
           name: gateway
           ports:

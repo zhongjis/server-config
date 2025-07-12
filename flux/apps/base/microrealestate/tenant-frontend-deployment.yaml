@@ -27,7 +27,7 @@ spec:
             - name: CORS_ENABLED
               value: "true"
             - name: DOCKER_GATEWAY_URL
-              value: http://gateway:8080
+              value: http://gateway.microrealestate.svc.cluster.local:8080
             - name: GATEWAY_URL
               value: http://localhost
             - name: NODE_ENV

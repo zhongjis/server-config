@@ -31,7 +31,7 @@ spec:
             - name: LOGGER_LEVEL
               value: info
             - name: MONGO_URL
-              value: mongodb://mongo/mredb
+              value: mongodb://mongodb.mongodb.svc.cluster.local/mredb
             - name: NODE_ENV
               value: production
             - name: PORT

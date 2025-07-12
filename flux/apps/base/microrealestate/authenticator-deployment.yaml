@@ -31,11 +31,11 @@ spec:
             - name: APP_PROTOCOL
               value: http
             - name: EMAILER_URL
-              value: http://emailer:8400/emailer
+              value: http://emailer.microrealestate.svc.cluster.local:8400/emailer
             - name: LOGGER_LEVEL
               value: info
             - name: MONGO_URL
-              value: mongodb://mongo/mredb
+              value: mongodb://mongodb.mongodb.svc.cluster.local:27017/mredb
             - name: NODE_ENV
               value: production
             - name: PORT
@@ -43,7 +43,7 @@ spec:
             - name: REDIS_PASSWORD
               value:
             - name: REDIS_URL
-              value: redis://redis.redis.svc.cluster.local
+              value: redis://redis-master.redis.svc.cluster.local:6379
             - name: REFRESH_TOKEN_SECRET
               value: refresh_token_secret
             - name: RESET_TOKEN_SECRET
