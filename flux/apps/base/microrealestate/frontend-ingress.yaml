@@ -5,6 +5,10 @@ metadata:
   name: microrealestate
   namespace: microrealestate
   annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: MicroRealEstate is an open-source application designed to assist landlords in managing their properties and rentals.
+    gethomepage.dev/group: Applications
+    gethomepage.dev/name: MicroRealEstate
     kubernetes.io/tls-acme: "true"
 spec:
   ingressClassName: nginx
