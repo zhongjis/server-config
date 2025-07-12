@@ -7,5 +7,6 @@ resources:
   - ../base/freshrss
   - ../base/homepage
   - ../base/manyfold
+  - ../base/microrealestate
   - ../base/mongodb
   - ../base/redis
