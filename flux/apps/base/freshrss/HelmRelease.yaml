@@ -20,7 +20,7 @@ spec:
     ingress:
       enabled: true
       annotations:
-        gethomepage.dev/description: FreshRSS is a self-hosted RSS and Atom feed aggregator. It is lightweight, easy to work with, powerful, and customizable.
+        gethomepage.dev/description: A self-hosted RSS and Atom feed aggregator. It is lightweight, easy to work with, powerful, and customizable.
         gethomepage.dev/enabled: "true"
         gethomepage.dev/group: Applications
         gethomepage.dev/name: FreshRSS
