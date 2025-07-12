@@ -7,6 +7,7 @@ metadata:
   labels:
     io.kompose.service: tenant-frontend
   name: tenant-frontend
+  namespace: microrealestate
 spec:
   replicas: 1
   selector:
