@@ -43,7 +43,10 @@ spec:
             - name: MAILGUN_API_KEY
             - name: MAILGUN_DOMAIN
             - name: MONGO_URL
-              value: mongodb://mongodb.mongodb.svc.cluster.local/mredb
+              valueFrom:
+                secretKeyRef:
+                  name: microrealestate-secrets
+                  key: mongo-url
             - name: NODE_ENV
               value: production
             - name: PDFGENERATOR_URL
