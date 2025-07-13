@@ -42,7 +42,9 @@ spec:
           hosts:
             - manyfold.zshen.me
     redis:
-      enabled: true
+      enabled: false
+    postgresql:
+      enabled: false
     persistence:
       enabled: true
       mountPath: "/manyfold-library"
