@@ -46,4 +46,6 @@ spec:
     persistence:
       enabled: true
     env:
+      PUID: "1000"
+      PGID: "1000"
       REDIS_URL: redis://redis.redis.svc.cluster.local:6379/1
