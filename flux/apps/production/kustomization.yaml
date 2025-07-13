@@ -8,6 +8,6 @@ resources:
   - ../base/homepage
   # - ../base/manyfold # FIXME:not need external db fix
   - ../base/microrealestate
-  - ../base/mongodb
-  - ../base/postgresql
-  - ../base/redis
+  # - ../base/mongodb
+  # - ../base/postgresql
+  # - ../base/redis
