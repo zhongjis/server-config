@@ -36,7 +36,10 @@ spec:
             - name: LOGGER_LEVEL
               value: info
             - name: MONGO_URL
-              value: mongodb://mongodb.mongodb.svc.cluster.local/mredb
+              valueFrom:
+                secretKeyRef:
+                  name: microrealestate-secrets
+                  key: mongo-url
             - name: NODE_ENV
               value: production
             - name: PDFGENERATOR_URL
