@@ -45,6 +45,8 @@ spec:
       enabled: true
     persistence:
       enabled: true
+      mountPath: "/manyfold-library"
+      size: 15Gi
     env:
       REDIS_URL:
         value: "redis://redis-master.redis.svc.cluster.local:6379/1"
