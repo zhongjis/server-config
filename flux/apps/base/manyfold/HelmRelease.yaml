@@ -21,7 +21,7 @@ spec:
     - kind: Secret
       name: manyfold-secrets
       valuesKey: postgresql-url
-      targetPath: env.DATABASE_URL
+      targetPath: env.DATABASE_URL.value
   values:
     ingress:
       enabled: true
