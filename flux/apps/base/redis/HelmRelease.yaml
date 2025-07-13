@@ -12,4 +12,6 @@ spec:
     namespace: redis
   values:
     auth:
-      enabled: false
+      enabled: true
+      existingSecret: redis-secrets.yaml
+      existingSecretPasswordKey: redis-password
