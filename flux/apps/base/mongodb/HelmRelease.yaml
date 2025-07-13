@@ -13,4 +13,12 @@ spec:
 
   values:
     auth:
-      enabled: false
+      enabled: true
+      rootUser: root
+      usernames:
+        - microrealestate
+      databases:
+        - mredb # NOTE: for microrealestate
+      existingSecret: mongodb-secrets
+    metrics:
+      enabled: true
