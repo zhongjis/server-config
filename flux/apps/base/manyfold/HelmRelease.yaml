@@ -48,4 +48,4 @@ spec:
     env:
       PUID: "1000"
       PGID: "1000"
-      REDIS_URL: redis://redis.redis.svc.cluster.local:6379/1
+      REDIS_URL: redis://redis-master.redis.svc.cluster.local:6379/1
