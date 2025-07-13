@@ -47,7 +47,6 @@ spec:
       enabled: false
     persistence:
       enabled: true
-      mountPath: "/manyfold-library"
       size: 15Gi
     env:
       REDIS_URL:
