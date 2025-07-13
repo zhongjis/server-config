@@ -17,6 +17,11 @@ spec:
         name: jeffresc
         namespace: manyfold
       interval: 12h
+  valuesFrom:
+    - kind: Secret
+      name: manyfold-secrets
+      valuesKey: postgresql-url
+      targetPath: env.DATABASE_URL
   values:
     ingress:
       enabled: true
@@ -40,5 +45,5 @@ spec:
       enabled: true
     persistence:
       enabled: true
-    postgresql:
-      enabled: true
+    env:
+      REDIS_URL: redis://redis.redis.svc.cluster.local:6379/1
