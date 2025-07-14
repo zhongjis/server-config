@@ -32,7 +32,7 @@ spec:
             - name: CIPHER_KEY
               value: cipher_key
             - name: EMAILER_URL
-              value: http://emailer.microrealestate.svc.cluster.local:8400/emailer
+              value: https://emailer.microrealestate.svc.cluster.local:8400/emailer
             - name: LOGGER_LEVEL
               value: info
             - name: MONGO_URL
@@ -43,7 +43,7 @@ spec:
             - name: NODE_ENV
               value: production
             - name: PDFGENERATOR_URL
-              value: http://pdfgenerator.microrealestate.svc.cluster.local:8300/pdfgenerator
+              value: https://pdfgenerator.microrealestate.svc.cluster.local:8300/pdfgenerator
             - name: PORT
               value: "8200"
             - name: RESTORE_DB

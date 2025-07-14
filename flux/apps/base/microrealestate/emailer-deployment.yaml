@@ -37,7 +37,7 @@ spec:
             - name: GMAIL_APP_PASSWORD
             - name: GMAIL_EMAIL
             - name: LANDLORD_APP_URL
-              value: http://landlord-frontend.microrealestate.svc.cluster.local/landlord
+              value: https://landlord-frontend.microrealestate.svc.cluster.local/landlord
             - name: LOGGER_LEVEL
               value: info
             - name: MAILGUN_API_KEY
@@ -50,7 +50,7 @@ spec:
             - name: NODE_ENV
               value: production
             - name: PDFGENERATOR_URL
-              value: http://pdfgenerator.microrealestate.svc.cluster.local:8300/pdfgenerator
+              value: https://pdfgenerator.microrealestate.svc.cluster.local:8300/pdfgenerator
             - name: PORT
               value: "8400"
             - name: SMTP_PASSWORD
@@ -59,7 +59,7 @@ spec:
             - name: SMTP_SERVER
             - name: SMTP_USERNAME
             - name: TENANT_APP_URL
-              value: http://tenantapi.microrealestate.svc.cluster.local/tenant
+              value: https://tenantapi.microrealestate.svc.cluster.local/tenant
           image: ghcr.io/microrealestate/microrealestate/emailer:latest
           name: emailer
           ports:

@@ -32,7 +32,7 @@ spec:
             - name: APP_PROTOCOL
               value: http
             - name: EMAILER_URL
-              value: http://emailer.microrealestate.svc.cluster.local:8400/emailer
+              value: https://emailer.microrealestate.svc.cluster.local:8400/emailer
             - name: LOGGER_LEVEL
               value: info
             - name: MONGO_URL
