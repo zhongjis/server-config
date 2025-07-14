@@ -26,7 +26,7 @@ spec:
             - name: API_URL
               value: http://api:8200/api/v2
             - name: APP_DOMAIN
-              value: localhost
+              value: microrealestate.zshen.me
             - name: AUTHENTICATOR_URL
               value: http://authenticator.microrealestate.svc.cluster.local:8000
             - name: CORS_ENABLED

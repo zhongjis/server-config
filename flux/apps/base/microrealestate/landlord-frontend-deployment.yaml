@@ -30,7 +30,7 @@ spec:
             - name: DOCKER_GATEWAY_URL
               value: http://gateway.microrealestate.svc.cluster.local:8080
             - name: GATEWAY_URL
-              value: http://localhost
+              value: http://gateway.microrealestate.svc.cluster.local:8080
             - name: NODE_ENV
               value: production
             - name: PORT
