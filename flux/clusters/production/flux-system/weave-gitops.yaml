@@ -1,10 +1,4 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: weave-gitops
-
----
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
@@ -51,7 +45,6 @@ spec:
   values:
     adminUser:
       create: true
-      passwordHash: $2a$10$x7KkWLocMX3b9xBO2dU3EOmuayYJLnnfh4q8Cs1DkVPoaa6TfhRhq
       username: admin
     ingress:
       enabled: true
