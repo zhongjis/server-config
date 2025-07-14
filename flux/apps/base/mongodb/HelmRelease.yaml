@@ -20,8 +20,8 @@ spec:
       databases:
         - mredb # NOTE: for microrealestate
       existingSecret: mongodb-secrets
-      passwordUpdateJob:
-        enabled: true
     metrics:
       enabled: true
       username: "metricuser"
+    passwordUpdateJob:
+      enabled: true
