@@ -28,7 +28,7 @@ spec:
             - name: APPCREDZ_TOKEN_SECRET
               value: appcredz_token_secret
             - name: APP_DOMAIN
-              value: microrealestate.zshen.me
+              value: microrealestate.svc.cluster.local
             - name: APP_PROTOCOL
               value: http
             - name: EMAILER_URL
