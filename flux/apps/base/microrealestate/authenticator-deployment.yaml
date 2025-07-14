@@ -45,7 +45,10 @@ spec:
             - name: PORT
               value: "8000"
             - name: REDIS_PASSWORD
-              value:
+              valueFrom:
+                secretKeyRef:
+                  name: microrealestate-secrets
+                  key: redis-password
             - name: REDIS_URL
               value: redis://redis-master.redis.svc.cluster.local:6379
             - name: REFRESH_TOKEN_SECRET
