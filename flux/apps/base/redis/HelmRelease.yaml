@@ -13,5 +13,5 @@ spec:
   values:
     auth:
       enabled: true
-      existingSecret: redis-secrets.yaml
+      existingSecret: redis-secrets
       existingSecretPasswordKey: redis-password
