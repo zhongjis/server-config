@@ -1,0 +1,99 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microrealestate
+  namespace: microrealestate
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/description: An open-source application designed to assist landlords in managing their properties and rentals.
+    gethomepage.dev/group: Applications
+    gethomepage.dev/name: MicroRealEstate
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/tenant"
+            pathType: Prefix
+            backend:
+              service:
+                name: tenant-frontend
+                port:
+                  number: 8190
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/landlord"
+            pathType: Prefix
+            backend:
+              service:
+                name: landlord-frontend
+                port:
+                  number: 8180
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/emailer"
+            pathType: Prefix
+            backend:
+              service:
+                name: emailer
+                port:
+                  number: 8400
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/pdfgenerator"
+            pathType: Prefix
+            backend:
+              service:
+                name: pdfgenerator
+                port:
+                  number: 8300
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/api"
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 8200
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/authenticator"
+            pathType: Prefix
+            backend:
+              service:
+                name: authenticator
+                port:
+                  number: 8000
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/gateway"
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 8080
+    - host: microrealestate.zshen.me
+      http:
+        paths:
+          - path: "/tenantapi"
+            pathType: Prefix
+            backend:
+              service:
+                name: tenantapi
+                port:
+                  number: 8250
+  tls:
+    - secretName: microrealestate-tls
+      hosts:
+        - microrealestate.zshen.me

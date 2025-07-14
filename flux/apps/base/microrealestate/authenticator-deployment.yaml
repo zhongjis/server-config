@@ -28,11 +28,11 @@ spec:
             - name: APPCREDZ_TOKEN_SECRET
               value: appcredz_token_secret
             - name: APP_DOMAIN
-              value: microrealestate.svc.cluster.local
+              value: microrealestate.zshen.me
             - name: APP_PROTOCOL
-              value: http
+              value: https
             - name: EMAILER_URL
-              value: https://emailer.microrealestate.svc.cluster.local:8400/emailer
+              value: https://microrealestate.zshen.me/emailer
             - name: LOGGER_LEVEL
               value: info
             - name: MONGO_URL

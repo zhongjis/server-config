@@ -24,35 +24,35 @@ spec:
       containers:
         - env:
             - name: API_URL
-              value: https://api.microrealestate.svc.cluster.local:8200/api/v2
+              value: https://microrealestate.zshen.me/api/v2
             - name: APP_DOMAIN
-              value: microrealestate.svc.cluster.local
+              value: microrealestate.zshen.me
             - name: AUTHENTICATOR_URL
-              value: https://authenticator.microrealestate.svc.cluster.local:8000
+              value: https://microrealestate.zshen.me:8000
             - name: CORS_ENABLED
               value: "true"
             - name: EMAILER_URL
-              value: https://emailer.microrealestate.svc.cluster.local:8400/emailer
+              value: https://microrealestate.zshen.me/emailer
             - name: EXPOSE_FRONTENDS
               value: "true"
             - name: LANDLORD_BASE_PATH
               value: /landlord
             - name: LANDLORD_FRONTEND_URL
-              value: https://landlord-frontend.microrealestate.svc.cluster.local:8180
+              value: https://microrealestate.zshen.me
             - name: LOGGER_LEVEL
               value: info
             - name: NODE_ENV
               value: production
             - name: PDFGENERATOR_URL
-              value: https://pdfgenerator.microrealestate.svc.cluster.local:8300/pdfgenerator
+              value: https://microrealestate.zshen.me/pdfgenerator
             - name: PORT
               value: "8080"
             - name: TENANTAPI_URL
-              value: https://tenantapi.microrealestate.svc.cluster.local:8250/tenantapi
+              value: https://microrealestate.zshen.me/tenantapi
             - name: TENANT_BASE_PATH
               value: /tenant
             - name: TENANT_FRONTEND_URL
-              value: https://tenant-frontend.microrealestate.svc.cluster.local:8190
+              value: https://microrealestate.zshen.me
           image: ghcr.io/microrealestate/microrealestate/gateway:latest
           name: gateway
           ports:

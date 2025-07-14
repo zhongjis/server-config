@@ -28,9 +28,9 @@ spec:
             - name: CORS_ENABLED
               value: "true"
             - name: DOCKER_GATEWAY_URL
-              value: https://gateway.microrealestate.svc.cluster.local:8080
+              value: https://microrealestate.zshen.me
             - name: GATEWAY_URL
-              value: https://gateway.microrealestate.svc.cluster.local:8080
+              value: https://microrealestate.zshen.me
             - name: NODE_ENV
               value: production
             - name: PORT
