@@ -25,3 +25,4 @@ spec:
       username: "metricuser"
     passwordUpdateJob:
       enabled: true
+      existingSecret: mongodb-secrets
