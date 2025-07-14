@@ -50,7 +50,7 @@ spec:
                   name: microrealestate-secrets
                   key: redis-password
             - name: REDIS_URL
-              value: redis://redis-master.redis.svc.cluster.local:6379
+              value: redis://redis-master.redis.svc.cluster.local:6379/2
             - name: REFRESH_TOKEN_SECRET
               value: refresh_token_secret
             - name: RESET_TOKEN_SECRET
