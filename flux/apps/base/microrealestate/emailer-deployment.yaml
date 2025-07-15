@@ -34,8 +34,16 @@ spec:
             - name: EMAIL_BCC
             - name: EMAIL_FROM
             - name: EMAIL_REPLY_TO
-            - name: GMAIL_APP_PASSWORD
             - name: GMAIL_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: microrealestate-secrets
+                  key: gmail-email
+            - name: GMAIL_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: microrealestate-secrets
+                  key: gmail-password
             - name: LANDLORD_APP_URL
               value: https://microrealestate.zshen.me/landlord
             - name: LOGGER_LEVEL
