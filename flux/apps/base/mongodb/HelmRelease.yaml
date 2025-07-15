@@ -24,6 +24,6 @@ spec:
       enabled: true
       username: "metricuser"
     passwordUpdateJob:
-      enabled: false
+      enabled: true
       previousPasswords:
         existingSecret: mongodb-secrets
