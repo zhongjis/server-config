@@ -29,9 +29,12 @@ spec:
 
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
   values:
+    fullnameOverride: prometheus
+
     alertmanager:
       enabled: false
     prometheus:
+      enabled: true
       prometheusSpec:
         retention: 24h
         resources:
