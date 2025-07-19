@@ -6,7 +6,7 @@ resources:
   - ../base/dify
   - ../base/freshrss
   - ../base/homepage
-  # - ../base/manyfold # FIXME: need external db fix
+  - ../base/manyfold
   # - ../base/microrealestate
   - ../base/mongodb
   - ../base/postgresql

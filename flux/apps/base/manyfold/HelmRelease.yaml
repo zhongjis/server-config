@@ -23,6 +23,9 @@ spec:
       valuesKey: postgresql-url
       targetPath: env.DATABASE_URL.value
   values:
+    serviceAccount:
+      create: true
+      name: default
     ingress:
       enabled: true
       annotations:
