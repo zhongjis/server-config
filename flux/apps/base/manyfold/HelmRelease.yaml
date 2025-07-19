@@ -22,6 +22,10 @@ spec:
       name: manyfold-secrets
       valuesKey: postgresql-url
       targetPath: env.DATABASE_URL.value
+    - kind: Secret
+      name: manyfold-secrets
+      valuesKey: redis-url
+      targetPath: env.REDIS_URL.value
   values:
     serviceAccount:
       create: true
@@ -52,5 +56,5 @@ spec:
       enabled: true
       size: 15Gi
     env:
-      REDIS_URL:
-        value: "redis://redis-master.redis.svc.cluster.local:6379/1"
+      # REDIS_URL:
+      #   value: "redis://rfG%2AGbpOp%259a8NI@redis-master.redis.svc.cluster.local:6379/1"
