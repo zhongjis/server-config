@@ -55,6 +55,7 @@ spec:
     persistence:
       enabled: true
       size: 15Gi
+      storageClass: "longhorn"
     env:
       # REDIS_URL:
       #   value: "redis://rfG%2AGbpOp%259a8NI@redis-master.redis.svc.cluster.local:6379/1"
