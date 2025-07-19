@@ -20,8 +20,8 @@ spec:
   valuesFrom:
     - kind: Secret
       name: manyfold-secrets
-      valuesKey: postgresql-url
-      targetPath: env.DATABASE_URL.value
+      valuesKey: postgresql-password
+      targetPath: env.DATABASE_PASSWORD.value
     - kind: Secret
       name: manyfold-secrets
       valuesKey: redis-url
@@ -58,3 +58,15 @@ spec:
     env:
       # REDIS_URL:
       #   value: "redis://rfG%2AGbpOp%259a8NI@redis-master.redis.svc.cluster.local:6379/1"
+      DATABASE_ADAPTER:
+        value: "postgresql"
+      DATABASE_HOST:
+        value: "postgresql.postgresql.svc.cluster.local"
+      DATABASE_PORT:
+        value: "5432"
+      DATABASE_USER:
+        value: "user"
+      # DATABASE_PASSWORD:
+      #   value: "{{ .Values.postgresql.global.postgresql.auth.password }}"
+      DATABASE_NAME:
+        value: "manyfold"
