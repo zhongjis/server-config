@@ -16,15 +16,16 @@ spec:
     auth:
       enabled: true
       rootUser: root
-      usernames:
-        - microrealestate
-      databases:
-        - mredb # NOTE: for microrealestate
+      # FIXME: single user secrets never works
+      # usernames:
+      #   - microrealestate
+      # databases:
+      #   - mredb # NOTE: for microrealestate
       existingSecret: mongodb-secrets
     metrics:
       enabled: true
       username: "metricuser"
-    passwordUpdateJob:
-      enabled: true
-      previousPasswords:
-        existingSecret: mongodb-secrets
+    # passwordUpdateJob:
+    #   enabled: true
+    #   previousPasswords:
+    #     existingSecret: mongodb-secrets
