@@ -57,6 +57,7 @@ spec:
       enabled: true
       size: 15Gi
       storageClass: "longhorn"
+      # mountPath: "/manyfold-library"
     env:
       # REDIS_URL:
       #   value: "redis://rfG%2AGbpOp%259a8NI@redis-master.redis.svc.cluster.local:6379/1"
@@ -76,3 +77,5 @@ spec:
         value: "1000"
       PGID:
         value: "1000"
+      MANYFOLD_LOG_LEVEL:
+        value: "debug"
