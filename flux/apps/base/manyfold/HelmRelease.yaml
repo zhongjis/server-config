@@ -73,9 +73,9 @@ spec:
       #   value: "{{ .Values.postgresql.global.postgresql.auth.password }}"
       DATABASE_NAME:
         value: "manyfold"
-      PUID:
-        value: "1000"
-      PGID:
-        value: "1000"
-      MANYFOLD_LOG_LEVEL:
-        value: "debug"
+      # PUID:
+      #   value: "1000"
+      # PGID:
+      #   value: "1000"
+      # MANYFOLD_LOG_LEVEL:
+      #   value: "debug"
