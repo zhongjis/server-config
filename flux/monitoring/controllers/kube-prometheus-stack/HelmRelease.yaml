@@ -3,10 +3,17 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
 spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: kube-prometheus-stack
+  interval: 30m
+  timeout: 15m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 75.12.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: monitoring
+      interval: 12h
   install:
     crds: Create
   upgrade:
