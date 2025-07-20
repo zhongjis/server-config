@@ -13,7 +13,7 @@ spec:
 
   values:
     auth:
-      user: user
+      username: user
       existingSecret: postgresql-secrets
       secretKeys:
         adminPasswordKey: admin-password
