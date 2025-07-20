@@ -23,10 +23,10 @@ data:
               href: https://github.com/zhongjis
         - Github/Server-Config:
             - abbr: GH
-              href: https://github.com/zhongjis/nix-config
+              href: https://github.com/zhongjis/server-config
         - Github/Nix-Config:
             - abbr: GH
-              href: https://github.com/zhongjis/server-config
+              href: https://github.com/zhongjis/nix-config
   services.yaml: |
     - Network:
         - Pi-hole:
