@@ -14,13 +14,14 @@ spec:
   values:
     global:
       defaultStorageClass: longhorn
-    auth:
-      username: user
-      existingSecret: postgresql-secrets
-      secretKeys:
-        adminPasswordKey: admin-password
-        userPasswordKey: user-password
-        replicationPasswordKey: replication-password
-      database: "manyfold"
+      postgresql:
+        auth:
+          username: user
+          existingSecret: postgresql-secrets
+          secretKeys:
+            adminPasswordKey: admin-password
+            userPasswordKey: user-password
+            replicationPasswordKey: replication-password
+          database: "manyfold"
     metrics:
       enabled: true
