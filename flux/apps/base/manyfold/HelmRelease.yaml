@@ -73,6 +73,8 @@ spec:
       #   value: "{{ .Values.postgresql.global.postgresql.auth.password }}"
       DATABASE_NAME:
         value: "manyfold"
+      SUDO_RUN_UNSAFELY:
+        value: "enabled"
       # PUID:
       #   value: "1000"
       # PGID:
