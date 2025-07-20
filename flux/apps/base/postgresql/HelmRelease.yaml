@@ -19,5 +19,6 @@ spec:
         adminPasswordKey: admin-password
         userPasswordKey: user-password
         replicationPasswordKey: replication-password
+      database: "manyfold"
     metrics:
       enabled: true
