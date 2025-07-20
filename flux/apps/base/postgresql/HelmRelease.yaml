@@ -23,5 +23,15 @@ spec:
             userPasswordKey: user-password
             replicationPasswordKey: replication-password
           database: "manyfold"
+    persistence:
+      enabled: true
+      # volumeName: "data"
+      # existingClaim: "data-postgresql-0"
+      # mountPath: /bitnami/postgresql
+      # subPath: ""
+      storageClass: longhorn
+      accessModes:
+        - ReadWriteOnce
+      size: 10Gi
     metrics:
       enabled: true
