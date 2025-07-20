@@ -12,6 +12,8 @@ spec:
     namespace: postgresql
 
   values:
+    global:
+      defaultStorageClass: longhorn
     auth:
       username: user
       existingSecret: postgresql-secrets
