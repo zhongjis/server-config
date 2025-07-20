@@ -72,6 +72,6 @@ spec:
       DATABASE_NAME:
         value: "manyfold"
       PUID:
-        value: 1000
+        value: "1000"
       PGID:
-        value: 1000
+        value: "1000"
