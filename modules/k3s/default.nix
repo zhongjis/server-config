@@ -27,6 +27,11 @@ in {
       "--write-kubeconfig-mode \"0644\""
       "--disable servicelb"
       "--disable traefik"
+      "--kube-controller-manager-arg bind-address=0.0.0.0"
+      "--kube-proxy-arg metrics-bind-address=0.0.0.0"
+      "--kube-scheduler-arg bind-address=0.0.0.0"
+      "--etcd-expose-metrics true"
+      "--kubelet-arg containerd=/run/k3s/containerd/containerd.sock"
     ];
     clusterInit = custHostConfig.isK3sMaster;
     serverAddr =
