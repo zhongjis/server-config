@@ -130,7 +130,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassname: longhorn
+              storageClassName: longhorn
               resources:
                 requests:
                   storage: 50Gi
