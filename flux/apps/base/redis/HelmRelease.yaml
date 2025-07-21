@@ -15,3 +15,14 @@ spec:
       enabled: true
       existingSecret: redis-secrets
       existingSecretPasswordKey: redis-password
+    metrics:
+      enabled: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 384Mi
+      serviceMonitor:
+        enabled: true
