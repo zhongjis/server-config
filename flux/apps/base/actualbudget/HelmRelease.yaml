@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: actualbudget
+  namespace: actualbudget
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: actualbudget
+      version: 1.7.2
+      sourceRef:
+        kind: HelmRepository
+        name: community-charts
+        namespace: actualbudget
+      interval: 12h
+  values:
+    # -- This is for setting up the login for the server. For more information checkout: https://actualbudget.org/docs/config/#loginmethod
+    login:
+      # -- This is the method to use for login. Possible values are "password" or "header" or "openid".
+      method: "password"
+
+      # -- This is for skipping the SSL verification for the login.
+      skipSSLVerification: false
+
+      # -- This is the allowed login methods.
+      allowedLoginMethods:
+        - password
+        - header
+        - openid
+
+      # -- This is for setting up the openid login. For more information checkout: https://actualbudget.org/docs/experimental/oauth-auth/
+      openid:
+        # -- This is for setting the enforce for the openid login.
+        enforce: true
+        # -- This is the provider name for the openid provider.
+        providerName: "OpenID Connect"
+        # -- Deprecated: Please use discoveryUrl instead. This field will be removed in next major version.
+        dicovertUrl: ""
+        # -- This is the discovery url for the openid provider.
+        discoveryUrl: ""
+        # -- This is the client id for the openid provider.
+        clientId: ""
+        # -- This is the client secret for the openid provider.
+        clientSecret: ""
+        # -- This is the authorization endpoint for the openid provider.
+        authorizationEndpoint: ""
+        # -- This is the token endpoint for the openid provider.
+        tokenEndpoint: ""
+        # -- This is the user info endpoint for the openid provider.
+        userInfoEndpoint: ""
+
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        gethomepage.dev/description: A super fast and privacy-focused app for managing your finances. At its heart is the well proven and much loved Envelope Budgeting methodology.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Applications
+        gethomepage.dev/name: ActualBudget
+        kubernetes.io/tls-acme: "true"
+      hosts:
+        - host: budget.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: actualbudget-tls
+          hosts:
+            - budget.zshen.me
+
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 10Gi
