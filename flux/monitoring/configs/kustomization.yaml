@@ -6,11 +6,13 @@ resources:
 configMapGenerator:
   - name: flux-grafana-dashboards
     files:
-      - dashboards/control-plane.json
-      - dashboards/cluster.json
-      - dashboards/logs.json
+      # - dashboards/control-plane.json
+      # - dashboards/cluster.json
+      # - dashboards/logs.json
       - dashboards/k8s-coredns.json
       - dashboards/k8s-namespace.json
+      - dashboards/postgresql.json
+      - dashboards/redis.json
     options:
       labels:
         grafana_dashboard: "1"
