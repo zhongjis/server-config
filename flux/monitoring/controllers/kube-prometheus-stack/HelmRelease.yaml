@@ -122,11 +122,18 @@ spec:
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
-        retention: 24h
         enableAdminAPI: true
         walCompression: true
         scrapeInterval: 30s
         evaluationInterval: 30s
+        retention: 15d
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassname: longhorn
+              resources:
+                requests:
+                  storage: 50Gi
       ingress:
         enabled: true
         annotations:
