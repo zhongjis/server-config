@@ -15,6 +15,11 @@ spec:
         name: dify
         namespace: dify
       interval: 12h
+  valuesFrom:
+    - kind: Secret
+      name: dify-secrets
+      valuesKey: redis-password
+      targetPath: externalRedis.password
   values:
     ingress:
       enabled: true
@@ -51,3 +56,12 @@ spec:
         persistence:
           persistenceVolumeClaim:
             storageClass: longhorn
+    redis:
+      enabled: false
+    externalRedis:
+      enabled: true
+      host: "redis-master.redis.svc.cluster.local"
+      port: 6379
+      username: ""
+      # password: "difyai123456"
+      useSSL: false
