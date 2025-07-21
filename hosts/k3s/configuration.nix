@@ -32,7 +32,7 @@
   # https://docs.k3s.io/installation/requirements#inbound-rules-for-k3s-nodes
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [2379 2380 6443 10250 5001 6443];
+    allowedTCPPorts = [2379 2380 2381 6443 9100 10249 10250 10257 10259 5001 6443];
     allowedUDPPorts = [8472 51820 51821];
   };
 
