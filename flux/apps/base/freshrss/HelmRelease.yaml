@@ -45,7 +45,7 @@ spec:
       auth:
         database: "freshrss"
         existingSecret: "freshrss-secrets"
-        username: "user"
-        userPasswordKey: "user-password"
+        username: "freshrss_user"
+        userPasswordKey: "freshrss-user-password"
       hostname: postgresql.postgresql.svc.cluster.local
       port: 5432
