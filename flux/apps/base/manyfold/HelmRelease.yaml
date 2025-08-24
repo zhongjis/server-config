@@ -10,6 +10,7 @@ spec:
   interval: 30m
   dependsOn:
     - name: postgresql
+      namespace: postgresql
   timeout: 15m
   chart:
     spec:
