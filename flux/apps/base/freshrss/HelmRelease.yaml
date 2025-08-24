@@ -47,5 +47,5 @@ spec:
         existingSecret: "freshrss-secrets"
         username: "user"
         userPasswordKey: "user-password"
-      hostname: https://postgresql.postgresql.svc.cluster.local
+      hostname: postgresql.postgresql.svc.cluster.local
       port: 5432
