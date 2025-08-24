@@ -6,4 +6,3 @@ resources:
   - longhorn.yaml
   - metallb.yaml
   - external-dns.yaml
-  - postgresql.yaml
