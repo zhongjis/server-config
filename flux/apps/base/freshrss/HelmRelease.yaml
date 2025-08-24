@@ -39,3 +39,13 @@ spec:
       initialization:
         enabled: false
       timezone: America/Los_Angeles
+      database:
+        type: "postgresql"
+    externalPostgresql:
+      auth:
+        database: "freshrss"
+        existingSecret: "freshrss-secrets"
+        username: "user"
+        userPasswordKey: "user-password"
+      hostname: https://postgresql.postgresql.svc.cluster.local
+      port: 5432
