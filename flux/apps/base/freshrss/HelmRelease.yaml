@@ -16,6 +16,19 @@ spec:
         name: christianhuth
         namespace: freshrss
       interval: 12h
+  valuesFrom:
+    - kind: Secret
+      name: freshrss-secrets
+      valuesKey: postgres-user-password
+      targetPath: externalPostgresql.auth.password
+    - kind: Secret
+      name: freshrss-secrets
+      valuesKey: api-password
+      targetPath: freshrss.initialization.admin.apiPassword
+    - kind: Secret
+      name: freshrss-secrets
+      valuesKey: admin-password
+      targetPath: freshrss.initialization.admin.password
   values:
     ingress:
       enabled: true
@@ -44,8 +57,8 @@ spec:
     externalPostgresql:
       auth:
         database: "freshrss"
-        existingSecret: "freshrss-secrets"
+        # existingSecret: "freshrss-secrets"
         username: "freshrss_user"
-        userPasswordKey: "freshrss-user-password"
+        # userPasswordKey: "freshrss-user-password"
       hostname: "postgresql.postgresql"
       port: 5432
