@@ -55,6 +55,7 @@ spec:
       timezone: America/Los_Angeles
       database:
         type: "postgresql"
+      baseUrl: "https://rss.zshen.me"
     externalPostgresql:
       auth:
         database: "freshrss"
