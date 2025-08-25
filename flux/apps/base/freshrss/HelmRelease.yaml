@@ -49,8 +49,9 @@ spec:
           hosts:
             - rss.zshen.me
     freshrss:
+      # NOTE: only enable first time setup
       initialization:
-        enabled: true
+        enabled: false
       timezone: America/Los_Angeles
       database:
         type: "postgresql"
