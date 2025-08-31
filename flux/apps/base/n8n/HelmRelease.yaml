@@ -84,7 +84,7 @@ spec:
           memory: 2Gi
 
     externalRedis:
-      database: "2"
+      database: 2
       host: "redis-master.redis.svc.cluster.local"
       password: "Pa33w0rd!"
 
