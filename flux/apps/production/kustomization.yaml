@@ -9,6 +9,6 @@ resources:
   - ../base/homepage
   - ../base/manyfold
   - ../base/mongodb
-  - ../base/n8n
+  # - ../base/n8n
   - ../base/postgresql
   - ../base/redis
