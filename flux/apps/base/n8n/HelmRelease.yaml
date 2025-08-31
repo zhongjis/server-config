@@ -1,0 +1,108 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: n8n
+  namespace: n8n
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: n8n
+      version: 1.15.2
+      sourceRef:
+        kind: HelmRepository
+        name: community-charts
+        namespace: n8n
+      interval: 24h
+  valuesFrom:
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: postgres-user-password
+      targetPath: externalPostgresql.password
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: redis-password
+      targetPath: externalRedis.password
+  values:
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description: A  workflow automation platform that uniquely combines AI capabilities with business process automation.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Automations
+        gethomepage.dev/name: n8n
+        kubernetes.io/tls-acme: "true"
+      className: nginx
+      hosts:
+        - host: n8n.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: n8n-tls
+          hosts:
+            - n8n.zshen.me
+
+    log:
+      level: warn
+
+    db:
+      type: postgresdb
+
+    externalPostgresql:
+      host: "postgresql.postgresql.svc.cluster.local"
+      username: "n8n_user"
+      # password: "Pa33w0rd!"
+      database: "n8n"
+
+    main:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 512m
+          memory: 512Mi
+
+    worker:
+      mode: queue
+
+      autoscaling:
+        enabled: true
+
+      waitMainNodeReady:
+        enabled: true
+
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 250Mi
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+
+    externalRedis:
+      database: "2"
+      host: "redis-master.redis.svc.cluster.local"
+      password: "Pa33w0rd!"
+
+    webhook:
+      mode: queue
+
+      url: "https://webhook.n8n.zshen.me"
+
+      autoscaling:
+        enabled: true
+
+      waitMainNodeReady:
+        enabled: true
+
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 512m
+          memory: 512Mi
