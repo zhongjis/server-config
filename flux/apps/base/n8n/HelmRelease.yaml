@@ -86,6 +86,7 @@ spec:
     externalRedis:
       database: 2
       host: "redis-master.redis.svc.cluster.local"
+      username: "default"
       password: "Pa33w0rd!"
 
     webhook:
