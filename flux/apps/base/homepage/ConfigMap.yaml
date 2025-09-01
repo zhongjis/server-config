@@ -28,7 +28,7 @@ data:
               href: https://github.com/zhongjis/nix-config
     - Tools:
         - ToolTrace:
-            - abbr: ToolTrace
+            - abbr: TT
               href: https://tooltrace.ai
               description: Gridfinity Bins Gen
         - DupeDotCom:
