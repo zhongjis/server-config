@@ -26,6 +26,15 @@ data:
         - Github/Nix-Config:
             - abbr: GH
               href: https://github.com/zhongjis/nix-config
+    - Tools:
+        - ToolTrace:
+            - abbr: ToolTrace
+              href: https://tooltrace.ai
+              description: Gridfinity Bins Gen
+        - DupeDotCom:
+            - abbr: Dupe
+              href: https://dupe.com
+              description: Find cheaper alternatives
   services.yaml: |
     - Network:
         - Pi-hole:
