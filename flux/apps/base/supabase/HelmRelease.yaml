@@ -47,39 +47,7 @@ spec:
     kong:
       image:
         repository: kong
-        tag: 3.9.1
-    auth:
-      image:
-        repository: supabase/gotrue
-        tag: v2.143.0
-    rest:
-      image:
-        repository: postgrest/postgrest
-        tag: v12.2.0
-    storage:
-      image:
-        repository: supabase/storage-api
-        tag: v0.48.0
-    realtime:
-      image:
-        repository: supabase/realtime
-        tag: v2.30.0
-    meta:
-      image:
-        repository: supabase/postgres-meta
-        tag: v0.75.0
-    functions:
-      image:
-        repository: supabase/edge-runtime
-        tag: v1.55.0
-    studio:
-      image:
-        repository: supabase/studio
-        tag: v0.24.0
-    db:
-      image:
-        repository: supabase/postgres
-        tag: 15.1.0.139
+        tag: 2.8.1
       ingress:
         enabled: true
         annotations:
@@ -98,3 +66,35 @@ spec:
           - secretName: supabase-tls
             hosts:
               - supabase.zshen.me
+    auth:
+      image:
+        repository: supabase/gotrue
+        tag: v2.180.0
+    rest:
+      image:
+        repository: postgrest/postgrest
+        tag: v13.0.7
+    storage:
+      image:
+        repository: supabase/storage-api
+        tag: v1.28.2
+    realtime:
+      image:
+        repository: supabase/realtime
+        tag: v2.57.2
+    meta:
+      image:
+        repository: supabase/postgres-meta
+        tag: v0.93.1
+    functions:
+      image:
+        repository: supabase/edge-runtime
+        tag: v1.69.15
+    studio:
+      image:
+        repository: supabase/studio
+        tag: 2025.11.03-sha-ddedae5
+    db:
+      image:
+        repository: supabase/postgres
+        tag: v13.0.7
