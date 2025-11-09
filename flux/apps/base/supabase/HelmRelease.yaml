@@ -45,7 +45,7 @@ spec:
       targetPath: secrets.db.password
     - kind: Secret
       name: supabase-secrets-flux
-      valuesKey: db-password
+      valuesKey: db-database
       targetPath: secrets.db.database
     - kind: Secret
       name: supabase-secrets-flux
