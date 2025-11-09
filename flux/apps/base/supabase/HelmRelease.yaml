@@ -98,3 +98,7 @@ spec:
       image:
         repository: supabase/postgres
         tag: v13.0.7
+    vector:
+      image:
+        repository: timberio/vector
+        tag: 0.28.1-alpine
