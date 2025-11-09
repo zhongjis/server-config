@@ -97,7 +97,7 @@ spec:
     db:
       image:
         repository: supabase/postgres
-        tag: v13.0.7
+        tag: 15.14.1.043
     vector:
       image:
         repository: timberio/vector
