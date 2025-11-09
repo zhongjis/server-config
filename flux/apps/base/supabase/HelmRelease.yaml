@@ -5,6 +5,7 @@ metadata:
   name: supabase
   namespace: supabase
 spec:
+  interval: 24h
   chart:
     spec:
       chart: charts/supabase
