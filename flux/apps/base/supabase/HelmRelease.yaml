@@ -6,6 +6,7 @@ metadata:
   namespace: supabase
 spec:
   interval: 24h
+  timeout: 20m
   chart:
     spec:
       chart: charts/supabase
