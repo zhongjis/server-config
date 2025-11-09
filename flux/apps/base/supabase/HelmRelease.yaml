@@ -1,0 +1,80 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: supabase
+  namespace: supabase
+spec:
+  chart:
+    spec:
+      chart: charts/supabase
+      sourceRef:
+        kind: GitRepository
+        name: supabase
+        namespace: supabase
+      interval: 12h
+  valuesFrom:
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: jwt-anonKey
+      targetPath: secrets.jwt.anonKey
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: jwt-serviceKey
+      targetPath: secrets.jwt.serviceKey
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: jwt-secret
+      targetPath: secrets.jwt.secret
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: smtp-username
+      targetPath: secrets.smtp.username
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: smtp-password
+      targetPath: secrets.smtp.password
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-username
+      targetPath: secrets.db.username
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-password
+      targetPath: secrets.db.password
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-password
+      targetPath: secrets.db.database
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: dashboard-username
+      targetPath: secrets.dashboard.username
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: dashboard-password
+      targetPath: secrets.dashboard.password
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: analytics-apiKey
+      targetPath: secrets.analytics.apiKey
+  values:
+    kong:
+      ingress:
+        enabled: true
+        annotations:
+          gethomepage.dev/description: Postgres development platform.
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Backend
+          gethomepage.dev/name: Supabase
+          kubernetes.io/tls-acme: "true"
+        className: nginx
+        hosts:
+          - host: supabase.zshen.me
+            paths:
+              - path: /
+                pathType: ImplementationSpecific
+        tls:
+          - secretName: supabase-tls
+            hosts:
+              - supabase.zshen.me
