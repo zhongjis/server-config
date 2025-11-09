@@ -61,6 +61,9 @@ spec:
       targetPath: secrets.analytics.apiKey
   values:
     kong:
+      image:
+        repository: kong
+        tag: 3.9.1
       ingress:
         enabled: true
         annotations:
