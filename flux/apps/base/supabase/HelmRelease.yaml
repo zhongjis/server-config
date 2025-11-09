@@ -14,56 +14,71 @@ spec:
         name: supabase
         namespace: supabase
       interval: 12h
-  valuesFrom:
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-anonKey
-      targetPath: secrets.jwt.anonKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-serviceKey
-      targetPath: secrets.jwt.serviceKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-secret
-      targetPath: secrets.jwt.secret
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: smtp-username
-      targetPath: secrets.smtp.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: smtp-password
-      targetPath: secrets.smtp.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-username
-      targetPath: secrets.db.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-password
-      targetPath: secrets.db.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-database
-      targetPath: secrets.db.database
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-username
-      targetPath: secrets.dashboard.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-password
-      targetPath: secrets.dashboard.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: analytics-apiKey
-      targetPath: secrets.analytics.apiKey
+
   values:
+    secret:
+      jwt:
+        secretRef: supabase-secrets-flux
+        secretRefKey:
+          anonKey: jwt-anonKey
+          serviceKey: jwt-serviceKey
+          secret: jwt-secret
+      db:
+        secretRef: supabase-secrets-flux
+        secretRefKey:
+          username: db-username
+          password: db-password
+          database: db-database
+      smtp:
+        secretRef: supabase-secrets-flux
+        secretRefKey:
+          username: smtp-username
+          password: smtp-password
+      dashboard:
+        secretRef: supabase-secrets-flux
+        secretRefKey:
+          username: dashboard-username
+          password: dashboard-password
+      analytics:
+        secretRef: supabase-secrets-flux
+        secretRefKey:
+          apiKey: analytics-apiKey
     kong:
       image:
         repository: kong
-        # tag: 3.9.1
+        tag: 3.9.1
+    auth:
+      image:
+        repository: supabase/gotrue
+        tag: v2.143.0
+    rest:
+      image:
+        repository: postgrest/postgrest
+        tag: v12.2.0
+    storage:
+      image:
+        repository: supabase/storage-api
+        tag: v0.48.0
+    realtime:
+      image:
+        repository: supabase/realtime
+        tag: v2.30.0
+    meta:
+      image:
+        repository: supabase/postgres-meta
+        tag: v0.75.0
+    functions:
+      image:
+        repository: supabase/edge-runtime
+        tag: v1.55.0
+    studio:
+      image:
+        repository: supabase/studio
+        tag: v0.24.0
+    db:
+      image:
+        repository: supabase/postgres
+        tag: 15.1.0.139
       ingress:
         enabled: true
         annotations:
