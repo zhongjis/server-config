@@ -93,7 +93,7 @@ spec:
     studio:
       image:
         repository: supabase/studio
-        tag: 2025.11.03-sha-ddedae5
+        tag: 2025.10.27-sha-85b84e0
     db:
       image:
         repository: supabase/postgres
