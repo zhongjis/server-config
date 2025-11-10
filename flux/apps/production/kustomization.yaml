@@ -12,4 +12,4 @@ resources:
   - ../base/n8n
   - ../base/postgresql
   - ../base/redis
-  - ../base/supabase
+  # - ../base/supabase
