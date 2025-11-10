@@ -61,14 +61,6 @@ spec:
       name: supabase-secrets-flux
       valuesKey: analytics-apiKey
       targetPath: secret.analytics.apiKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: analytics-publicAccessToken
-      targetPath: secret.analytics.publicAccessToken
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: analytics-privateAccessToken
-      targetPath: secret.analytics.privateAccessToken
 
   values:
     kong:
