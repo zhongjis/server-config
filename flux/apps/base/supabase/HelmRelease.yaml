@@ -16,34 +16,53 @@ spec:
         namespace: supabase
       interval: 12h
 
+  valuesFrom:
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: jwt-anonKey
+      targetPath: secret.jwt.anonKey
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: jwt-serviceKey
+      targetPath: secret.jwt.serviceKey
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: jwt-secret
+      targetPath: secret.jwt.secret
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-username
+      targetPath: secret.db.username
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-password
+      targetPath: secret.db.password
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-database
+      targetPath: secret.db.database
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: smtp-username
+      targetPath: secret.smtp.username
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: smtp-password
+      targetPath: secret.smtp.password
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: dashboard-username
+      targetPath: secret.dashboard.username
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: dashboard-password
+      targetPath: secret.dashboard.password
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: analytics-apiKey
+      targetPath: secret.analytics.apiKey
+
   values:
-    secret:
-      jwt:
-        secretRef: supabase-secrets-flux
-        secretRefKey:
-          anonKey: jwt-anonKey
-          serviceKey: jwt-serviceKey
-          secret: jwt-secret
-      db:
-        secretRef: supabase-secrets-flux
-        secretRefKey:
-          username: db-username
-          password: db-password
-          database: db-database
-      smtp:
-        secretRef: supabase-secrets-flux
-        secretRefKey:
-          username: smtp-username
-          password: smtp-password
-      dashboard:
-        secretRef: supabase-secrets-flux
-        secretRefKey:
-          username: dashboard-username
-          password: dashboard-password
-      analytics:
-        secretRef: supabase-secrets-flux
-        secretRefKey:
-          apiKey: analytics-apiKey
     kong:
       image:
         repository: kong
