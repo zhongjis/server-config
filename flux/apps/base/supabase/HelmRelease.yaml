@@ -91,9 +91,9 @@ spec:
     secret:
       db:
         secretRef: "supabase-secrets-flux"
-      secretRefKey:
-        password: db-password
-        database: db-database
+        secretRefKey:
+          password: db-password
+          database: db-database
     db:
       enabled: true
       image:
