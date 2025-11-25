@@ -17,6 +17,7 @@ spec:
       interval: 12h
 
   valuesFrom:
+    # JWT
     - kind: Secret
       name: supabase-secrets-flux
       valuesKey: jwt-anonKey
@@ -29,18 +30,8 @@ spec:
       name: supabase-secrets-flux
       valuesKey: jwt-secret
       targetPath: secret.jwt.secret
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-username
-      targetPath: secret.db.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-password
-      targetPath: secret.db.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-database
-      targetPath: secret.db.database
+
+    # SMTP
     - kind: Secret
       name: supabase-secrets-flux
       valuesKey: smtp-username
@@ -49,6 +40,8 @@ spec:
       name: supabase-secrets-flux
       valuesKey: smtp-password
       targetPath: secret.smtp.password
+
+    # dashboard
     - kind: Secret
       name: supabase-secrets-flux
       valuesKey: dashboard-username
@@ -59,68 +52,170 @@ spec:
       targetPath: secret.dashboard.password
     - kind: Secret
       name: supabase-secrets-flux
-      valuesKey: analytics-apiKey
-      targetPath: secret.analytics.apiKey
+      valuesKey: dashboard-openai-api-key
+      targetPath: secret.dashboard.openAiApiKey
+
+    # database
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: db-password
+      targetPath: secret.db.password
+
+    # analytics
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: analytics-public-access-token
+      targetPath: secret.analytics.publicAccessToken
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: analytics-private-access-token
+      targetPath: secret.analytics.privateAccessToken
+
+    # realtime
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: realtime-secret-key-base
+      targetPath: secret.realtime.secretKeyBase
+
+    # realtime
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: meta-crypto-key
+      targetPath: secret.meta.cryptoKey
 
   values:
+    db:
+      enabled: true
+      image:
+        tag: 15.8.1.085
+      livenessProbe:
+        exec:
+          command:
+            - pg_isready
+            - -U
+            - postgres
+        initialDelaySeconds: 3
+      persistence:
+        enabled: false
+
+    studio:
+      image:
+        tag: 2025.11.10-sha-5291fe3
+      environment:
+        DEFAULT_ORGANIZATION_NAME: Default Organization
+        DEFAULT_PROJECT_NAME: Default Project
+        SUPABASE_PUBLIC_URL: http://supabase.zshen.me
+        NEXT_PUBLIC_ENABLE_LOGS: true
+
+    auth:
+      image:
+        tag: v2.182.1
+      environment:
+        API_EXTERNAL_URL: http://supabase.zshen.me
+        GOTRUE_SITE_URL: http://supabase.zshen.me
+        GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+        GOTRUE_MAILER_AUTOCONFIRM: "true"
+        GOTRUE_SMTP_ADMIN_EMAIL: "your-mail@supabase.zshen.me"
+        GOTRUE_SMTP_HOST: "smtp.supabase.zshen.me"
+        GOTRUE_SMTP_PORT: "587"
+        GOTRUE_SMTP_SENDER_NAME: "your-mail@supabase.zshen.me"
+
+    rest:
+      image:
+        tag: v13.0.7
+
+    realtime:
+      image:
+        tag: v2.63.0
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 4000
+        initialDelaySeconds: 3
+
+    meta:
+      image:
+        tag: v0.93.1
+
+    storage:
+      image:
+        tag: v1.29.0
+      livenessProbe:
+        httpGet:
+          path: /status
+          port: 5000
+        initialDelaySeconds: 3
+      persistence:
+        enabled: false
+
+    imgproxy:
+      image:
+        tag: v3.8.0
+      environment:
+        IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+      livenessProbe:
+        exec:
+          command:
+            - imgproxy
+            - health
+        initialDelaySeconds: 3
+      persistence:
+        enabled: false
+
     kong:
       image:
         repository: kong
         tag: 2.8.1
+      environment:
+        KONG_DECLARATIVE_CONFIG: /usr/local/kong/kong.yml
+        KONG_LOG_LEVEL: info
       ingress:
         enabled: true
+        className: "nginx"
         annotations:
           gethomepage.dev/description: Postgres development platform.
           gethomepage.dev/enabled: "true"
           gethomepage.dev/group: Backend
           gethomepage.dev/name: Supabase
           kubernetes.io/tls-acme: "true"
-        className: nginx
-        hosts:
-          - host: supabase.zshen.me
-            paths:
-              - path: /
-                pathType: ImplementationSpecific
         tls:
           - secretName: supabase-tls
             hosts:
               - supabase.zshen.me
-    auth:
+        hosts:
+          - host: supabase.zshen.me
+            paths:
+              - path: /
+                pathType: Prefix
+
+    analytics:
       image:
-        repository: supabase/gotrue
-        tag: v2.180.0
-      environment:
-        GOTRUE_EXTERNAL_EMAIL_ENABLED: "false"
-        GOTRUE_MAILER_AUTOCONFIRM: "true"
-    rest:
-      image:
-        repository: postgrest/postgrest
-        tag: v13.0.7
-    storage:
-      image:
-        repository: supabase/storage-api
-        tag: v1.28.2
-    realtime:
-      image:
-        repository: supabase/realtime
-        tag: v2.63.0
-    meta:
-      image:
-        repository: supabase/postgres-meta
-        tag: v0.93.1
-    functions:
-      image:
-        repository: supabase/edge-runtime
-        tag: v1.69.15
-    studio:
-      image:
-        repository: supabase/studio
-        tag: 2025.10.27-sha-85b84e0
-    db:
-      image:
-        repository: supabase/postgres
-        tag: 15.14.1.043
+        tag: 1.22.6
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 4000
+        initialDelaySeconds: 3
+
     vector:
       image:
-        repository: timberio/vector
         tag: 0.28.1-alpine
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 9001
+        initialDelaySeconds: 3
+      ## Vector requires logs from the control plane to function.
+      ## This is normally stored in /var/log/pods
+      ## Modify these values according to your environment.
+      volumeMounts:
+        - name: pod-logs
+          mountPath: /var/log/pods
+      volumes:
+        - name: pod-logs
+          hostPath:
+            path: /var/log/pods
+
+    functions:
+      image:
+        tag: v1.68.4
