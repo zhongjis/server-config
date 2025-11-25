@@ -58,6 +58,10 @@ spec:
     # database
     - kind: Secret
       name: supabase-secrets-flux
+      valuesKey: db-database
+      targetPath: secret.db.database
+    - kind: Secret
+      name: supabase-secrets-flux
       valuesKey: db-password
       targetPath: secret.db.password
 
