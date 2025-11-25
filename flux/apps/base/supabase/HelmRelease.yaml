@@ -83,7 +83,7 @@ spec:
       persistence:
         enabled: true
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     studio:
       image:
@@ -94,7 +94,7 @@ spec:
         SUPABASE_PUBLIC_URL: http://supabase.zshen.me
         NEXT_PUBLIC_ENABLE_LOGS: true
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     auth:
       image:
@@ -109,13 +109,13 @@ spec:
         GOTRUE_SMTP_PORT: "587"
         GOTRUE_SMTP_SENDER_NAME: "your-mail@supabase.zshen.me"
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     rest:
       image:
         tag: v13.0.7
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     realtime:
       image:
@@ -126,13 +126,13 @@ spec:
           port: 4000
         initialDelaySeconds: 3
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     meta:
       image:
         tag: v0.93.1
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     storage:
       image:
@@ -145,7 +145,7 @@ spec:
       persistence:
         enabled: false
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     imgproxy:
       image:
@@ -161,7 +161,7 @@ spec:
       persistence:
         enabled: false
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     kong:
       image:
@@ -189,7 +189,7 @@ spec:
               - path: /
                 pathType: Prefix
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     analytics:
       image:
@@ -200,7 +200,7 @@ spec:
           port: 4000
         initialDelaySeconds: 3
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     vector:
       image:
@@ -221,10 +221,10 @@ spec:
           hostPath:
             path: /var/log/pods
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
 
     functions:
       image:
         tag: v1.68.4
       nodeSelector:
-        homelab-0: "true"
+        kubernetes.io/hostname: homelab-0
