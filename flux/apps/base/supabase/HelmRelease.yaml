@@ -31,69 +31,44 @@ spec:
       valuesKey: jwt-secret
       targetPath: secret.jwt.secret
 
-    # SMTP
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: smtp-username
-      targetPath: secret.smtp.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: smtp-password
-      targetPath: secret.smtp.password
-
-    # dashboard
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-username
-      targetPath: secret.dashboard.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-password
-      targetPath: secret.dashboard.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-openai-api-key
-      targetPath: secret.dashboard.openAiApiKey
-
-    # database
-    # - kind: Secret
-    #   name: supabase-secrets-flux
-    #   valuesKey: db-database
-    #   targetPath: secret.db.database
-    # - kind: Secret
-    #   name: supabase-secrets-flux
-    #   valuesKey: db-password
-    #   targetPath: secret.db.password
-
-    # analytics
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: analytics-public-access-token
-      targetPath: secret.analytics.publicAccessToken
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: analytics-private-access-token
-      targetPath: secret.analytics.privateAccessToken
-
-    # realtime
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: realtime-secret-key-base
-      targetPath: secret.realtime.secretKeyBase
-
-    # realtime
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: meta-crypto-key
-      targetPath: secret.meta.cryptoKey
-
   values:
     secret:
+      jwt:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          anonKey: jwt-anonKey
+          serviceKey: jwt-serviceKey
+          secret: jwt-secret
       db:
         secretRef: "supabase-secrets-flux"
         secretRefKey:
           password: db-password
           database: db-database
+      smtp:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          username: smtp-username
+          password: smtp-password
+      analytics:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          publicAccessToken: analytics-publicAccessToken
+          privateAccessToken: analytics-privateAccessToken
+      dashboard:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          username: dashboard-username
+          password: dashboard-password
+          openAiApiKey: dashboard-openAiApiKey
+      realtime:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          secretKeyBase: realtime-secretKeyBase
+      meta:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          cryptoKey: meta-cryptoKey
+
     db:
       enabled: true
       image:
