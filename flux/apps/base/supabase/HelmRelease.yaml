@@ -56,14 +56,14 @@ spec:
       targetPath: secret.dashboard.openAiApiKey
 
     # database
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-database
-      targetPath: secret.db.database
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-password
-      targetPath: secret.db.password
+    # - kind: Secret
+    #   name: supabase-secrets-flux
+    #   valuesKey: db-database
+    #   targetPath: secret.db.database
+    # - kind: Secret
+    #   name: supabase-secrets-flux
+    #   valuesKey: db-password
+    #   targetPath: secret.db.password
 
     # analytics
     - kind: Secret
@@ -88,6 +88,12 @@ spec:
       targetPath: secret.meta.cryptoKey
 
   values:
+    secret:
+      db:
+        secretRef: "supabase-secrets-flux"
+      secretRefKey:
+        password: db-password
+        database: db-database
     db:
       enabled: true
       image:
