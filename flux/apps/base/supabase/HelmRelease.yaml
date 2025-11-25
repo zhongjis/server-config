@@ -15,22 +15,6 @@ spec:
         name: supabase
         namespace: supabase
       interval: 12h
-
-  valuesFrom:
-    # JWT
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-anonKey
-      targetPath: secret.jwt.anonKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-serviceKey
-      targetPath: secret.jwt.serviceKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-secret
-      targetPath: secret.jwt.secret
-
   values:
     secret:
       jwt:
