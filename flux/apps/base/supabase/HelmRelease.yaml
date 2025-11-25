@@ -82,6 +82,8 @@ spec:
         initialDelaySeconds: 3
       persistence:
         enabled: true
+      nodeSelector:
+        homelab-0: "true"
 
     studio:
       image:
@@ -91,6 +93,8 @@ spec:
         DEFAULT_PROJECT_NAME: Default Project
         SUPABASE_PUBLIC_URL: http://supabase.zshen.me
         NEXT_PUBLIC_ENABLE_LOGS: true
+      nodeSelector:
+        homelab-0: "true"
 
     auth:
       image:
@@ -104,10 +108,14 @@ spec:
         GOTRUE_SMTP_HOST: "smtp.supabase.zshen.me"
         GOTRUE_SMTP_PORT: "587"
         GOTRUE_SMTP_SENDER_NAME: "your-mail@supabase.zshen.me"
+      nodeSelector:
+        homelab-0: "true"
 
     rest:
       image:
         tag: v13.0.7
+      nodeSelector:
+        homelab-0: "true"
 
     realtime:
       image:
@@ -117,10 +125,14 @@ spec:
           path: /
           port: 4000
         initialDelaySeconds: 3
+      nodeSelector:
+        homelab-0: "true"
 
     meta:
       image:
         tag: v0.93.1
+      nodeSelector:
+        homelab-0: "true"
 
     storage:
       image:
@@ -132,6 +144,8 @@ spec:
         initialDelaySeconds: 3
       persistence:
         enabled: false
+      nodeSelector:
+        homelab-0: "true"
 
     imgproxy:
       image:
@@ -146,6 +160,8 @@ spec:
         initialDelaySeconds: 3
       persistence:
         enabled: false
+      nodeSelector:
+        homelab-0: "true"
 
     kong:
       image:
@@ -172,6 +188,8 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+      nodeSelector:
+        homelab-0: "true"
 
     analytics:
       image:
@@ -181,6 +199,8 @@ spec:
           path: /health
           port: 4000
         initialDelaySeconds: 3
+      nodeSelector:
+        homelab-0: "true"
 
     vector:
       image:
@@ -200,7 +220,11 @@ spec:
         - name: pod-logs
           hostPath:
             path: /var/log/pods
+      nodeSelector:
+        homelab-0: "true"
 
     functions:
       image:
         tag: v1.68.4
+      nodeSelector:
+        homelab-0: "true"
