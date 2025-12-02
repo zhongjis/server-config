@@ -15,112 +15,200 @@ spec:
         name: supabase
         namespace: supabase
       interval: 12h
-
-  valuesFrom:
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-anonKey
-      targetPath: secret.jwt.anonKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-serviceKey
-      targetPath: secret.jwt.serviceKey
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: jwt-secret
-      targetPath: secret.jwt.secret
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-username
-      targetPath: secret.db.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-password
-      targetPath: secret.db.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: db-database
-      targetPath: secret.db.database
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: smtp-username
-      targetPath: secret.smtp.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: smtp-password
-      targetPath: secret.smtp.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-username
-      targetPath: secret.dashboard.username
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: dashboard-password
-      targetPath: secret.dashboard.password
-    - kind: Secret
-      name: supabase-secrets-flux
-      valuesKey: analytics-apiKey
-      targetPath: secret.analytics.apiKey
-
   values:
+    secret:
+      jwt:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          anonKey: jwt-anonKey
+          serviceKey: jwt-serviceKey
+          secret: jwt-secret
+      db:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          password: db-password
+          database: db-database
+      smtp:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          username: smtp-username
+          password: smtp-password
+      analytics:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          publicAccessToken: analytics-publicAccessToken
+          privateAccessToken: analytics-privateAccessToken
+      dashboard:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          username: dashboard-username
+          password: dashboard-password
+          openAiApiKey: dashboard-openAiApiKey
+      realtime:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          secretKeyBase: realtime-secretKeyBase
+      meta:
+        secretRef: "supabase-secrets-flux"
+        secretRefKey:
+          cryptoKey: meta-cryptoKey
+
+    db:
+      enabled: true
+      image:
+        tag: 15.8.1.085
+      livenessProbe:
+        exec:
+          command:
+            - pg_isready
+            - -U
+            - postgres
+        initialDelaySeconds: 3
+      persistence:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    studio:
+      image:
+        tag: 2025.11.10-sha-5291fe3
+      environment:
+        DEFAULT_ORGANIZATION_NAME: Default Organization
+        DEFAULT_PROJECT_NAME: Default Project
+        SUPABASE_PUBLIC_URL: http://supabase.zshen.me
+        NEXT_PUBLIC_ENABLE_LOGS: true
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    auth:
+      image:
+        tag: v2.182.1
+      environment:
+        API_EXTERNAL_URL: http://supabase.zshen.me
+        GOTRUE_SITE_URL: http://supabase.zshen.me
+        GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+        GOTRUE_MAILER_AUTOCONFIRM: "true"
+        GOTRUE_SMTP_ADMIN_EMAIL: "your-mail@supabase.zshen.me"
+        GOTRUE_SMTP_HOST: "smtp.supabase.zshen.me"
+        GOTRUE_SMTP_PORT: "587"
+        GOTRUE_SMTP_SENDER_NAME: "your-mail@supabase.zshen.me"
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    rest:
+      image:
+        tag: v13.0.7
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    realtime:
+      image:
+        tag: v2.63.0
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 4000
+        initialDelaySeconds: 3
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    meta:
+      image:
+        tag: v0.93.1
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    storage:
+      image:
+        tag: v1.29.0
+      livenessProbe:
+        httpGet:
+          path: /status
+          port: 5000
+        initialDelaySeconds: 3
+      persistence:
+        enabled: false
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    imgproxy:
+      image:
+        tag: v3.8.0
+      environment:
+        IMGPROXY_ENABLE_WEBP_DETECTION: "true"
+      livenessProbe:
+        exec:
+          command:
+            - imgproxy
+            - health
+        initialDelaySeconds: 3
+      persistence:
+        enabled: false
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
     kong:
       image:
         repository: kong
         tag: 2.8.1
+      environment:
+        KONG_DECLARATIVE_CONFIG: /usr/local/kong/kong.yml
+        KONG_LOG_LEVEL: info
       ingress:
         enabled: true
+        className: "nginx"
         annotations:
           gethomepage.dev/description: Postgres development platform.
           gethomepage.dev/enabled: "true"
           gethomepage.dev/group: Backend
           gethomepage.dev/name: Supabase
           kubernetes.io/tls-acme: "true"
-        className: nginx
-        hosts:
-          - host: supabase.zshen.me
-            paths:
-              - path: /
-                pathType: ImplementationSpecific
         tls:
           - secretName: supabase-tls
             hosts:
               - supabase.zshen.me
-    auth:
+        hosts:
+          - host: supabase.zshen.me
+            paths:
+              - path: /
+                pathType: Prefix
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    analytics:
       image:
-        repository: supabase/gotrue
-        tag: v2.180.0
-      environment:
-        GOTRUE_EXTERNAL_EMAIL_ENABLED: "false"
-        GOTRUE_MAILER_AUTOCONFIRM: "true"
-    rest:
-      image:
-        repository: postgrest/postgrest
-        tag: v13.0.7
-    storage:
-      image:
-        repository: supabase/storage-api
-        tag: v1.28.2
-    realtime:
-      image:
-        repository: supabase/realtime
-        tag: v2.63.0
-    meta:
-      image:
-        repository: supabase/postgres-meta
-        tag: v0.93.1
-    functions:
-      image:
-        repository: supabase/edge-runtime
-        tag: v1.69.15
-    studio:
-      image:
-        repository: supabase/studio
-        tag: 2025.10.27-sha-85b84e0
-    db:
-      image:
-        repository: supabase/postgres
-        tag: 15.14.1.043
+        tag: 1.22.6
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 4000
+        initialDelaySeconds: 3
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
     vector:
       image:
-        repository: timberio/vector
         tag: 0.28.1-alpine
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 9001
+        initialDelaySeconds: 3
+      ## Vector requires logs from the control plane to function.
+      ## This is normally stored in /var/log/pods
+      ## Modify these values according to your environment.
+      volumeMounts:
+        - name: pod-logs
+          mountPath: /var/log/pods
+      volumes:
+        - name: pod-logs
+          hostPath:
+            path: /var/log/pods
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0
+
+    functions:
+      image:
+        tag: v1.68.4
+      nodeSelector:
+        kubernetes.io/hostname: homelab-0

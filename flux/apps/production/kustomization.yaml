@@ -5,11 +5,11 @@ resources:
   - ../base/capacitor
   - ../base/cloudflared
   # - ../base/dify
-  - ../base/freshrss
+  # - ../base/freshrss
   - ../base/homepage
   - ../base/manyfold
   - ../base/mongodb
   - ../base/n8n
-  - ../base/postgresql
+  # - ../base/postgresql
   - ../base/redis
-  # - ../base/supabase
+  - ../base/supabase
