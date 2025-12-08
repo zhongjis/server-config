@@ -10,6 +10,6 @@ resources:
   - ../base/manyfold
   - ../base/mongodb
   - ../base/n8n
-  # - ../base/postgresql
+  - ../base/postgresql
   - ../base/redis
   # - ../base/supabase
