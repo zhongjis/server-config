@@ -5,7 +5,7 @@ resources:
   - ../base/capacitor
   - ../base/cloudflared
   # - ../base/dify
-  # - ../base/freshrss
+  - ../base/freshrss
   - ../base/home-assistant
   - ../base/homepage
   # - ../base/manyfold
