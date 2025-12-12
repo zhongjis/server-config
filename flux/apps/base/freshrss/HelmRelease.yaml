@@ -62,5 +62,5 @@ spec:
         # existingSecret: "freshrss-secrets"
         username: "freshrss_user"
         # userPasswordKey: "freshrss-user-password"
-      hostname: "postgresql.postgresql"
+      hostname: "supabase.supabase-supabase-kong"
       port: 5432
