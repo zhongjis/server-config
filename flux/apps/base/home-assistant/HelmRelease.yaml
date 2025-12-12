@@ -32,6 +32,12 @@ spec:
         gethomepage.dev/group: Application
         gethomepage.dev/name: Home Assistant
         kubernetes.io/tls-acme: "true"
-      host: assistant.zshen.me
-      tls: true
-      tlsSecret: home-assistant-tls
+      hosts:
+        - host: assistant.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: home-assistant-tls
+          hosts:
+            - assistant.zshen.me
