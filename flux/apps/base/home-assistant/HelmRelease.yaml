@@ -19,10 +19,7 @@ spec:
   values:
     configuration:
       trusted_proxies:
-        - 10.0.0.0/8
-        - 172.16.0.0/12
-        - 192.168.0.0/16
-        - 127.0.0.0/8
+        - 192.168.50.128
     persistence:
       enabled: true
       accessMode: ReadWriteOnce
