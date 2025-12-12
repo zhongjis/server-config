@@ -6,6 +6,7 @@ resources:
   - ../base/cloudflared
   # - ../base/dify
   - ../base/freshrss
+  - ../base/home-assistant
   - ../base/homepage
   # - ../base/manyfold
   - ../base/mongodb
