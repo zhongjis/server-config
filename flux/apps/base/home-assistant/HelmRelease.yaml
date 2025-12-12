@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: home-assistant
         namespace: home-assistant
-      interval: 7d
+      interval: 24h
   values:
     persistence:
       enabled: true
