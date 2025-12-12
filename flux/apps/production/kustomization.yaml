@@ -7,9 +7,9 @@ resources:
   # - ../base/dify
   # - ../base/freshrss
   - ../base/homepage
-  - ../base/manyfold
+  # - ../base/manyfold
   - ../base/mongodb
   - ../base/n8n
-  - ../base/postgresql
+  # - ../base/postgresql
   - ../base/redis
   - ../base/supabase
