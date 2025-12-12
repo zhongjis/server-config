@@ -19,7 +19,7 @@ spec:
   values:
     configuration:
       trusted_proxies:
-        - 192.168.50.128
+        - 10.42.1.99
     persistence:
       enabled: true
       accessMode: ReadWriteOnce
