@@ -18,6 +18,7 @@ spec:
       interval: 24h
   values:
     configuration:
+      enabled: true
       http:
         use_x_forwarded_for: true
         trusted_proxies:
