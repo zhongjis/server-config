@@ -17,9 +17,11 @@ spec:
         namespace: home-assistant
       interval: 24h
   values:
-    # configuration:
-    #   trusted_proxies:
-    #     - 10.42.0.0/16
+    configuration:
+      http:
+        use_x_forwarded_for: true
+        trusted_proxies:
+          - 10.42.0.0/16 # Your Kubernetes pod CIDR range
     persistence:
       enabled: true
       accessMode: ReadWriteOnce
