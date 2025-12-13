@@ -17,17 +17,17 @@ spec:
         namespace: home-assistant
       interval: 24h
   values:
-    configuration:
-      trusted_proxies:
-        - 10.42.0.0/16
+    # configuration:
+    #   trusted_proxies:
+    #     - 10.42.0.0/16
     persistence:
       enabled: true
       accessMode: ReadWriteOnce
       size: 5Gi
       storageClass: "longhorn"
     ingress:
-      enabled: true
-      external: false
+      enabled: false
+      external: true
       className: nginx
       annotations:
         gethomepage.dev/description: Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts.
