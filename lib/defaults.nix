@@ -32,19 +32,21 @@
       ];
     };
 
-  # FIXME: not working
-  mkColmenaConfig = hostName: {
-    user ? "nixos",
+  mkHive = hostName: {
+    user ? "root",
     host,
     buildOnTarget ? false,
     tags ? [],
     system ? "x86_64-linux",
-    extraModules ? [],
     hostModule,
+    isMaster ? false,
+    masterAddr ? "",
   }: let
     custHostConfig = {
       hostName = hostName;
       hostUser = user;
+      isK3sMaster = isMaster;
+      masterAddr = masterAddr;
     };
   in {
     deployment = {
@@ -54,14 +56,17 @@
       buildOnTarget = buildOnTarget;
       tags = tags;
     };
-    nixpkgs.system = system;
 
-    imports =
-      [
-        sops-nix.nixosModules.sops
-        disko.nixosModules.disko
-        (nixpkgs.lib.modules.importApply hostModule custHostConfig)
-      ]
-      ++ extraModules;
+    imports = [
+      sops-nix.nixosModules.sops
+      disko.nixosModules.disko
+      hostModule
+    ];
+
+    _module.args = {
+      inherit custHostConfig;
+    };
+
+    nixpkgs.system = system;
   };
 }
