@@ -33,7 +33,7 @@
     };
 
   mkNodeSpecialArgs = hostname: {
-    user ? "root",
+    user ? "nixos",
     isMaster ? false,
     master ? "",
   }: {
