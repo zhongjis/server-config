@@ -52,8 +52,7 @@
             };
 
             homelab-1 = mkNodeSpecialArgs "homelab-1" {
-              host = "192.168.50.103";
-              masterAddr = "192.168.50.104";
+              master = "192.168.50.104";
             };
           };
         };
@@ -61,13 +60,13 @@
         homelab-0 = mkHive "homelab-0" {
           host = "192.168.50.104";
           hostModule = ./hosts/k3s/configuration.nix;
-          isMaster = true;
+          tags = ["homelab" "master"];
         };
 
         homelab-1 = mkHive "homelab-1" {
           host = "192.168.50.103";
           hostModule = ./hosts/k3s/configuration.nix;
-          masterAddr = "192.168.50.104";
+          tags = ["homelab"];
         };
       };
     };

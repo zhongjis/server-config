@@ -32,15 +32,15 @@
       ];
     };
 
-  mkNodeSpecialArgs = hostName: {
+  mkNodeSpecialArgs = hostname: {
     user ? "root",
     isMaster ? false,
-    masterAddr ? "",
+    master ? "",
   }: {
-    hostName = hostName;
+    hostName = hostname;
     hostUser = user;
     isK3sMaster = isMaster;
-    masterAddr = masterAddr;
+    masterAddr = master;
   };
 
   mkHive = hostName: {
@@ -50,15 +50,7 @@
     tags ? [],
     system ? "x86_64-linux",
     hostModule,
-    isMaster ? false,
-    masterAddr ? "",
   }: let
-    custHostConfig = {
-      hostName = host;
-      hostUser = user;
-      isK3sMaster = isMaster;
-      masterAddr = masterAddr;
-    };
   in {
     deployment = {
       targetHost = host;
@@ -69,8 +61,6 @@
     };
 
     imports = [
-      sops-nix.nixosModules.sops
-      disko.nixosModules.disko
       hostModule
     ];
 
