@@ -42,18 +42,20 @@ The repository has two main components:
 
 ## Key Technologies
 
-- **NixOS**: Declarative operating system configuration
-- **Colmena**: Multi-node NixOS deployment and management
-- **Disko**: Declarative disk partitioning (automated during nixos-anywhere deployment)
-- **K3s**: Lightweight Kubernetes distribution (servicelb and traefik disabled in favor of metallb/ingress-nginx)
-- **Flux v2**: GitOps operator for Kubernetes
-- **SOPS**: Secret encryption with age keys (requires age key at `~/.config/sops/age/keys.txt` on deployment machine)
-- **Helm**: Package manager for Kubernetes applications
-- **Kustomize**: Configuration management via overlays
+- NixOS Kubernetes Nodes/Hosts
+  - **NixOS**: Declarative operating system configuration
+  - **Colmena**: Multi-node NixOS deployment and management
+  - **Disko**: Declarative disk partitioning (automated during nixos-anywhere deployment)
+  - **K3s**: Lightweight Kubernetes distribution (servicelb and traefik disabled in favor of metallb/ingress-nginx)
+  - **SOPS**: Secret encryption with age keys (requires age key at `~/.config/sops/age/keys.txt` on deployment machine)
+- K3s Kubernetes Cluster
+  - **Flux v2**: GitOps operator for Kubernetes
+  - **Helm**: Package manager for Kubernetes applications
+  - **Kustomize**: Configuration management via overlays
 
 ## Common Commands
 
-### Colmena Deployment
+### Colmena Deployment / NixOS Deployment
 
 ```bash
 # Deploy configuration to all nodes using Colmena
@@ -64,17 +66,6 @@ colmena apply --on homelab-0
 
 # Build configuration locally
 colmena build
-```
-
-### NixOS System Management
-
-```bash
-# Remote system update (after initial deployment)
-nixos-rebuild switch --flake .#homelab-1 \
-  --target-host root@192.168.50.103
-
-# Build system configuration locally (useful for testing before deployment)
-nix build .#nixosConfigurations.homelab-0.config.system.build.toplevel
 ```
 
 ### Flux/Kubernetes Operations
