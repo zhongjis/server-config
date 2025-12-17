@@ -37,10 +37,12 @@
     isMaster ? false,
     master ? "",
   }: {
-    hostName = hostname;
-    hostUser = user;
-    isK3sMaster = isMaster;
-    masterAddr = master;
+    custHostConfig = {
+      hostName = hostname;
+      hostUser = user;
+      isK3sMaster = isMaster;
+      masterAddr = master;
+    };
   };
 
   mkHive = hostName: {
@@ -50,8 +52,7 @@
     tags ? [],
     system ? "x86_64-linux",
     hostModule,
-  }: let
-  in {
+  }: {
     deployment = {
       targetHost = host;
       targetPort = 22;
@@ -61,6 +62,8 @@
     };
 
     imports = [
+      sops-nix.nixosModules.sops
+      disko.nixosModules.disko
       hostModule
     ];
 
