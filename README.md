@@ -30,12 +30,3 @@ nix run nixpkgs#nixos-anywhere -- \
 --extra-files /Users/zshen/.config/sops/age \
 nixos@192.168.50.192
 ```
-
-### deployment/remote switch
-
-#### `--target-host`
-
-```nix
-nixos-rebuild switch --flake .#homelab-1 \
-  --target-host root@192.168.50.184
-```

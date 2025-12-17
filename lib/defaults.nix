@@ -1,52 +1,29 @@
 {
   sops-nix,
   disko,
-  nixpkgs,
-  inputs,
   ...
 }: {
-  mkK3sNode = hostName: {
+  mkNodeSpecialArgs = hostname: {
     user ? "nixos",
-    system ? "x86_64-linux",
-    hostModule,
     isMaster ? false,
-    masterAddr ? "",
-  }: let
+    master ? "",
+  }: {
     custHostConfig = {
-      hostName = hostName;
+      hostName = hostname;
       hostUser = user;
       isK3sMaster = isMaster;
-      masterAddr = masterAddr;
+      masterAddr = master;
     };
-  in
-    nixpkgs.lib.nixosSystem {
-      system = system;
-      specialArgs = {
-        inherit inputs hostName custHostConfig;
-      };
+  };
 
-      modules = [
-        sops-nix.nixosModules.sops
-        disko.nixosModules.disko
-        hostModule
-      ];
-    };
-
-  # FIXME: not working
-  mkColmenaConfig = hostName: {
-    user ? "nixos",
+  mkHive = hostName: {
+    user ? "root",
     host,
     buildOnTarget ? false,
     tags ? [],
     system ? "x86_64-linux",
-    extraModules ? [],
     hostModule,
-  }: let
-    custHostConfig = {
-      hostName = hostName;
-      hostUser = user;
-    };
-  in {
+  }: {
     deployment = {
       targetHost = host;
       targetPort = 22;
@@ -54,14 +31,13 @@
       buildOnTarget = buildOnTarget;
       tags = tags;
     };
-    nixpkgs.system = system;
 
-    imports =
-      [
-        sops-nix.nixosModules.sops
-        disko.nixosModules.disko
-        (nixpkgs.lib.modules.importApply hostModule custHostConfig)
-      ]
-      ++ extraModules;
+    imports = [
+      sops-nix.nixosModules.sops
+      disko.nixosModules.disko
+      hostModule
+    ];
+
+    nixpkgs.system = system;
   };
 }
