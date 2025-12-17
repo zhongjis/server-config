@@ -32,6 +32,17 @@
       ];
     };
 
+  mkNodeSpecialArgs = hostName: {
+    user ? "root",
+    isMaster ? false,
+    masterAddr ? "",
+  }: {
+    hostName = hostName;
+    hostUser = user;
+    isK3sMaster = isMaster;
+    masterAddr = masterAddr;
+  };
+
   mkHive = hostName: {
     user ? "root",
     host,
@@ -43,7 +54,7 @@
     masterAddr ? "",
   }: let
     custHostConfig = {
-      hostName = hostName;
+      hostName = host;
       hostUser = user;
       isK3sMaster = isMaster;
       masterAddr = masterAddr;
@@ -62,10 +73,6 @@
       disko.nixosModules.disko
       hostModule
     ];
-
-    _module.args = {
-      inherit custHostConfig;
-    };
 
     nixpkgs.system = system;
   };

@@ -45,7 +45,17 @@
           nixpkgs = import nixpkgs {
             system = "x86_64-linux";
           };
-          specialArgs = {inherit inputs;};
+          specialArgs = {inherit inputs nixpkgs disko sops-nix;};
+          nodeSpecialArgs = {
+            homelab-0 = mkNodeSpecialArgs "homelab-0" {
+              isMaster = true;
+            };
+
+            homelab-1 = mkNodeSpecialArgs "homelab-1" {
+              host = "192.168.50.103";
+              masterAddr = "192.168.50.104";
+            };
+          };
         };
 
         homelab-0 = mkHive "homelab-0" {
