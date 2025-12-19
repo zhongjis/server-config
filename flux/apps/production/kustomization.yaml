@@ -4,7 +4,7 @@ resources:
   - ../base/actualbudget
   - ../base/capacitor
   - ../base/cloudflared
-  - ../base/dify
+  # - ../base/dify
   - ../base/freshrss
   - ../base/home-assistant
   - ../base/homepage
@@ -12,6 +12,6 @@ resources:
   - ../base/mongodb
   - ../base/n8n
   # - ../base/open-webui
-  # - ../base/postgresql
+  - ../base/postgresql
   - ../base/redis
   - ../base/supabase
