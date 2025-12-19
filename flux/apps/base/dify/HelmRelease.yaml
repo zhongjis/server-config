@@ -20,6 +20,14 @@ spec:
       name: dify-secrets
       valuesKey: redis-password
       targetPath: externalRedis.password
+    - kind: Secret
+      name: dify-secrets
+      valuesKey: postgresql-username
+      targetPath: externalPostgres.username
+    - kind: Secret
+      name: dify-secrets
+      valuesKey: postgresql-password
+      targetPath: externalPostgres.password
   values:
     ingress:
       enabled: true
@@ -48,14 +56,13 @@ spec:
         persistenceVolumeClaim:
           storageClass: longhorn
     postgresql:
-      primary:
-        persistence:
-          persistenceVolumeClaim:
-            storageClass: longhorn
-      readReplicas:
-        persistence:
-          persistenceVolumeClaim:
-            storageClass: longhorn
+      enabled: false
+    externalPostgres:
+      enabled: true
+      address: "postgresql.postgresql.svc.cluster.local"
+      database:
+        api: "dify"
+        pluginDaemon: "dify_plugin"
     redis:
       enabled: false
     externalRedis:
@@ -63,5 +70,4 @@ spec:
       host: "redis-master.redis.svc.cluster.local"
       port: 6379
       username: ""
-      # password: "difyai123456"
       useSSL: false
