@@ -52,7 +52,7 @@ spec:
       type: postgresdb
 
     externalPostgresql:
-      host: "supabase-supabase-db.supabase.svc.cluster.local"
+      host: "postgresql.postgresql.svc.cluster.local"
       username: "n8n_user"
       # password: "Pa33w0rd!"
       database: "n8n"
