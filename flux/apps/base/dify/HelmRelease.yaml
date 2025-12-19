@@ -17,15 +17,15 @@ spec:
       interval: 12h
   valuesFrom:
     - kind: Secret
-      name: dify-secrets
+      name: dify-secrets-flux
       valuesKey: redis-password
       targetPath: externalRedis.password
     - kind: Secret
-      name: dify-secrets
+      name: dify-secrets-flux
       valuesKey: postgresql-username
       targetPath: externalPostgres.username
     - kind: Secret
-      name: dify-secrets
+      name: dify-secrets-flux
       valuesKey: postgresql-password
       targetPath: externalPostgres.password
   values:
