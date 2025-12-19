@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: freshrss
+  namespace: freshrss
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: open-webui
+      version: 8.19.0
+      sourceRef:
+        kind: HelmRepository
+        name: open-webui
+        namespace: open-webui
+      interval: 12h
+  # valuesFrom:
+  #   - kind: Secret
+  #     name: open-webui-secrets-flux
+  #     valuesKey: admin-password
+  #     targetPath: freshrss.initialization.admin.password
+  values:
+    # enableOpenaiApi:
+    #     openaiApiKey: ""
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description:
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: An extensible, feature-rich, and user-friendly self-hosted AI platform designed to operate entirely offline.
+        gethomepage.dev/name: open-webui
+        kubernetes.io/tls-acme: "true"
+      class: nginx
+      host: chat.zshen.me
+      tls: true
+    ollama:
+      enabled: false
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      s3:
+        # TODO: possibly using minio if needed
+        # # -- Sets the access key ID for S3 storage
+        # # @section -- Amazon S3 Storage configuration
+        # accessKey: ""
+        # # -- Sets the secret access key for S3 storage (ignored if secretKeyExistingSecret is set)
+        # # @section -- Amazon S3 Storage configuration
+        # secretKey: ""
+        # # -- Set the secret access key for S3 storage from existing k8s secret
+        # # @section -- Amazon S3 Storage configuration
+        # accessKeyExistingSecret: ""
+        # # -- Set the secret access key for S3 storage from existing k8s secret key
+        # # @section -- Amazon S3 Storage configuration
+        # accessKeyExistingAccessKey: ""
+        # # -- Set the secret key for S3 storage from existing k8s secret
+        # # @section -- Amazon S3 Storage configuration
+        # secretKeyExistingSecret: ""
+        # # -- Set the secret key for S3 storage from existing k8s secret key
+        # # @section -- Amazon S3 Storage configuration
+        # secretKeyExistingSecretKey: ""
+        # # -- Sets the endpoint url for S3 storage
+        # # @section -- Amazon S3 Storage configuration
+        # endpointUrl: ""
+        # # -- Sets the region name for S3 storage
+        # # @section -- Amazon S3 Storage configuration
+        # region: ""
+        # # -- Sets the bucket name for S3 storage
+        # # @section -- Amazon S3 Storage configuration
+        # bucket: ""
+        # # -- Sets the key prefix for a S3 object
+        # # @section -- Amazon S3 Storage configuration
+        # keyPrefix: ""
+    tika:
+      enabled: true
