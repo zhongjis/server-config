@@ -31,14 +31,14 @@ spec:
         kubernetes.io/tls-acme: "true"
       className: nginx
       hosts:
-        - host: dify.zshen.me
+        - host: chat.zshen.me
           paths:
             - path: /
               pathType: ImplementationSpecific
       tls:
         - secretName: dify-tls
           hosts:
-            - dify.zshen.me
+            - chat.zshen.me
     api:
       persistence:
         persistenceVolumeClaim:
