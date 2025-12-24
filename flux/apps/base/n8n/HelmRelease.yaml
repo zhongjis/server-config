@@ -166,6 +166,8 @@ spec:
       mode: distributed
       # rootUser: minioadmin
       # rootPassword: minioadmin123
+      statefulSetUpdate:
+        updateStrategy: RollingUpdate
       replicas: 4
       drivesPerNode: 1
       persistence:
