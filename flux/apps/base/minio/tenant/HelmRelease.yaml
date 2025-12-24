@@ -3,13 +3,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: minio-operator
+  name: minio-tenant
   namespace: minio
 spec:
   interval: 30m
   chart:
     spec:
-      chart: operator
+      chart: tenant
       version: 5.0.18
       sourceRef:
         kind: HelmRepository
@@ -18,25 +18,25 @@ spec:
       interval: 12h
   values:
     tenant:
-      name: minio-default-tenant
+      name: default
       image:
         repository: quay.io/minio/minio
         tag: RELEASE.2025-09-07T16-13-09Z
         pullPolicy: IfNotPresent
     metrics:
       enabled: true
-      buckets:
-        - name: n8n-bucket
+    buckets:
+      - name: n8n-bucket
     ingress:
-      # api:
-      #   enabled: true
-      #   ingressClassName: "nginx"
-      #   labels: {}
-      #   annotations: {}
-      #   tls: []
-      #   host: minio.zshen.me
-      #   path: /
-      #   pathType: Prefix
+      api:
+        enabled: true
+        ingressClassName: "nginx"
+        labels: {}
+        annotations: {}
+        tls: []
+        host: minio.zshen.me
+        path: /
+        pathType: Prefix
       console:
         enabled: true
         ingressClassName: "nginx"
