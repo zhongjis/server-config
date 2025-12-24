@@ -9,8 +9,8 @@ resources:
   - ../base/home-assistant
   - ../base/homepage
   # - ../base/manyfold
-  - ../base/minio/operator
-  - ../base/minio/tenant
+  # - ../base/minio/operator
+  # - ../base/minio/tenant
   # - ../base/mongodb
   - ../base/n8n
   # - ../base/open-webui
