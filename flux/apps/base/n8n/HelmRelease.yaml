@@ -40,7 +40,7 @@ spec:
     - kind: Secret
       name: n8n-secrets
       valuesKey: minio-n8n-user-secret-key
-      targetPath: binaryData.s3.secretKey
+      targetPath: binaryData.s3.accessSecret
     - kind: Secret
       name: n8n-secrets
       valuesKey: minio-n8n-user-access-key
@@ -175,6 +175,7 @@ spec:
         - name: n8n-bucket
           policy: none
           versioning: false
+          purge: false
       users:
         - accessKey: n8n-user
           secretKey: your-secret-key
