@@ -51,12 +51,6 @@ spec:
     db:
       type: postgresdb
 
-    externalPostgresql:
-      host: "postgresql.postgresql.svc.cluster.local"
-      username: "n8n_user"
-      # password: "Pa33w0rd!"
-      database: "n8n"
-
     main:
       resources:
         requests:
@@ -65,16 +59,22 @@ spec:
         limits:
           cpu: 1024m
           memory: 1024Mi
+      persistence:
+        enabled: true
+        volumeName: "n8n-main-data"
+        mountPath: "/home/node/.n8n"
+        size: 8Gi
+        accessMode: ReadWriteOnce
+        storageClass: "longhorn"
+        annotations:
+          helm.sh/resource-policy: keep
 
     worker:
       mode: queue
-
       autoscaling:
         enabled: true
-
       waitMainNodeReady:
         enabled: true
-
       resources:
         requests:
           cpu: 1000m
@@ -82,24 +82,22 @@ spec:
         limits:
           cpu: 2000m
           memory: 2Gi
-
-    externalRedis:
-      database: 2
-      host: "redis-master.redis.svc.cluster.local"
-      # username: "default"
-      # password: "Pa33w0rd!"
+        mode: queue
+      persistence:
+        enabled: true
+        volumeName: "n8n-worker-data"
+        mountPath: "/home/node/.n8n"
+        size: 5Gi
+        accessMode: ReadWriteMany # For autoscaling
+        storageClass: "longhorn"
 
     webhook:
       mode: queue
-
       url: "https://webhook.n8n.zshen.me"
-
       autoscaling:
         enabled: true
-
       waitMainNodeReady:
         enabled: true
-
       resources:
         requests:
           cpu: 100m
@@ -107,3 +105,21 @@ spec:
         limits:
           cpu: 512m
           memory: 512Mi
+
+    taskRunners:
+      mode: internal
+      maxConcurrency: 10
+      taskTimeout: 60
+      taskHeartbeatInterval: 30
+
+    externalRedis:
+      database: 2
+      host: "redis-master.redis.svc.cluster.local"
+      # username: "default"
+      # password: "Pa33w0rd!"
+
+    externalPostgresql:
+      host: "postgresql.postgresql.svc.cluster.local"
+      username: "n8n_user"
+      # password: "Pa33w0rd!"
+      database: "n8n"
