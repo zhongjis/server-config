@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: minio-operator
+  namespace: minio
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: operator
+      version: 5.0.18
+      sourceRef:
+        kind: HelmRepository
+        name: minio
+        namespace: minio
+      interval: 12h
+  values:
+    tenant:
+      name: minio-default-tenant
+      image:
+        repository: quay.io/minio/minio
+        tag: RELEASE.2025-09-07T16-13-09Z
+        pullPolicy: IfNotPresent
+    metrics:
+      enabled: true
+      buckets:
+        - name: n8n-bucket
+    ingress:
+      # api:
+      #   enabled: true
+      #   ingressClassName: "nginx"
+      #   labels: {}
+      #   annotations: {}
+      #   tls: []
+      #   host: minio.zshen.me
+      #   path: /
+      #   pathType: Prefix
+      console:
+        enabled: true
+        ingressClassName: "nginx"
+        # labels: {}
+        annotations:
+          gethomepage.dev/description: S3 Compatible, Exascale Object Store for AI
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Backend
+          gethomepage.dev/name: minio
+          kubernetes.io/tls-acme: "true"
+        tls:
+          - secretName: minio-console-tls
+            hosts:
+              - minio-console.zshen.me
+        host: minio-console.zshen.me
+        path: /
+        pathType: Prefix
