@@ -14,7 +14,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: minio
-        namespace: minio
+        namespace: minio-operator
       interval: 12h
   values:
     tenant:
