@@ -61,9 +61,13 @@ spec:
           memory: 1024Mi
       persistence:
         enabled: true
+        volumeName: "n8n-main-data"
+        mountPath: "/home/node/.n8n"
         size: 8Gi
         accessMode: ReadWriteOnce
         storageClass: "longhorn"
+        annotations:
+          helm.sh/resource-policy: keep
 
     worker:
       mode: queue
@@ -81,6 +85,8 @@ spec:
         mode: queue
       persistence:
         enabled: true
+        volumeName: "n8n-worker-data"
+        mountPath: "/home/node/.n8n"
         size: 5Gi
         accessMode: ReadWriteMany # For autoscaling
         storageClass: "longhorn"
