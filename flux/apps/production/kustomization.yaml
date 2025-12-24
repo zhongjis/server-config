@@ -9,6 +9,7 @@ resources:
   - ../base/home-assistant
   - ../base/homepage
   # - ../base/manyfold
+  - ../base/minio
   # - ../base/mongodb
   - ../base/n8n
   # - ../base/open-webui
