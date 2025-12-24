@@ -41,14 +41,14 @@ spec:
       name: n8n-secrets
       valuesKey: minio-n8n-user-secret-key
       targetPath: binaryData.s3.accessSecret
-    - kind: Secret
-      name: n8n-secrets
-      valuesKey: minio-n8n-user-access-key
-      targetPath: minio.users[0].accessKey
-    - kind: Secret
-      name: n8n-secrets
-      valuesKey: minio-n8n-user-secret-key
-      targetPath: minio.users[0].secretKey
+    # - kind: Secret
+    #   name: n8n-secrets
+    #   valuesKey: minio-n8n-user-access-key
+    #   targetPath: minio.users[0].accessKey
+    # - kind: Secret
+    #   name: n8n-secrets
+    #   valuesKey: minio-n8n-user-secret-key
+    #   targetPath: minio.users[0].secretKey
   values:
     ingress:
       enabled: true
