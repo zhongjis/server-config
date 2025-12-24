@@ -81,7 +81,7 @@ spec:
           memory: 250Mi
         limits:
           cpu: 2000m
-          memory: 2Gi
+          memory: 1Gi
         mode: queue
       persistence:
         enabled: true
