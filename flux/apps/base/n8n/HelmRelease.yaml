@@ -25,6 +25,30 @@ spec:
       name: n8n-secrets
       valuesKey: redis-password
       targetPath: externalRedis.password
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: minio-root-username
+      targetPath: minio.rootUser
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: minio-root-password
+      targetPath: minio.rootPassword
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: minio-n8n-user-accessKey
+      targetPath: binaryData.s3.accessKey
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: minio-n8n-user-secret-key
+      targetPath: binaryData.s3.secretKey
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: minio-n8n-user-accessKey
+      targetPath: minio.users[0].accessKey
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: minio-n8n-user-secret-key
+      targetPath: minio.users[0].secretKey
   values:
     ingress:
       enabled: true
@@ -127,3 +151,58 @@ spec:
       username: "n8n_user"
       # password: "Pa33w0rd!"
       database: "n8n"
+
+    binaryData:
+      mode: "s3"
+      s3:
+        host: minio.yourdomain.com
+        bucketName: n8n-bucket
+        bucketRegion: us-east-1
+        # accessKey: n8n-user
+        # accessSecret: your-secret-key
+
+    minio:
+      enabled: true
+      mode: distributed
+      # rootUser: minioadmin
+      # rootPassword: minioadmin123
+      replicas: 4
+      drivesPerNode: 1
+      persistence:
+        enabled: true
+        size: 20Gi
+      buckets:
+        - name: n8n-bucket
+          policy: none
+          versioning: false
+      users:
+        - accessKey: n8n-user
+          secretKey: your-secret-key
+          policy: n8n-policy
+      policies:
+        - name: n8n-policy
+          statements:
+            - actions:
+                - "s3:AbortMultipartUpload"
+                - "s3:GetObject"
+                - "s3:DeleteObject"
+                - "s3:PutObject"
+                - "s3:ListMultipartUploadParts"
+              resources:
+                - "arn:aws:s3:::n8n-bucket/*"
+            - actions:
+                - "s3:GetBucketLocation"
+                - "s3:ListBucket"
+                - "s3:ListBucketMultipartUploads"
+              resources:
+                - "arn:aws:s3:::n8n-bucket"
+      ingress:
+        enabled: true
+        hosts:
+          - minio.zshen.me
+        path: /
+      consoleIngress:
+        enabled: true
+        hosts:
+          - minio-console.zshen.me
+        path: /
