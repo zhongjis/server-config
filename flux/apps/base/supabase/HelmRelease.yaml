@@ -15,6 +15,16 @@ spec:
         name: supabase
         namespace: supabase
       interval: 12h
+  valuesFrom:
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: minio-key-id
+      targetPath: secret.s3.keyId
+    - kind: Secret
+      name: supabase-secrets-flux
+      valuesKey: minio-access-key
+      targetPath: secret.s3.accessKey
+
   values:
     secret:
       jwt:
@@ -52,11 +62,11 @@ spec:
         secretRef: "supabase-secrets-flux"
         secretRefKey:
           cryptoKey: meta-cryptoKey
-      s3:
-        secretRef: "supabase-secrets-flux"
-        secretRefKey:
-          keyId: minio-key-id
-          accessKey: minio-access-key
+      # s3:
+      #   secretRef: "supabase-secrets-flux"
+      #   secretRefKey:
+      #     keyId: minio-key-id
+      #     accessKey: minio-access-key
 
     db:
       enabled: true
