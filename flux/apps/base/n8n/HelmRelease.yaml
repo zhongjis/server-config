@@ -62,17 +62,16 @@ spec:
       persistence:
         enabled: true
         volumeName: "n8n-main-data"
-        mountPath: "/home/node/.n8n"
         size: 8Gi
         accessMode: ReadWriteOnce
         storageClass: "longhorn"
-        annotations:
-          helm.sh/resource-policy: keep
 
     worker:
       mode: queue
       autoscaling:
         enabled: true
+        minReplicas: 2
+        maxReplicas: 10
       waitMainNodeReady:
         enabled: true
       resources:
@@ -86,9 +85,8 @@ spec:
       persistence:
         enabled: true
         volumeName: "n8n-worker-data"
-        mountPath: "/home/node/.n8n"
         size: 5Gi
-        accessMode: ReadWriteMany # For autoscaling
+        accessMode: ReadWriteMany
         storageClass: "longhorn"
 
     webhook:
