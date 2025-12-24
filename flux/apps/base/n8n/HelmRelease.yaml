@@ -35,7 +35,7 @@ spec:
       targetPath: minio.rootPassword
     - kind: Secret
       name: n8n-secrets
-      valuesKey: minio-n8n-user-accessKey
+      valuesKey: minio-n8n-user-access-key
       targetPath: binaryData.s3.accessKey
     - kind: Secret
       name: n8n-secrets
@@ -43,7 +43,7 @@ spec:
       targetPath: binaryData.s3.secretKey
     - kind: Secret
       name: n8n-secrets
-      valuesKey: minio-n8n-user-accessKey
+      valuesKey: minio-n8n-user-access-key
       targetPath: minio.users[0].accessKey
     - kind: Secret
       name: n8n-secrets
