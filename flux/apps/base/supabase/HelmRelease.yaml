@@ -212,3 +212,24 @@ spec:
         tag: v1.68.4
       nodeSelector:
         kubernetes.io/hostname: homelab-0
+
+    # minio
+    minio:
+      enabled: true
+      image:
+        repository: minio/minio
+        pullPolicy: IfNotPresent
+        tag: "latest"
+      replicaCount: 1
+      persistence:
+        enabled: true
+        storageClassName: "longhorn"
+        size: 10Gi
+        accessModes:
+          - ReadWriteOnce
+      autoscaling:
+        enabled: true
+        minReplicas: 1
+        maxReplicas: 100
+        targetCPUUtilizationPercentage: 80
+        targetMemoryUtilizationPercentage: 80
