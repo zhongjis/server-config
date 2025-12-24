@@ -68,27 +68,32 @@ spec:
 
     worker:
       mode: queue
-      count: 2
-      autoscaling:
-        enabled: true
-        minReplicas: 4
-        maxReplicas: 10
       waitMainNodeReady:
         enabled: true
+      autoscaling:
+        enabled: true
+        minReplicas: 3
+        maxReplicas: 15
+        metrics:
+          - type: Resource
+            resource:
+              name: memory
+              target:
+                type: Utilization
+                averageUtilization: 80
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 80
       resources:
         requests:
           cpu: 1000m
-          memory: 250Mi
-        limits:
-          cpu: 2000m
           memory: 1Gi
-        mode: queue
-      persistence:
-        enabled: true
-        volumeName: "n8n-worker-data"
-        size: 5Gi
-        accessMode: ReadWriteMany
-        storageClass: "longhorn"
+        limits:
+          cpu: 4000m
+          memory: 4Gi
 
     webhook:
       mode: queue
