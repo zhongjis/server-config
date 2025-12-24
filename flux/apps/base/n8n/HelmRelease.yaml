@@ -68,9 +68,10 @@ spec:
 
     worker:
       mode: queue
+      count: 2
       autoscaling:
         enabled: true
-        minReplicas: 2
+        minReplicas: 4
         maxReplicas: 10
       waitMainNodeReady:
         enabled: true
