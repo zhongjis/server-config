@@ -86,7 +86,7 @@ spec:
 
     studio:
       image:
-        tag: 2025.11.10-sha-5291fe3
+        tag: 2025.12.17-sha-43f4f7f
       environment:
         DEFAULT_ORGANIZATION_NAME: Default Organization
         DEFAULT_PROJECT_NAME: Default Project
@@ -97,7 +97,7 @@ spec:
 
     auth:
       image:
-        tag: v2.182.1
+        tag: v2.184.0
       environment:
         API_EXTERNAL_URL: http://supabase.zshen.me
         GOTRUE_SITE_URL: http://supabase.zshen.me
@@ -112,13 +112,13 @@ spec:
 
     rest:
       image:
-        tag: v13.0.7
+        tag: v14.1
       nodeSelector:
         kubernetes.io/hostname: homelab-0
 
     realtime:
       image:
-        tag: v2.63.0
+        tag: v2.68.0
       livenessProbe:
         httpGet:
           path: /
@@ -129,13 +129,13 @@ spec:
 
     meta:
       image:
-        tag: v0.93.1
+        tag: v0.95.1
       nodeSelector:
         kubernetes.io/hostname: homelab-0
 
     storage:
       image:
-        tag: v1.29.0
+        tag: v1.33.0
       livenessProbe:
         httpGet:
           path: /status
@@ -199,7 +199,7 @@ spec:
 
     analytics:
       image:
-        tag: 1.22.6
+        tag: 1.27.0
       livenessProbe:
         httpGet:
           path: /health
@@ -231,7 +231,7 @@ spec:
 
     functions:
       image:
-        tag: v1.68.4
+        tag: v1.69.28
       nodeSelector:
         kubernetes.io/hostname: homelab-0
 
