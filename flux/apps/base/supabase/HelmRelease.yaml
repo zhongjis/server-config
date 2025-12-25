@@ -231,7 +231,7 @@ spec:
 
     functions:
       image:
-        tag: v1.69.28
+        tag: v1.68.4
       nodeSelector:
         kubernetes.io/hostname: homelab-0
 
