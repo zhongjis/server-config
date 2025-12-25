@@ -79,10 +79,10 @@ spec:
       resources:
         requests:
           cpu: 200m
-          memory: 256Mi
+          memory: 1024Mi
         limits:
           cpu: 1024m
-          memory: 1024Mi
+          memory: 4096Mi
       persistence:
         enabled: true
         volumeName: "n8n-main-data"
