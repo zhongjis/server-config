@@ -152,6 +152,30 @@ spec:
       # password: "Pa33w0rd!"
       database: "n8n"
 
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      interval: 15s
+      timeout: 10s
+      labels:
+        release: prometheus
+        team: platform
+      targetLabels:
+        - app.kubernetes.io/name
+        - app.kubernetes.io/instance
+      include:
+        defaultMetrics: true
+        cacheMetrics: true
+        messageEventBusMetrics: true
+        workflowIdLabel: true
+        nodeTypeLabel: true
+        credentialTypeLabel: true
+        apiEndpoints: true
+        apiPathLabel: true
+        apiMethodLabel: true
+        apiStatusCodeLabel: true
+        queueMetrics: true
+
     # binaryData:
     #   mode: "s3"
     #   s3:
