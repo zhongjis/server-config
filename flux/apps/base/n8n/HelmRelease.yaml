@@ -90,6 +90,12 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: "longhorn"
 
+    api:
+      enabled: true
+      path: api
+      swagger:
+        enabled: true
+
     worker:
       mode: queue
       waitMainNodeReady:
