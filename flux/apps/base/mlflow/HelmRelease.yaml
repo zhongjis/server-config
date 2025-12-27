@@ -31,7 +31,7 @@ spec:
       annotations:
         gethomepage.dev/description: The only platform that provides a unified solution for all your AI/ML needs.
         gethomepage.dev/enabled: "true"
-        gethomepage.dev/group: Automations
+        gethomepage.dev/group: Applications
         gethomepage.dev/name: Mlflow
         kubernetes.io/tls-acme: "true"
       className: nginx
