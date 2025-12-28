@@ -34,6 +34,9 @@ spec:
         gethomepage.dev/group: Applications
         gethomepage.dev/name: Mlflow
         kubernetes.io/tls-acme: "true"
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          proxy_set_header Host $host;
+          proxy_set_header X-Forwarded-Host $host;
       className: nginx
       hosts:
         - host: mlflow.zshen.me
