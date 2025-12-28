@@ -46,7 +46,7 @@ spec:
       create: true
 
     alertmanager:
-      enabled: true
+      enabled: false
       ingress:
         enabled: true
         annotations:
