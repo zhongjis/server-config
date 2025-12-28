@@ -67,11 +67,11 @@ spec:
       enabled: true
       fullnameOverride: grafana
       defaultDashboardsEnabled: true
-      operator:
-        matchLabels:
-          app: grafana
-          category: dashboard
-        dashboardsConfigMapRefEnabled: true
+      # operator:
+      #   matchLabels:
+      #     app: grafana
+      #     category: dashboard
+      #   dashboardsConfigMapRefEnabled: true
       defaultDashboardsTimezone: America/Los_Angeles
       defaultDashboardsEditable: false
       serviceMonitor:
