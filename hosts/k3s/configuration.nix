@@ -36,7 +36,7 @@
     allowedUDPPorts = [8472 51820 51821];
   };
 
-  time.timeZone = "America/Denver";
+  time.timeZone = "America/Los_Angeles";
 
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl
