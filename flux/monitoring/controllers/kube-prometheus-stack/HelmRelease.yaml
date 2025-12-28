@@ -29,14 +29,6 @@ spec:
     - kind: ConfigMap
       name: flux-kube-state-metrics-config
       valuesKey: kube-state-metrics-config.yaml
-    - kind: Secret
-      name: monitoring-secrets
-      valuesKey: grafana-authentik-client-id
-      targetPath: grafana.grafana\.ini.auth\.generic_oauth.client_id
-    - kind: Secret
-      name: monitoring-secrets
-      valuesKey: grafana-authentik-client-secret
-      targetPath: grafana.grafana\.ini.auth\.generic_oauth.client_secret
 
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
   values:
@@ -82,6 +74,8 @@ spec:
         userKey: grafana-admin-user
         passwordKey: grafana-admin-password
 
+      envFromSecret: "monitoring-secrets"
+
       grafana.ini:
         auth:
           signout_redirect_url: "https://authentik.zshen.me/application/o/grafana/end-session/"
@@ -89,8 +83,8 @@ spec:
         auth.generic_oauth:
           name: authentik
           enabled: true
-          # client_id: "<Client ID from above>"
-          # client_secret: "<Client Secret from above>"
+          client_id: "${GRAFANA_AUTHENTIK_CLIENT_ID}"
+          client_secret: "${GRAFANA_AUTHENTIK_CLIENT_SECRET}"
           scopes: "openid profile email"
           auth_url: "https://authentik.zshen.me/application/o/authorize/"
           token_url: "https://authentik.zshen.me/application/o/token/"
