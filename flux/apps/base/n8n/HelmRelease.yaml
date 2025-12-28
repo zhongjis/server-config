@@ -25,30 +25,6 @@ spec:
       name: n8n-secrets
       valuesKey: redis-password
       targetPath: externalRedis.password
-    # - kind: Secret
-    #   name: n8n-secrets
-    #   valuesKey: minio-root-username
-    #   targetPath: minio.rootUser
-    # - kind: Secret
-    #   name: n8n-secrets
-    #   valuesKey: minio-root-password
-    #   targetPath: minio.rootPassword
-    # - kind: Secret
-    #   name: n8n-secrets
-    #   valuesKey: minio-n8n-user-access-key
-    #   targetPath: binaryData.s3.accessKey
-    # - kind: Secret
-    #   name: n8n-secrets
-    #   valuesKey: minio-n8n-user-secret-key
-    #   targetPath: binaryData.s3.accessSecret
-    # - kind: Secret
-    #   name: n8n-secrets
-    #   valuesKey: minio-n8n-user-access-key
-    #   targetPath: minio.users[0].accessKey
-    # - kind: Secret
-    #   name: n8n-secrets
-    #   valuesKey: minio-n8n-user-secret-key
-    #   targetPath: minio.users[0].secretKey
   values:
     ingress:
       enabled: true
