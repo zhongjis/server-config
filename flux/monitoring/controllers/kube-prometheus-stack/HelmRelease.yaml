@@ -29,6 +29,14 @@ spec:
     - kind: ConfigMap
       name: flux-kube-state-metrics-config
       valuesKey: kube-state-metrics-config.yaml
+    - kind: Secret
+      name: monitoring-secrets
+      valuesKey: grafana-authentik-client-id
+      targetPath: grafana."grafana.ini"."auth.generic_oauth".client_id
+    - kind: Secret
+      name: monitoring-secrets
+      valuesKey: grafana-authentik-client-secret
+      targetPath: grafana."grafana.ini"."auth.generic_oauth".client_secret
 
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
   values:
@@ -58,16 +66,34 @@ spec:
     grafana:
       enabled: true
       fullnameOverride: grafana
-      forceDeployDatasources: false
-      forceDeployDashboards: false
       defaultDashboardsEnabled: true
-      defaultDashboardsTimezone: utc
+      operator:
+        dashboardsConfigMapRefEnabled: true
+      defaultDashboardsTimezone: America/Los_Angeles
+      defaultDashboardsEditable: false
       serviceMonitor:
         enabled: true
+
       admin:
         existingSecret: monitoring-secrets
         userKey: grafana-admin-user
         passwordKey: grafana-admin-password
+
+      grafana.ini:
+        auth:
+          signout_redirect_url: "https://authentik.zshen.me/application/o/grafana/end-session/"
+          oauth_auto_login: true
+        auth.generic_oauth:
+          name: authentik
+          enabled: true
+          # client_id: "<Client ID from above>"
+          # client_secret: "<Client Secret from above>"
+          scopes: "openid profile email"
+          auth_url: "https://authentik.zshen.me/application/o/authorize/"
+          token_url: "https://authentik.zshen.me/application/o/token/"
+          api_url: "https://authentik.zshen.me/application/o/userinfo/"
+          # Optionally map user groups to Grafana roles
+          role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
 
       ingress:
         enabled: true
@@ -97,7 +123,7 @@ spec:
         probeSelectorNilUsesHelmValues: false
         enableAdminAPI: true
         walCompression: true
-        scrapeInterval: 30s
+        scrapeInterval: 15s
         evaluationInterval: 30s
         retention: 15d
         storageSpec:
