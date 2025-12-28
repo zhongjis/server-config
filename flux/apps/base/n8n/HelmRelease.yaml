@@ -167,8 +167,8 @@ spec:
     #     # accessKey: n8n-user
     #     # accessSecret: your-secret-key
 
-    # minio:
-    #   enabled: true
+    minio:
+      enabled: false
     #   mode: distributed
     #   # rootUser: minioadmin
     #   # rootPassword: minioadmin123
