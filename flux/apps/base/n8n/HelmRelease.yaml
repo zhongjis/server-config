@@ -117,7 +117,7 @@ spec:
           memory: 512Mi
 
     taskRunners:
-      mode: internal
+      mode: external
       maxConcurrency: 10
       taskTimeout: 60
       taskHeartbeatInterval: 30
