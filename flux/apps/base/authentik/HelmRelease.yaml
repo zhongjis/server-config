@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: authentik
+      version: 2025.10.3
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: authentik
+      interval: 24h
+  valuesFrom:
+    - kind: Secret
+      name: authentik-secrets-fluxcd
+      valuesKey: authentik-secret-key
+      targetPath: authentik.secret_key
+  values:
+    authentik:
+      # secret_key: "PleaseGenerateA50CharKey"
+      error_reporting:
+        enabled: false
+      postgresql:
+        host: postgresql.postgresql.svc.cluster.local
+        name: authentik
+        user: file:///postgres-creds/postgres-user-username
+        password: file:///postgres-creds/postgres-user-password
+
+    server:
+      volumes:
+        - name: postgres-creds
+          secret:
+            secretName: authentik-secrets-fluxcd
+      volumeMounts:
+        - name: postgres-creds
+          mountPath: /postgres-creds
+          readOnly: true
+      ingress:
+        enabled: true
+        annotations:
+          gethomepage.dev/description: A self-hosted, open source identity provider means prioritizing security and taking control of your most sensitive data.A self-hosted, open source identity provider means prioritizing security and taking control of your most sensitive data.
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Backend
+          gethomepage.dev/name: Authentik
+          kubernetes.io/tls-acme: "true"
+        ingressClassName: nginx
+        hosts:
+          - authentik.zshen.me
+        tls:
+          - secretName: authentik-tls
+            hosts:
+              - authentik.zshen.me
+        https: true
+
+    worker:
+      volumes:
+        - name: postgres-creds
+          secret:
+            secretName: authentik-secrets-fluxcd
+      volumeMounts:
+        - name: postgres-creds
+          mountPath: /postgres-creds
+          readOnly: true
