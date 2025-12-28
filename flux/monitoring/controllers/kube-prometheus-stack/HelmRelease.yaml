@@ -32,11 +32,11 @@ spec:
     - kind: Secret
       name: monitoring-secrets
       valuesKey: grafana-authentik-client-id
-      targetPath: grafana."grafana.ini"."auth.generic_oauth".client_id
+      targetPath: grafana.grafana.ini.auth.generic_oauth.client_id
     - kind: Secret
       name: monitoring-secrets
       valuesKey: grafana-authentik-client-secret
-      targetPath: grafana."grafana.ini"."auth.generic_oauth".client_secret
+      targetPath: grafana.grafana.ini.auth.generic_oauth.client_secret
 
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
   values:
