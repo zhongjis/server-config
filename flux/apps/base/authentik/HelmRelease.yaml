@@ -56,7 +56,7 @@ spec:
           - secretName: authentik-tls
             hosts:
               - authentik.zshen.me
-        https: true
+        https: false
 
     worker:
       volumes:
