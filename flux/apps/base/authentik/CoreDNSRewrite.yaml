@@ -3,6 +3,10 @@ kind: ConfigMap
 metadata:
   name: coredns
   namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: flux
+    app.kubernetes.io/part-of: authentik
+    k8s-app: kube-dns
 data:
   Corefile: |
     .:53 {
@@ -11,7 +15,7 @@ data:
         
         # OPTION B: Point to Ingress Controller (Better for SSL)
         # Result: authentik.zshen.me resolves to 10.x.x.x (Ingress Controller ClusterIP)
-        rewrite name authentik.zshen.me ingress-nginx-controller.ingress-nginx.svc.cluster.local
+        rewrite name authentik.zshen.me ingress-nginx-controller.nginx-system.svc.cluster.local answer auto
         
         # (This rule ensures the ANSWER section matches the QUESTION, keeping clients happy)
         # Note: CoreDNS modern versions handle the answer section rewrite automatically for exact matches.
