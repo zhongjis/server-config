@@ -38,7 +38,7 @@ spec:
           clientIdKey: "actualbudget-authentik-client-id"
           clientSecretKey: "actualbudget-authentik-client-secret"
       extraEnvVars:
-        ACTUAL_OPENID_SERVER_HOSTNAME: budget.zshen.me
+        ACTUAL_OPENID_SERVER_HOSTNAME: https://budget.zshen.me
 
     ingress:
       enabled: true
