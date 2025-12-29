@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+name: coredns-custom
+namespace: kube-system
+data:
+  zshen-me.server: |
+    zshen.me:53 {
+      log
+      errors
+      forward . 192.168.50.2
+    }
