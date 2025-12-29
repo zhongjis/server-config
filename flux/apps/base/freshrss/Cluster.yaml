@@ -30,6 +30,8 @@ spec:
         initdb:
           database: freshrss
           owner: freshrss_user
+          secret:
+            name: postgres_freshrss_user_secret
       monitoring:
         enabled: true
         podMonitorEnabled: true
