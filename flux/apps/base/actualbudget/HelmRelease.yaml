@@ -30,9 +30,10 @@ spec:
         providerName: "http://authentik-server.authentik.svc.cluster.local/application/o/actual-budget/"
         # clientId: ""
         # clientSecret: ""
-        authorizationEndpoint: "https://authentik.zshen.me/application/o/authorize/"
-        tokenEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
-        userInfoEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
+        # authorizationEndpoint: "https://authentik.zshen.me/application/o/authorize/"
+        # tokenEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
+        # userInfoEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
+        discoveryUrl: "https://authentik.zshen.me/application/o/actual-budget"
         existingSecret:
           name: "actualbudget-secrets-fluxcd"
           clientIdKey: "actualbudget-authentik-client-id"
