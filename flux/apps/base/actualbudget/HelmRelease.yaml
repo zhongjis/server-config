@@ -19,14 +19,14 @@ spec:
       interval: 12h
   values:
     login:
-      method: "password"
+      method: "openid"
       skipSSLVerification: false
       allowedLoginMethods:
-        - password
+        # - password
         - openid
 
       openid:
-        enforce: false
+        enforce: true
         providerName: "authentik"
         # clientId: ""
         # clientSecret: ""
