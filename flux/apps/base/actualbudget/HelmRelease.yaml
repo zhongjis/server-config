@@ -27,7 +27,7 @@ spec:
 
       openid:
         enforce: true
-        providerName: "http://authentik-server.authentik.svc.cluster.local/application/o/actual-budget/"
+        providerName: "http://authentik.zshen.me/application/o/actual-budget/"
         # clientId: ""
         # clientSecret: ""
         # authorizationEndpoint: "https://authentik.zshen.me/application/o/authorize/"
