@@ -77,6 +77,8 @@ spec:
       envFromSecret: "monitoring-secrets"
 
       grafana.ini:
+        server:
+          root_url: https://grafana.zshen.me
         auth:
           signout_redirect_url: "https://authentik.zshen.me/application/o/grafana/end-session/"
           oauth_auto_login: true
