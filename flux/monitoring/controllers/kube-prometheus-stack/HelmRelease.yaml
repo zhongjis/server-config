@@ -83,6 +83,11 @@ spec:
           signout_redirect_url: "https://authentik.zshen.me/application/o/grafana/end-session/"
           oauth_auto_login: true
         auth.generic_oauth:
+          allow_assign_grafana_admin: true
+          role_attribute_path: "(contains(groups[*], 'homelab-admin') || contains(groups[*], 'grafana-admin')) && 'GrafanaAdmin' || 'Viewer'"
+          role_attribute_strict: true
+          skip_org_role_sync: false
+
           name: authentik
           enabled: true
           client_id: "${GRAFANA_AUTHENTIK_CLIENT_ID}"
@@ -91,8 +96,6 @@ spec:
           auth_url: "https://authentik.zshen.me/application/o/authorize/"
           token_url: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
           api_url: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
-          # Optionally map user groups to Grafana roles
-          role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
 
       ingress:
         enabled: true
