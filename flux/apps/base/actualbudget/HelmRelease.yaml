@@ -23,17 +23,16 @@ spec:
       allowedLoginMethods:
         # - password
         - openid
-        - password
       skipSSLVerification: false
 
       openid:
         enforce: false
-        providerName: "http://authentik.zshen.me/application/o/actual-budget"
         # clientId: ""
         # clientSecret: ""
         # authorizationEndpoint: "https://authentik.zshen.me/application/o/authorize/"
         # tokenEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
         # userInfoEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
+        providerName: "Authentik"
         discoveryUrl: "https://authentik.zshen.me/application/o/actual-budget"
         existingSecret:
           name: "actualbudget-secrets-fluxcd"
