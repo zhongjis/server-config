@@ -4,3 +4,4 @@ resources:
   - ./Namespace.yaml
   - ./HelmRepo.yaml
   - ./HelmRelease.yaml
+  - ./CoreDNSRewrite.yaml
