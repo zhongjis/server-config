@@ -12,23 +12,25 @@ data:
     .:53 {
         errors
         health
-        
-        # OPTION B: Point to Ingress Controller (Better for SSL)
-        # Result: authentik.zshen.me resolves to 10.x.x.x (Ingress Controller ClusterIP)
-        rewrite name authentik.zshen.me ingress-nginx-controller.nginx-system.svc.cluster.local answer auto
-        
-        # (This rule ensures the ANSWER section matches the QUESTION, keeping clients happy)
-        # Note: CoreDNS modern versions handle the answer section rewrite automatically for exact matches.
-        
+        ready
+
+        # Custom rewrite for authentik.zshen.me to ingress-nginx-controller
+        rewrite name authentik.zshen.me ingress-nginx-controller.nginx-system.svc.cluster.local
+
         kubernetes cluster.local in-addr.arpa ip6.arpa {
-           pods insecure
-           fallthrough in-addr.arpa ip6.arpa
-           ttl 30
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        hosts /etc/coredns/NodeHosts {
+          ttl 60
+          reload 15s
+          fallthrough
         }
         prometheus :9153
-        forward . /etc/resolv.conf
         cache 30
         loop
         reload
         loadbalance
+        import /etc/coredns/custom/*.override
+        forward . /etc/resolv.conf
     }
