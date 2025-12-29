@@ -26,12 +26,9 @@ spec:
       storage:
         size: 5Gi
         storageClass: "longhorn"
-      bootstrap:
-        initdb:
-          database: freshrss
-          owner: freshrss_user
-          secret:
-            name: postgres_freshrss_user_secret
+      initdb:
+        database: freshrss
+        owner: freshrss_user
       monitoring:
         enabled: true
         podMonitorEnabled: true
