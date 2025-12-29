@@ -4,3 +4,4 @@ resources:
   - ./Namespace.yaml
   - ./OCIRepository.yaml
   - ./HelmRelease.yaml
+  - ./GrafanaDashboard.yaml
