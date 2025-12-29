@@ -23,10 +23,11 @@ spec:
       allowedLoginMethods:
         # - password
         - openid
+        - password
       skipSSLVerification: false
 
       openid:
-        enforce: true
+        enforce: false
         providerName: "http://authentik.zshen.me/application/o/actual-budget"
         # clientId: ""
         # clientSecret: ""
