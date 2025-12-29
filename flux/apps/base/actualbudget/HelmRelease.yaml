@@ -33,12 +33,14 @@ spec:
         authorizationEndpoint: "https://authentik.zshen.me/application/o/authorize/"
         tokenEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
         userInfoEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
+        # discoveryUrl: "https://authentik.zshen.me/application/o/actual-budget"
         existingSecret:
           name: "actualbudget-secrets-fluxcd"
           clientIdKey: "actualbudget-authentik-client-id"
           clientSecretKey: "actualbudget-authentik-client-secret"
-      extraEnvVars:
-        ACTUAL_OPENID_SERVER_HOSTNAME: https://budget.zshen.me
+
+    extraEnvVars:
+      ACTUAL_OPENID_SERVER_HOSTNAME: https://budget.zshen.me
 
     ingress:
       enabled: true
