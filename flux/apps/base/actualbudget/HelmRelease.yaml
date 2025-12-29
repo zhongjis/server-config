@@ -65,3 +65,4 @@ spec:
       enabled: true
       storageClass: longhorn
       size: 10Gi
+      existingClaim: actualbudget-data
