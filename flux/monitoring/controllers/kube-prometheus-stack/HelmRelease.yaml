@@ -89,8 +89,8 @@ spec:
           client_secret: "${GRAFANA_AUTHENTIK_CLIENT_SECRET}"
           scopes: "openid profile email"
           auth_url: "https://authentik.zshen.me/application/o/authorize/"
-          token_url: "https://authentik.zshen.me/application/o/token/"
-          api_url: "https://authentik.zshen.me/application/o/userinfo/"
+          token_url: "https://authentik-server.authentik.svc.cluster.local/application/o/token/"
+          api_url: "https://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
           # Optionally map user groups to Grafana roles
           role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
 
