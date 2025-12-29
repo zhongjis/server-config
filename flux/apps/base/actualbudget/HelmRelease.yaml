@@ -30,7 +30,7 @@ spec:
         providerName: "authentik"
         # clientId: ""
         # clientSecret: ""
-        authorizationEndpoint: "https://authentik-server.authentik.svc.cluster.local/application/o/authorize/"
+        authorizationEndpoint: "https://authentik.zshen.me/application/o/authorize/"
         tokenEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
         userInfoEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
         existingSecret:
