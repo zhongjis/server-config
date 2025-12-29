@@ -19,14 +19,14 @@ spec:
       interval: 12h
   values:
     login:
-      method: "password"
-      skipSSLVerification: false
+      method: openid
       allowedLoginMethods:
-        - password
+        # - password
         - openid
+      skipSSLVerification: false
 
       openid:
-        enforce: false
+        enforce: true
         providerName: "authentik"
         # clientId: ""
         # clientSecret: ""
@@ -34,7 +34,7 @@ spec:
         # authorizationEndpoint: "https://authentik-server.authentik.svc.cluster.local/application/o/authorize/"
         # tokenEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/token/"
         # userInfoEndpoint: "http://authentik-server.authentik.svc.cluster.local/application/o/userinfo/"
-        discoveryUrl: "https://authentik.zshen.me/application/o/actual-budget"
+        discoveryUrl: "https://authentik.zshen.me/application/o/actual-budget/"
         existingSecret:
           name: "actualbudget-secrets-fluxcd"
           clientIdKey: "actualbudget-authentik-client-id"
