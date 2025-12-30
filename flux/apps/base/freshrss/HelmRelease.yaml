@@ -16,6 +16,8 @@ spec:
         name: christianhuth
         namespace: freshrss
       interval: 12h
+  dependsOn:
+    - name: freshrss-cnpg-cluster
   valuesFrom:
     # externalPostgresql
     - kind: Secret
