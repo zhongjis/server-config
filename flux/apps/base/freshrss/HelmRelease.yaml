@@ -64,6 +64,8 @@ spec:
       targetPath: extraEnvs
 
   values:
+    image:
+      type: debian # alpine does not work for oidc
     autoscaling:
       enabled: false
 
@@ -93,7 +95,7 @@ spec:
       database:
         type: postgresql
       initialization:
-        enabled: false
+        enabled: true
         apiEnabled: true
         # admin:
         #   apiPassword:
