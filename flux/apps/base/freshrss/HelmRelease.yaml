@@ -41,8 +41,16 @@ spec:
     # init
     - kind: Secret
       name: freshrss-secrets
-      valuesKey: api-password
+      valuesKey: admin-api-password
       targetPath: freshrss.initialization.admin.apiPassword
+    - kind: Secret
+      name: freshrss-secrets
+      valuesKey: admin-username
+      targetPath: freshrss.initialization.admin.username
+    - kind: Secret
+      name: freshrss-secrets
+      valuesKey: admin-email
+      targetPath: freshrss.initialization.admin.email
     - kind: Secret
       name: freshrss-secrets
       valuesKey: admin-password
@@ -85,6 +93,11 @@ spec:
       initialization:
         enabled: true
         apiEnabled: true
+        admin:
+          # apiPassword:
+          # email:
+          # password:
+          # username:
       persistence:
         enabled: true
         storageClass: longhorn
