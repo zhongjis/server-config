@@ -95,7 +95,7 @@ spec:
       database:
         type: postgresql
       initialization:
-        enabled: true
+        enabled: false
         apiEnabled: true
         # admin:
         #   apiPassword:
