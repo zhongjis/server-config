@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: stirling-pdf
+  namespace: stirling-pdf
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: stirling-pdf-chart
+      version: 2.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: stirling-pdf
+        namespace: stirling-pdf
+      interval: 12h
+  values:
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description: A powerful, open-source PDF editing platform.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Applications
+        gethomepage.dev/name: Stirling PDF
+        kubernetes.io/tls-acme: "true"
+      ingressClassName: nginx
+      hosts:
+        - name: pdf.zshen.me
+          paths: "/"
+          tls: true
+          tlsSecret: stirling-pdf-tls

@@ -18,4 +18,5 @@ resources:
   # - ../base/open-webui
   - ../base/postgresql
   - ../base/redis
+  - ../base/stirling-pdf
   - ../base/supabase

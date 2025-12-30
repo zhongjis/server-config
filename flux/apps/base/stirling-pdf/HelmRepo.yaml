@@ -1,0 +1,10 @@
+# https://github.com/christianhuth/helm-charts/tree/main/charts/freshrss
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: stirling-pdf
+  namespace: stirling-pdf
+spec:
+  interval: 24h
+  url: https://stirling-tools.github.io/Stirling-PDF-chart
