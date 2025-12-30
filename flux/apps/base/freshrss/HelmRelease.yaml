@@ -83,7 +83,7 @@ spec:
       database:
         type: postgresql
       initialization:
-        enabled: false
+        enabled: true
         apiEnabled: true
       persistence:
         enabled: true
