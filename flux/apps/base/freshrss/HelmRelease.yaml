@@ -60,8 +60,8 @@ spec:
     # oidc
     - kind: Secret
       name: freshrss-secrets-fluxcd
-      valuesKey: oidc-extraEnvs
-      targetPath: extraEnvs
+      valuesKey: oidc-extraEnv
+      targetPath: extraEnv
 
   values:
     image:
