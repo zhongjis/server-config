@@ -59,7 +59,7 @@ spec:
       targetPath: freshrss.initialization.admin.password
     # oidc
     - kind: Secret
-      name: freshrss-secrets
+      name: freshrss-secrets-fluxcd
       valuesKey: oidc-extraEnvs
       targetPath: extraEnvs
 
