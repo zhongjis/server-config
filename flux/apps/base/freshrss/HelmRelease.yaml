@@ -10,17 +10,35 @@ spec:
   chart:
     spec:
       chart: freshrss
-      version: 1.3.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: christianhuth
         namespace: freshrss
       interval: 12h
   valuesFrom:
+    # externalPostgresql
     - kind: Secret
-      name: freshrss-secrets
-      valuesKey: postgres-user-password
+      name: freshrss-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: externalPostgresql.auth.database
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: username
+      targetPath: externalPostgresql.auth.username
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: password
       targetPath: externalPostgresql.auth.password
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: host
+      targetPath: externalPostgresql.hostname
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: port
+      targetPath: externalPostgresql.port
+    # init
     - kind: Secret
       name: freshrss-secrets
       valuesKey: api-password
@@ -29,7 +47,16 @@ spec:
       name: freshrss-secrets
       valuesKey: admin-password
       targetPath: freshrss.initialization.admin.password
+    # oidc
+    - kind: Secret
+      name: freshrss-secrets
+      valuesKey: oidc-extraEnvs
+      targetPath: extraEnvs
+
   values:
+    autoscaling:
+      enabled: false
+
     ingress:
       enabled: true
       annotations:
@@ -48,19 +75,39 @@ spec:
         - secretName: freshrss-tls
           hosts:
             - rss.zshen.me
+
     freshrss:
-      # NOTE: only enable first time setup
+      baseUrl: "https://rss.zshen.me"
+      cronjob:
+        type: sidecar
+      database:
+        type: postgresql
       initialization:
         enabled: false
+        apiEnabled: true
+      persistence:
+        enabled: true
+        storageClass: longhorn
+        data:
+          storageClass: longhorn
+        extensions:
+          storageClass: longhorn
       timezone: America/Los_Angeles
-      database:
-        type: "postgresql"
-      baseUrl: "https://rss.zshen.me"
-    externalPostgresql:
-      auth:
-        database: "freshrss"
-        # existingSecret: "freshrss-secrets"
-        username: "freshrss_user"
-        # userPasswordKey: "freshrss-user-password"
-      hostname: "postgresql.postgresql"
-      port: 5432
+
+    # from secret values
+    # extraEnv:
+    #   - OIDC_ENABLED=1
+    #   - OIDC_PROVIDER_METADATA_URL=https://authentik.zshen.me/application/o/freshrss/.well-known/openid-configuration
+    #   - OIDC_CLIENT_ID=<Your Client ID from authentik<>
+    #   - OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
+    #   - OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
+    #   - OIDC_SCOPES=openid email profile
+
+    # from secret values
+    # externalPostgresql:
+    #   auth:
+    #     database: "freshrss"
+    #     username: "freshrss_user"
+    #     password:
+    #   hostname: "postgresql.postgresql"
+    #   port: 5432
