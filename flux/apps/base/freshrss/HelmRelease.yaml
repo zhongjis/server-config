@@ -95,11 +95,11 @@ spec:
       initialization:
         enabled: true
         apiEnabled: true
-        admin:
-          # apiPassword:
-          # email:
-          # password:
-          # username:
+        # admin:
+        #   apiPassword:
+        #   email:
+        #   password:
+        #   username:
       persistence:
         enabled: true
         storageClass: longhorn
