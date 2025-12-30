@@ -57,11 +57,6 @@ spec:
       name: freshrss-secrets-fluxcd
       valuesKey: admin-password
       targetPath: freshrss.initialization.admin.password
-    # oidc
-    - kind: Secret
-      name: freshrss-secrets-fluxcd
-      valuesKey: oidc-extraEnv
-      targetPath: extraEnv
 
   values:
     image:
@@ -87,6 +82,26 @@ spec:
         - secretName: freshrss-tls
           hosts:
             - rss.zshen.me
+
+    extraEnv:
+      - name: OIDC_ENABLED
+        value: "1"
+      - name: OIDC_PROVIDER_METADATA_URL
+        value: "https://authentik.zshen.me/application/o/freshrss/.well-known/openid-configuration"
+      - name: OIDC_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: freshrss-secrets-fluxcd
+            key: OIDC_CLIENT_ID
+      - name: OIDC_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: freshrss-secrets-fluxcd
+            key: OIDC_CLIENT_SECRET
+      - name: OIDC_X_FORWARDED_HEADERS
+        value: "X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host"
+      - name: OIDC_SCOPES
+        value: "openid email profile"
 
     freshrss:
       baseUrl: "https://rss.zshen.me"
