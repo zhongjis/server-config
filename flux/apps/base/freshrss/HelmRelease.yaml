@@ -40,19 +40,19 @@ spec:
       targetPath: externalPostgresql.port
     # init
     - kind: Secret
-      name: freshrss-secrets
+      name: freshrss-secrets-fluxcd
       valuesKey: admin-api-password
       targetPath: freshrss.initialization.admin.apiPassword
     - kind: Secret
-      name: freshrss-secrets
+      name: freshrss-secrets-fluxcd
       valuesKey: admin-username
       targetPath: freshrss.initialization.admin.username
     - kind: Secret
-      name: freshrss-secrets
+      name: freshrss-secrets-fluxcd
       valuesKey: admin-email
       targetPath: freshrss.initialization.admin.email
     - kind: Secret
-      name: freshrss-secrets
+      name: freshrss-secrets-fluxcd
       valuesKey: admin-password
       targetPath: freshrss.initialization.admin.password
     # oidc
