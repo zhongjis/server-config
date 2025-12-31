@@ -101,7 +101,7 @@ spec:
 
     webhook:
       mode: queue
-      url: "https://webhook.n8n.zshen.me"
+      url: "https://webhook.n8n-legacy.zshen.me"
       autoscaling:
         enabled: true
       waitMainNodeReady:
