@@ -7,16 +7,18 @@
     user ? "nixos",
     isMaster ? false,
     master ? "",
+    labels ? [],
   }: {
     custHostConfig = {
       hostName = hostname;
       hostUser = user;
       isK3sMaster = isMaster;
       masterAddr = master;
+      nodeLabels = labels;
     };
   };
 
-  mkHive = hostName: {
+  mkK3sNode = hostName: {
     user ? "root",
     host,
     buildOnTarget ? false,

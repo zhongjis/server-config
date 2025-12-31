@@ -38,6 +38,7 @@
           nodeSpecialArgs = {
             homelab-0 = mkNodeSpecialArgs "homelab-0" {
               isMaster = true;
+              labels = ["n8n-node=true"];
             };
 
             homelab-1 = mkNodeSpecialArgs "homelab-1" {
@@ -46,13 +47,13 @@
           };
         };
 
-        homelab-0 = mkHive "homelab-0" {
+        homelab-0 = mkK3sNode "homelab-0" {
           host = "192.168.50.104";
           hostModule = ./hosts/k3s/configuration.nix;
           tags = ["homelab" "master"];
         };
 
-        homelab-1 = mkHive "homelab-1" {
+        homelab-1 = mkK3sNode "homelab-1" {
           host = "192.168.50.103";
           hostModule = ./hosts/k3s/configuration.nix;
           tags = ["homelab"];

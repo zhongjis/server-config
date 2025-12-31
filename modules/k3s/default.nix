@@ -38,5 +38,6 @@ in {
       if custHostConfig.isK3sMaster
       then ""
       else "https://${custHostConfig.masterAddr}:6443";
+    nodeLabel = custHostConfig.nodeLabels;
   };
 }
