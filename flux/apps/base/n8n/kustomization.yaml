@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ./Namespace.yaml
   - ./HelmRepo.yaml
-  - ./HelmRelease.yaml
+  # - ./HelmRelease.yaml
   - ./HelmReleaseLegacy.yaml
   - ./GrafanaDashboard.yaml
   - ./Cluster.yaml

@@ -1,0 +1,222 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: n8n
+  namespace: n8n
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: n8n
+      version: 1.16.14
+      sourceRef:
+        kind: HelmRepository
+        name: community-charts
+        namespace: n8n
+      interval: 24h
+  dependsOn:
+    - name: n8n-cnpg-cluster
+  valuesFrom:
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: postgres-user-password
+      targetPath: externalPostgresql.password
+    # redis
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: redis-password
+      targetPath: externalRedis.password
+  values:
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description: A workflow automation platform that uniquely combines AI capabilities with business process automation.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Automations
+        gethomepage.dev/name: n8n
+        kubernetes.io/tls-acme: "true"
+      className: nginx
+      hosts:
+        - host: n8n.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: n8n-tls
+          hosts:
+            - n8n.zshen.me
+
+    timezone: America/Los_Angeles
+
+    log:
+      level: warn
+
+    db:
+      type: postgresdb
+
+    main:
+      resources:
+        requests:
+          cpu: 200m
+          memory: 1024Mi
+        limits:
+          cpu: 1024m
+          memory: 4096Mi
+      persistence:
+        enabled: true
+        volumeName: "n8n-main-data"
+        size: 8Gi
+        accessMode: ReadWriteOnce
+        storageClass: "longhorn"
+
+    api:
+      enabled: true
+      path: api
+      swagger:
+        enabled: true
+
+    worker:
+      mode: queue
+      waitMainNodeReady:
+        enabled: true
+      autoscaling:
+        enabled: true
+        minReplicas: 3
+        maxReplicas: 10
+        metrics:
+          - type: Resource
+            resource:
+              name: memory
+              target:
+                type: Utilization
+                averageUtilization: 80
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 80
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 1Gi
+        limits:
+          cpu: 4000m
+          memory: 4Gi
+
+    webhook:
+      mode: queue
+      url: "https://webhook.n8n.zshen.me"
+      autoscaling:
+        enabled: true
+      waitMainNodeReady:
+        enabled: true
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 512m
+          memory: 512Mi
+
+    taskRunners:
+      mode: internal
+      maxConcurrency: 10
+      taskTimeout: 60
+      taskHeartbeatInterval: 30
+
+    externalRedis:
+      database: 2
+      host: "redis-master.redis.svc.cluster.local"
+      # username: "default"
+      # password: "Pa33w0rd!"
+
+    externalPostgresql:
+      host: "postgresql.postgresql.svc.cluster.local"
+      username: "n8n_user"
+      # password: "Pa33w0rd!"
+      database: "n8n"
+
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      interval: 15s
+      timeout: 10s
+      labels:
+        release: prometheus
+        team: platform
+      targetLabels:
+        - app.kubernetes.io/name
+        - app.kubernetes.io/instance
+      include:
+        defaultMetrics: true
+        cacheMetrics: true
+        messageEventBusMetrics: true
+        workflowIdLabel: true
+        nodeTypeLabel: true
+        credentialTypeLabel: true
+        apiEndpoints: true
+        apiPathLabel: true
+        apiMethodLabel: true
+        apiStatusCodeLabel: true
+        queueMetrics: true
+
+    # binaryData:
+    #   mode: "s3"
+    #   s3:
+    #     host: minio.yourdomain.com
+    #     bucketName: n8n-bucket
+    #     bucketRegion: us-east-1
+    #     # accessKey: n8n-user
+    #     # accessSecret: your-secret-key
+
+    minio:
+      enabled: false
+    #   mode: distributed
+    #   # rootUser: minioadmin
+    #   # rootPassword: minioadmin123
+    #   statefulSetUpdate:
+    #     updateStrategy: RollingUpdate
+    #   replicas: 4
+    #   drivesPerNode: 1
+    #   persistence:
+    #     enabled: true
+    #     size: 20Gi
+    #   buckets:
+    #     - name: n8n-bucket
+    #       policy: none
+    #       versioning: false
+    #       purge: false
+    #   users:
+    #     - accessKey: n8n-user
+    #       secretKey: your-secret-key
+    #       policy: n8n-policy
+    #   policies:
+    #     - name: n8n-policy
+    #       statements:
+    #         - actions:
+    #             - "s3:AbortMultipartUpload"
+    #             - "s3:GetObject"
+    #             - "s3:DeleteObject"
+    #             - "s3:PutObject"
+    #             - "s3:ListMultipartUploadParts"
+    #           resources:
+    #             - "arn:aws:s3:::n8n-bucket/*"
+    #         - actions:
+    #             - "s3:GetBucketLocation"
+    #             - "s3:ListBucket"
+    #             - "s3:ListBucketMultipartUploads"
+    #           resources:
+    #             - "arn:aws:s3:::n8n-bucket"
+    #   ingress:
+    #     enabled: true
+    #     hosts:
+    #       - minio.zshen.me
+    #     path: /
+    #   consoleIngress:
+    #     enabled: true
+    #     hosts:
+    #       - minio-console.zshen.me
+    #     path: /
