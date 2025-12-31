@@ -19,10 +19,24 @@ spec:
   dependsOn:
     - name: n8n-cnpg-cluster
   valuesFrom:
+    # postgres
     - kind: Secret
-      name: n8n-secrets
-      valuesKey: postgres-user-password
+      name: n8n-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: externalPostgresql.database
+    - kind: Secret
+      name: n8n-cnpg-cluster-app
+      valuesKey: username
+      targetPath: externalPostgresql.username
+    - kind: Secret
+      name: n8n-cnpg-cluster-app
+      valuesKey: password
       targetPath: externalPostgresql.password
+    - kind: Secret
+      name: n8n-cnpg-cluster-app
+      valuesKey: host
+      targetPath: externalPostgresql.host
+    # redis
     - kind: Secret
       name: n8n-secrets
       valuesKey: redis-password
@@ -132,11 +146,11 @@ spec:
       # username: "default"
       # password: "Pa33w0rd!"
 
-    externalPostgresql:
-      host: "postgresql.postgresql.svc.cluster.local"
-      username: "n8n_user"
-      # password: "Pa33w0rd!"
-      database: "n8n"
+    # externalPostgresql:
+    #   host: "postgresql.postgresql.svc.cluster.local"
+    #   username: "n8n_user"
+    #   # password: "Pa33w0rd!"
+    #   database: "n8n"
 
     serviceMonitor:
       enabled: true
