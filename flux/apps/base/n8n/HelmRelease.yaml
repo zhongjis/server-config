@@ -66,8 +66,9 @@ spec:
     log:
       level: warn
 
-    db:
-      type: postgresdb
+    binaryData:
+      mode: "filesystem"
+      localStoragePath: "/home/node/.n8n/binary-data"
 
     main:
       resources:
@@ -75,14 +76,26 @@ spec:
           cpu: 200m
           memory: 1024Mi
         limits:
-          cpu: 1024m
+          cpu: 1000m
           memory: 4096Mi
       persistence:
         enabled: true
         volumeName: "n8n-main-data"
-        size: 8Gi
+        mountPath: "/home/node/.n8n"
+        size: 10Gi
         accessMode: ReadWriteOnce
         storageClass: "longhorn"
+        annotations:
+          helm.sh/resource-policy: keep
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: n8n-node
+                    operator: In
+                    values:
+                      - "true"
 
     api:
       enabled: true
@@ -118,6 +131,21 @@ spec:
         limits:
           cpu: 4000m
           memory: 4Gi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: n8n-node
+                    operator: In
+                    values:
+                      - "true"
+
+    taskRunners:
+      mode: internal
+      maxConcurrency: 10
+      taskTimeout: 60
+      taskHeartbeatInterval: 30
 
     webhook:
       mode: queue
@@ -133,18 +161,24 @@ spec:
         limits:
           cpu: 512m
           memory: 512Mi
-
-    taskRunners:
-      mode: internal
-      maxConcurrency: 10
-      taskTimeout: 60
-      taskHeartbeatInterval: 30
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: n8n-node
+                    operator: In
+                    values:
+                      - "true"
 
     externalRedis:
       database: 2
       host: "redis-master.redis.svc.cluster.local"
       # username: "default"
       # password: "Pa33w0rd!"
+
+    db:
+      type: postgresdb
 
     # externalPostgresql:
     #   host: "postgresql.postgresql.svc.cluster.local"
