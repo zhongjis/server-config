@@ -5,3 +5,4 @@ resources:
   - ./HelmRepo.yaml
   - ./HelmRelease.yaml
   - ./GrafanaDashboard.yaml
+  - ./Cluster.yaml

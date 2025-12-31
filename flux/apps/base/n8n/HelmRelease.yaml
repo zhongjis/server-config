@@ -16,6 +16,8 @@ spec:
         name: community-charts
         namespace: n8n
       interval: 24h
+  dependsOn:
+    - name: n8n-cnpg-cluster
   valuesFrom:
     - kind: Secret
       name: n8n-secrets
