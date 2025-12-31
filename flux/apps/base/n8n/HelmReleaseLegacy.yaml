@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: n8n
+  name: n8n-legcy
   namespace: n8n
 spec:
   interval: 30m
@@ -16,26 +16,12 @@ spec:
         name: community-charts
         namespace: n8n
       interval: 24h
-  dependsOn:
-    - name: n8n-cnpg-cluster
   valuesFrom:
-    # postgres
+    # postgresql
     - kind: Secret
-      name: n8n-cnpg-cluster-app
-      valuesKey: dbname
-      targetPath: externalPostgresql.database
-    - kind: Secret
-      name: n8n-cnpg-cluster-app
-      valuesKey: username
-      targetPath: externalPostgresql.username
-    - kind: Secret
-      name: n8n-cnpg-cluster-app
-      valuesKey: password
+      name: n8n-secrets
+      valuesKey: postgres-user-password
       targetPath: externalPostgresql.password
-    - kind: Secret
-      name: n8n-cnpg-cluster-app
-      valuesKey: host
-      targetPath: externalPostgresql.host
     # redis
     - kind: Secret
       name: n8n-secrets
@@ -52,14 +38,14 @@ spec:
         kubernetes.io/tls-acme: "true"
       className: nginx
       hosts:
-        - host: n8n.zshen.me
+        - host: n8n-legacy.zshen.me
           paths:
             - path: /
               pathType: ImplementationSpecific
       tls:
         - secretName: n8n-tls
           hosts:
-            - n8n.zshen.me
+            - n8n-legacy.zshen.me
 
     timezone: America/Los_Angeles
 
@@ -146,11 +132,11 @@ spec:
       # username: "default"
       # password: "Pa33w0rd!"
 
-    # externalPostgresql:
-    #   host: "postgresql.postgresql.svc.cluster.local"
-    #   username: "n8n_user"
-    #   # password: "Pa33w0rd!"
-    #   database: "n8n"
+    externalPostgresql:
+      host: "postgresql.postgresql.svc.cluster.local"
+      username: "n8n_user"
+      # password: "Pa33w0rd!"
+      database: "n8n"
 
     serviceMonitor:
       enabled: true
