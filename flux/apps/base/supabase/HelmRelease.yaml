@@ -82,7 +82,7 @@ spec:
       persistence:
         enabled: true
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     studio:
       image:
@@ -93,7 +93,7 @@ spec:
         SUPABASE_PUBLIC_URL: http://supabase.zshen.me
         NEXT_PUBLIC_ENABLE_LOGS: true
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     auth:
       image:
@@ -108,13 +108,13 @@ spec:
         GOTRUE_SMTP_PORT: "587"
         GOTRUE_SMTP_SENDER_NAME: "your-mail@supabase.zshen.me"
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     rest:
       image:
         tag: v14.1
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     realtime:
       image:
@@ -125,13 +125,13 @@ spec:
           port: 4000
         initialDelaySeconds: 3
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     meta:
       image:
         tag: v0.95.1
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     storage:
       image:
@@ -151,7 +151,7 @@ spec:
         GLOBAL_S3_FORCE_PATH_STYLE: true
         AWS_DEFAULT_REGION: stub
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     imgproxy:
       image:
@@ -167,7 +167,7 @@ spec:
       persistence:
         enabled: false
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     kong:
       image:
@@ -195,7 +195,7 @@ spec:
               - path: /
                 pathType: Prefix
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     analytics:
       image:
@@ -206,7 +206,7 @@ spec:
           port: 4000
         initialDelaySeconds: 3
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     vector:
       image:
@@ -227,13 +227,13 @@ spec:
           hostPath:
             path: /var/log/pods
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     functions:
       image:
         tag: v1.68.4
       nodeSelector:
-        kubernetes.io/hostname: homelab-0
+        kubernetes.io/hostname: homelab-1
 
     # minio
     minio:
