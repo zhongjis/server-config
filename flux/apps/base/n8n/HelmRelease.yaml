@@ -45,6 +45,8 @@ spec:
           hosts:
             - n8n.zshen.me
 
+    timezone: America/Los_Angeles
+
     log:
       level: warn
 
@@ -79,7 +81,7 @@ spec:
       autoscaling:
         enabled: true
         minReplicas: 3
-        maxReplicas: 15
+        maxReplicas: 10
         metrics:
           - type: Resource
             resource:
