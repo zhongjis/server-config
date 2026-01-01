@@ -16,15 +16,18 @@ spec:
         name: community-charts
         namespace: mlflow
       interval: 24h
-  # valuesFrom:
-  #   - kind: Secret
-  #     name: mlflow-secrets-fluxcd
-  #     valuesKey: postgres-user-username
-  #     targetPath: backendStore.postgres.user
-  #   - kind: Secret
-  #     name: mlflow-secrets-fluxcd
-  #     valuesKey: postgres-user-password
-  #     targetPath: backendStore.postgres.password
+  dependsOn:
+    - name: freshrss-cnpg-cluster
+  valuesFrom:
+    # externalPostgresql
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: backendStore.postgres.database
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: host
+      targetPath: backendStore.postgres.host
   values:
     ingress:
       enabled: true
@@ -47,21 +50,21 @@ spec:
     auth:
       enabled: true
       existingAdminSecret:
-        name: "mlflow-secrets-fluxcd"
-        usernameKey: "mlflow-admin-username"
-        passwordKey: "mlflow-admin-password"
+        name: "mlflow-cnpg-cluster-app"
+        usernameKey: "username"
+        passwordKey: "password"
 
     backendStore:
       databaseMigration: false
       databaseConnectionCheck: true
       postgres:
         enabled: true
-        host: "postgresql.postgresql.svc.cluster.local"
-        database: mlflow
+        # host: "postgresql.postgresql.svc.cluster.local"
+        # database: mlflow
       existingDatabaseSecret:
-        name: "mlflow-secrets-fluxcd"
-        usernameKey: "postgres-user-username"
-        passwordKey: "postgres-user-password"
+        name: "mlflow-cnpg-cluster-app"
+        usernameKey: "username"
+        passwordKey: "password"
 
     # use integrated minio
     artifactRoot:
