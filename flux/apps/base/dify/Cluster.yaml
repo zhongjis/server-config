@@ -35,3 +35,8 @@ spec:
     databases:
       - name: dify_plugin
         owner: dify_user
+      - name: dify_vector
+        owner: dify_user
+        extensions:
+          - name: vector
+            ensure: present

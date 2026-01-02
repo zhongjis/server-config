@@ -31,6 +31,10 @@ spec:
       name: dify-cnpg-cluster-app
       valuesKey: password
       targetPath: externalPostgres.password
+    - kind: Secret
+      name: dify-cnpg-cluster-app
+      valuesKey: password
+      targetPath: externalPgvector.password
   values:
     ingress:
       enabled: true
@@ -74,3 +78,11 @@ spec:
       port: 6379
       username: ""
       useSSL: false
+    weaviate:
+      enabled: false
+    externalPgvector:
+      enabled: true
+      username: dify_user
+      address: dify-cnpg-cluster-rw
+      port: 5432
+      dbName: dify_vector
