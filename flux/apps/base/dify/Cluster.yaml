@@ -47,6 +47,5 @@ spec:
             create: false
             # -- Name of the secret containing the password
             name: "postgresql-secrets"
-            namespace: "postgresql"
             # -- The key in the secret containing the password
             key: "admin-password"
