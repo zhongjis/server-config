@@ -24,12 +24,12 @@ spec:
       valuesKey: redis-password
       targetPath: externalRedis.password
     - kind: Secret
-      name: dify-secrets-flux
-      valuesKey: postgresql-username
+      name: dify-cnpg-cluster-app
+      valuesKey: username
       targetPath: externalPostgres.username
     - kind: Secret
-      name: dify-secrets-flux
-      valuesKey: postgresql-password
+      name: dify-cnpg-cluster-app
+      valuesKey: password
       targetPath: externalPostgres.password
   values:
     ingress:
@@ -62,7 +62,7 @@ spec:
       enabled: false
     externalPostgres:
       enabled: true
-      address: "postgresql.postgresql.svc.cluster.local"
+      address: "dify-cnpg-cluster-rw"
       database:
         api: "dify"
         pluginDaemon: "dify_plugin"
