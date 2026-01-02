@@ -17,7 +17,7 @@ spec:
         namespace: mlflow
       interval: 24h
   dependsOn:
-    - name: freshrss-cnpg-cluster
+    - name: mlflow-cnpg-cluster
   valuesFrom:
     # externalPostgresql
     - kind: Secret
