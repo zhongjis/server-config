@@ -43,6 +43,7 @@ spec:
           port: 5432
           username: "postgres"
           database: "postgres" # Connect to postgres database to get role info
+          sslMode: "disable"
           passwordSecret:
             create: false
             # -- Name of the secret containing the password
