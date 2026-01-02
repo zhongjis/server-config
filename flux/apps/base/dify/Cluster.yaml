@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dify-cnpg-cluster
+  namespace: dify
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: cluster
+      version: 0.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: cnpg-system
+      interval: 12h
+  values:
+    type: postgresql
+    version:
+      postgresql: "17"
+    mode: standalone
+
+    bootstrap:
+      initdb:
+        import:
+          type: monolith
+          databases:
+            - dify
+            - dify_plugin
+          source:
+            externalCluster: old-bitnami-postgres
+    storage:
+      size: 50Gi
+    externalClusters:
+      - name: old-bitnami-postgres
+        connectionParameters:
+          host:
+          user: postgres
+          dbname: postgres
+          password:
+            name: dify-secrets-flux
+            key: postgresql-password

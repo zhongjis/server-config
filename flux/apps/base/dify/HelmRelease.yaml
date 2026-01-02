@@ -16,6 +16,8 @@ spec:
         name: dify
         namespace: dify
       interval: 12h
+  dependsOn:
+    - name: dify-cnpg-cluster
   valuesFrom:
     - kind: Secret
       name: dify-secrets-flux
