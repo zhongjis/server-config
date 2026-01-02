@@ -48,11 +48,11 @@ spec:
       # secret_key: "PleaseGenerateA50CharKey"
       error_reporting:
         enabled: false
-      postgresql:
-        host: postgresql.postgresql.svc.cluster.local
-        name: authentik
-        user: file:///postgres-creds/postgres-user-username
-        password: file:///postgres-creds/postgres-user-password
+      # postgresql:
+      #   host: postgresql.postgresql.svc.cluster.local
+      #   name: authentik
+      #   user: file:///postgres-creds/postgres-user-username
+      #   password: file:///postgres-creds/postgres-user-password
 
     server:
       ingress:
@@ -71,5 +71,3 @@ spec:
             hosts:
               - authentik.zshen.me
         https: false
-
-
