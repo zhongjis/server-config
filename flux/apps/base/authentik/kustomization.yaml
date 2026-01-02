@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - ./Namespace.yaml
   - ./HelmRepo.yaml
+  - ./Cluster.yaml
   - ./HelmRelease.yaml

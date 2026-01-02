@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik-cnpg-cluster
+  namespace: authentik
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: cluster
+      version: 0.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: cnpg-system
+      interval: 12h
+  values:
+    type: postgresql
+    version:
+      postgresql: "17"
+    mode: recovery
+    cluster:
+      instances: 2 # only two nodes now
+      storage:
+        size: 5Gi
+        storageClass: "longhorn"
+      monitoring:
+        enabled: true
+        podMonitorEnabled: true
+    recovery:
+      method: "import"
+      import:
+        type: monolith
+        databases:
+          - authentik
+        roles:
+          - authentik_user
+        source:
+          host: "postgresql.postgresql.svc.cluster.local"
+          port: 5432
+          username: "postgres"
+          database: "postgres" # Connect to postgres database to get role info
+          sslMode: "disable"
+          passwordSecret:
+            create: false
+            # -- Name of the secret containing the password
+            # Note: This secret must be copied from postgresql namespace to authentik namespace
+            name: "postgresql-secrets"
+            # -- The key in the secret containing the password
+            key: "admin-password"

@@ -16,6 +16,8 @@ spec:
         name: authentik
         namespace: authentik
       interval: 24h
+  dependsOn:
+    - name: authentik-cnpg-cluster
   valuesFrom:
     - kind: Secret
       name: authentik-secrets-fluxcd
@@ -27,7 +29,7 @@ spec:
       error_reporting:
         enabled: false
       postgresql:
-        host: postgresql.postgresql.svc.cluster.local
+        host: authentik-cnpg-cluster-rw
         name: authentik
         user: file:///postgres-creds/postgres-user-username
         password: file:///postgres-creds/postgres-user-password
