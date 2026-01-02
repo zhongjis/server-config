@@ -20,33 +20,18 @@ spec:
     type: postgresql
     version:
       postgresql: "17"
-    mode: recovery
+    mode: standalone
     cluster:
       instances: 2 # only two nodes now
       storage:
         size: 5Gi
         storageClass: "longhorn"
+      initdb:
+        database: dify
+        owner: dify_user
       monitoring:
         enabled: true
         podMonitorEnabled: true
-    recovery:
-      method: "import"
-      import:
-        type: monolith
-        databases:
-          - dify
-          - dify_plugin
-        roles:
-          - dify_user
-        source:
-          host: "postgresql.postgresql.svc.cluster.local"
-          port: 5432
-          username: "postgres"
-          database: "postgres" # Connect to postgres database to get role info
-          sslMode: "disable"
-          passwordSecret:
-            create: false
-            # -- Name of the secret containing the password
-            name: "postgresql-secrets"
-            # -- The key in the secret containing the password
-            key: "admin-password"
+    databases:
+      - name: dify_plugin
+        owner: dify_user
