@@ -29,7 +29,7 @@ spec:
       error_reporting:
         enabled: false
       postgresql:
-        host: authentik-cnpg-cluster-rw
+        host: postgresql.postgresql.svc.cluster.local
         name: authentik
         user: file:///postgres-creds/postgres-user-username
         password: file:///postgres-creds/postgres-user-password
