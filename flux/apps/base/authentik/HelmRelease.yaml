@@ -23,6 +23,26 @@ spec:
       name: authentik-secrets-fluxcd
       valuesKey: authentik-secret-key
       targetPath: authentik.secret_key
+    - kind: Secret
+      name: authentik-cnpg-cluster-app
+      valuesKey: user
+      targetPath: authentik.postgresql.user
+    - kind: Secret
+      name: authentik-cnpg-cluster-app
+      valuesKey: password
+      targetPath: authentik.postgresql.password
+    - kind: Secret
+      name: authentik-cnpg-cluster-app
+      valuesKey: host
+      targetPath: authentik.postgresql.host
+    - kind: Secret
+      name: authentik-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: authentik.postgresql.name
+    - kind: Secret
+      name: authentik-cnpg-cluster-app
+      valuesKey: port
+      targetPath: authentik.postgresql.port
   values:
     authentik:
       # secret_key: "PleaseGenerateA50CharKey"
@@ -35,14 +55,6 @@ spec:
         password: file:///postgres-creds/postgres-user-password
 
     server:
-      volumes:
-        - name: postgres-creds
-          secret:
-            secretName: authentik-secrets-fluxcd
-      volumeMounts:
-        - name: postgres-creds
-          mountPath: /postgres-creds
-          readOnly: true
       ingress:
         enabled: true
         annotations:
@@ -60,12 +72,4 @@ spec:
               - authentik.zshen.me
         https: false
 
-    worker:
-      volumes:
-        - name: postgres-creds
-          secret:
-            secretName: authentik-secrets-fluxcd
-      volumeMounts:
-        - name: postgres-creds
-          mountPath: /postgres-creds
-          readOnly: true
+
