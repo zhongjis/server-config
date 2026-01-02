@@ -26,9 +26,9 @@ spec:
       storage:
         size: 5Gi
         storageClass: "longhorn"
-      initdb:
-        database: dify
-        owner: dify_user
+      # initdb:
+      #   database: dify
+      #   owner: dify_user
       monitoring:
         enabled: true
         podMonitorEnabled: true
