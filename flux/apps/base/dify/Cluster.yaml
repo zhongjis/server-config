@@ -21,24 +21,34 @@ spec:
     version:
       postgresql: "17"
     mode: standalone
-
-    bootstrap:
+    cluster:
+      instances: 2 # only two nodes now
+      storage:
+        size: 5Gi
+        storageClass: "longhorn"
       initdb:
-        import:
-          type: monolith
-          databases:
-            - dify
-            - dify_plugin
-          source:
-            externalCluster: old-bitnami-postgres
-    storage:
-      size: 50Gi
-    externalClusters:
-      - name: old-bitnami-postgres
-        connectionParameters:
-          host:
-          user: postgres
-          dbname: postgres
-          password:
-            name: dify-secrets-flux
-            key: postgresql-password
+        database: dify
+        owner: dify_user
+      monitoring:
+        enabled: true
+        podMonitorEnabled: true
+    databases:
+      - dify_plugin
+    recovery:
+      method: "import"
+      import:
+        type: microservice
+        databases:
+          - dify
+          - dify_plugin
+        source:
+          host: "postgresql.postgresql.svc.cluster.local"
+          port: 5432
+          username: "dify_admin"
+          database: "dify"
+          passwordSecret:
+            create: false
+            # -- Name of the secret containing the password
+            name: "dify-secrets-flux"
+            # -- The key in the secret containing the password
+            key: "postgresql-password"
