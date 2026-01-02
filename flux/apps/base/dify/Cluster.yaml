@@ -33,7 +33,8 @@ spec:
         enabled: true
         podMonitorEnabled: true
     databases:
-      - dify_plugin
+      - name: dify_plugin
+        owner: dify_user
     recovery:
       method: "import"
       import:
