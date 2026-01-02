@@ -16,7 +16,6 @@ resources:
   # - ../base/mongodb
   - ../base/n8n
   # - ../base/open-webui
-  - ../base/postgresql
   - ../base/redis
   - ../base/stirling-pdf
   - ../base/supabase
