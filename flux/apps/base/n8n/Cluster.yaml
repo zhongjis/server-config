@@ -32,3 +32,9 @@ spec:
       monitoring:
         enabled: true
         podMonitorEnabled: true
+    roles:
+      - name: dota2_wokman_user
+        login: true
+    databases:
+      - name: dota2_wokman
+        owner: dota2_wokman_user
