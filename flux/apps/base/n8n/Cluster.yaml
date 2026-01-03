@@ -36,6 +36,8 @@ spec:
       roles:
         - name: dota2_wokman_user
           login: true
+          passwordSecret:
+            name: dota2-wokman-secrets
     databases:
       - name: dota2_wokman
         owner: dota2_wokman_user
