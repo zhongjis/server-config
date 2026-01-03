@@ -49,7 +49,7 @@ spec:
           kubernetes.io/tls-acme: "true"
         ingressClassName: nginx
         hosts:
-          - name: karakeep.zshen.me
+          - host: karakeep.zshen.me
             paths:
               - path: /
                 pathType: Prefix
