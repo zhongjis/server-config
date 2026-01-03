@@ -3,7 +3,7 @@
   disko,
   ...
 }: {
-  mkNodeSpecialArgs = hostname: {
+  mkHiveSpecialArgs = hostname: {
     user ? "nixos",
     isMaster ? false,
     master ? "",
@@ -18,7 +18,7 @@
     };
   };
 
-  mkK3sNode = hostName: {
+  mkHiveK3s = hostName: {
     user ? "root",
     host,
     buildOnTarget ? false,
