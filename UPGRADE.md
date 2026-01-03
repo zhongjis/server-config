@@ -1,5 +1,7 @@
 # homelab-1
 
+TODO: missing cnpg cluster's node upgrade before/post actions.
+
 ```bash
 kubectl drain homelab-1 --ignore-daemonsets --disable-eviction --delete-emptydir-data --force
 colmena apply --on homelab-1 --reboot
