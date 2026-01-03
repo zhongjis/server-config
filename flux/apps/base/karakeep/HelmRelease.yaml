@@ -47,7 +47,7 @@ spec:
           gethomepage.dev/group: Applications
           gethomepage.dev/name: Karakeep
           kubernetes.io/tls-acme: "true"
-        ingressClassName: nginx
+        className: nginx
         hosts:
           - host: karakeep.zshen.me
             paths:
