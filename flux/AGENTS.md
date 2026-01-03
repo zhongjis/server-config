@@ -1,15 +1,19 @@
-# Agent Guidelines for Server Config / Flux
+# Agent Guidelines for Flux CD Configuration
+
+## Context
+
+**This is the `flux/` subdirectory** of a larger repository that manages a homelab infrastructure with two-part architecture:
+1. **NixOS Host Configuration** (base directory) - Managed via base `AGENTS.md`
+2. **FluxCD GitOps Configuration** (this directory) - Kubernetes application deployment via GitOps
 
 ## Directory Overview
 
 This is a FluxCD-based GitOps repository managing a Kubernetes cluster with multiple self-hosted applications. The repository follows the Flux v2 structure with Kustomize overlays for different environments (production/staging). Flux continuously reconciles the cluster state with this Git repository.
 
-## Repository Structure
-
-The repository follows a three-tier structure:
+The repository follows a **six-component structure**:
 
 1. **clusters/** - Flux configuration entry points
-   - `clusters/production/` - Production cluster Flux Kustomizations
+   - `clusters/production/` - Production cluster Flux Kustomizations with performance patches
    - `clusters/staging/` - Staging cluster Flux Kustomizations
    - Each contains `infrastructure.yaml` and `apps.yaml` that define reconciliation order
 
@@ -47,7 +51,7 @@ Flux enforces deployment order using `dependsOn`:
 Each application in `apps/base/<app>/` follows this structure:
 
 - `Namespace.yaml` - Creates the application namespace
-- `HelmRepo.yaml` - Defines the Helm repository source
+- `HelmRepo.yaml` or `OCIRepository.yaml` - Defines the Helm chart source
 - `HelmRelease.yaml` - Main deployment with values configuration
 - `kustomization.yaml` - Lists all resources
 - Optional: `GrafanaDashboard.yaml`, CloudNativePG `Cluster.yaml`
@@ -58,8 +62,9 @@ Secrets are managed using SOPS with age encryption:
 
 - Encrypted secrets live in `secrets/production/`
 - HelmReleases reference secrets via `valuesFrom` to inject values into Helm charts
-- Secrets follow naming pattern: `<app>-secrets-fluxcd.yaml` or `<app>-secrets.yaml`
-- Encryption command from README: `sops --age=age1gff6wle45ktarxc89vfqnq6qawwjcxd5jed4jnuhhddpeqxz6d7q8wq8gn --encrypt --encrypted-regex '^(data|stringData)$' --in-place <file>.yaml`
+- **New secret pattern**: `<app>-secrets-flux.yaml` (preferred for new applications)
+- **Legacy patterns**: `<app>-secrets-fluxcd.yaml`, `<app>-secrets.yaml` (existing files)
+- Encryption command: `sops --age=age1gff6wle45ktarxc89vfqnq6qawwjcxd5jed4jnuhhddpeqxz6d7q8wq8gn --encrypt --encrypted-regex '^(data|stringData)$' --in-place <file>.yaml`
 
 ### Environment-Specific Configuration
 
@@ -67,6 +72,14 @@ Production uses JSON patches in `clusters/production/infrastructure.yaml`:
 
 - Example: Replaces Let's Encrypt staging server with production server for ClusterIssuer
 - Patches applied at the Flux Kustomization level, not in app manifests
+
+### Performance Optimizations
+
+Flux controllers are configured for faster reconciliation:
+
+- `--concurrent=20` for parallel processing
+- `--requeue-dependency=5s` for faster dependency resolution
+- Configured via patches in `clusters/production/infrastructure.yaml`
 
 ### Ingress and TLS
 
@@ -144,14 +157,14 @@ sops --age=age1gff6wle45ktarxc89vfqnq6qawwjcxd5jed4jnuhhddpeqxz6d7q8wq8gn \
 
 Most apps use external Helm charts with custom values. Key components:
 
-1. Define HelmRepository source
+1. Define HelmRepository source (or OCIRepository for OCI-based charts)
 2. Create HelmRelease with chart version pinned
 3. Use `valuesFrom` to inject secrets from Kubernetes Secrets
 4. Configure ingress, persistence (usually Longhorn), and resource limits
 
 ### Applications with CloudNativePG
 
-Apps requiring PostgreSQL (freshrss, n8n) use CloudNativePG operator:
+Apps requiring PostgreSQL (freshrss, n8n, authentik, dify, mlflow) use CloudNativePG operator:
 
 - Define a `Cluster.yaml` in the app directory
 - HelmRelease uses `dependsOn` to wait for the cluster
@@ -174,11 +187,18 @@ n8n uses separate main/worker/webhook pods with HPA:
 - Webhook pods: Webhook handling with autoscaling
 - Redis for queue coordination
 
+### Multi-component Applications (minio example)
+
+Some apps have multiple components:
+- `minio/operator/`: MinIO operator deployment
+- `minio/tenant/`: MinIO tenant deployment
+- Each with separate namespace and HelmRelease
+
 ## Important Notes
 
 ### Version Pinning
 
-All HelmReleases specify exact chart versions (e.g., `version: 1.16.14`), not semver ranges. This ensures predictable deployments and requires manual version updates.
+All HelmReleases specify exact chart versions (e.g., `version: 1.19.2`), not semver ranges. This ensures predictable deployments and requires manual version updates.
 
 ### Namespace Convention
 
@@ -229,9 +249,101 @@ The cluster uses these core controllers (defined in `infrastructure/controllers/
 ## Adding a New Application
 
 1. Create directory structure: `apps/base/<app>/`
-2. Add manifests: Namespace, HelmRepo, HelmRelease, kustomization
-3. If secrets needed, create encrypted secret in `secrets/production/`
+2. Add manifests: Namespace, HelmRepo/OCIRepository, HelmRelease, kustomization
+3. If secrets needed, create encrypted secret in `secrets/production/` following naming pattern
 4. Reference secret in HelmRelease via `valuesFrom`
 5. Add app to `apps/production/kustomization.yaml` resources list
 6. Run `./scripts/validate.sh` to validate
 7. Commit and push - Flux will reconcile automatically
+
+For detailed steps, see `.opencode/context/core/workflows/deploy-new-app.md`.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Kustomization not reconciling**:
+   ```bash
+   flux describe kustomization <name> -n <namespace>
+   flux reconcile kustomization <name> -n <namespace> --with-source
+   ```
+
+2. **HelmRelease failing**:
+   ```bash
+   flux describe helmrelease <name> -n <namespace>
+   kubectl logs -n flux-system deployment/helm-controller | tail -100
+   ```
+
+3. **Secret injection issues**:
+   ```bash
+   # Check if secret exists
+   kubectl get secret <secret-name> -n <namespace>
+   
+   # Test secret decryption
+   sops -d secrets/production/<file>.yaml > /dev/null && echo "OK"
+   ```
+
+4. **Flux reconciliation slow**:
+   - Controllers are configured with `--concurrent=20`
+   - Check for resource constraints: `kubectl top pods -n flux-system`
+   - Verify network connectivity to source repositories
+
+For comprehensive troubleshooting, see `.opencode/context/core/workflows/troubleshoot-flux.md`.
+
+## Agent Guidance
+
+### OpenCode Standards Reference
+This repository uses OpenCode standards for consistent agent interactions:
+
+- **Agent Rules**: `.opencode/context/core/standards/rules.md`
+  - When to check which AGENTS.md file
+  - Kubernetes context usage guidelines
+  - Secret naming patterns
+  - App discovery patterns
+
+- **Code Standards**: `.opencode/context/core/standards/code.md`
+  - YAML formatting (2-space indentation)
+  - Kubernetes resource naming conventions
+  - File naming patterns
+
+- **Workflows**: `.opencode/context/core/workflows/`
+  - `deploy-new-app.md`: Steps to deploy a new application
+  - `update-flux.md`: Steps to update Flux components
+  - `troubleshoot-flux.md`: Common Flux troubleshooting
+
+### Core Agent Rules for Flux Operations
+1. **When asked about Kubernetes operations, always check this file (`flux/AGENTS.md`) first.**
+2. **When working with Kubernetes operations, unless otherwise specified, use the default Kubernetes context.**
+3. **For app-specific questions, first check the app's directory structure in `apps/base/`.**
+4. **New secrets should follow the pattern: `<app>-secrets-flux.yaml`.**
+5. **Always run validation before committing changes: `./scripts/validate.sh`.**
+6. **Use pattern-based app discovery instead of maintaining app lists:**
+   ```bash
+   ls /home/zshen/personal/server-config/flux/apps/base/
+   ```
+
+### Agent Examples
+
+**Example 1: User asks "How do I deploy a new application?"**
+1. Reference this file (Rule 1)
+2. Follow `deploy-new-app.md` workflow
+3. Use secret naming pattern (Rule 4)
+4. Validate before committing (Rule 5)
+
+**Example 2: User asks "What applications are running?"**
+1. Use app discovery (Rule 6): `ls flux/apps/base/`
+2. Check for secret patterns
+3. Reference appropriate documentation
+
+**Example 3: User asks "Update cert-manager version"**
+1. Check this file (Rule 1)
+2. Use default Kubernetes context (Rule 2)
+3. Validate changes (Rule 5)
+
+## Reference Documentation
+
+- **Base AGENTS.md**: `/home/zshen/personal/server-config/AGENTS.md` (NixOS/host configuration)
+- **OpenCode Index**: `.opencode/context/index.md`
+- **Domain Context**: `.opencode/context/domain/server-config.md`
+- **Flux Documentation**: https://fluxcd.io/flux/
+- **Upgrade Guide**: https://fluxcd.io/flux/installation/upgrade/
