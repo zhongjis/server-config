@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: karakeep
+  namespace: karakeep
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: karakeep
+      version: 0.27.0
+      sourceRef:
+        kind: HelmRepository
+        name: karakeep-app
+        namespace: karakeep
+      interval: 12h
+  valuesFrom:
+    - kind: Secret
+      name: karakeep-secrets-flux
+      valuesKey: OAUTH_CLIENT_ID
+      targetPath: secrets.karakeep.stringData.OAUTH_CLIENT_ID
+    - kind: Secret
+      name: karakeep-secrets-flux
+      valuesKey: OAUTH_CLIENT_SECRET
+      targetPath: secrets.karakeep.stringData.OAUTH_CLIENT_SECRET
+  values:
+    applicationHost: karakeep.zshen.me
+    controllers:
+      karakeep:
+        containers:
+          karakeep:
+            env:
+              DISABLE_PASSWORD_AUTH: "true"
+              OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING: "true"
+              OAUTH_PROVIDER_NAME: OIDC
+              OAUTH_SCOPE: openid email profile
+              OAUTH_WELLKNOWN_URL: https://authentik.zshen.me/application/o/karakeep/.well-known/openid-configuration
+
+    ingress:
+      karakeep:
+        enabled: true
+        annotations:
+          gethomepage.dev/description: The Bookmark Everything app.
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Applications
+          gethomepage.dev/name: Karakeep
+          kubernetes.io/tls-acme: "true"
+        ingressClassName: nginx
+        hosts:
+          - name: karakeep.zshen.me
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: karakeep
+                  port: http
+        tls:
+          - secretName: karakeep-tls
+            hosts:
+              - karakeep.zshen.me
+
+    # secrets:
+    #   karakeep:
+    #     stringData:
+    #       OAUTH_CLIENT_ID: your-client-id
+    #       OAUTH_CLIENT_SECRET: your-client-secret

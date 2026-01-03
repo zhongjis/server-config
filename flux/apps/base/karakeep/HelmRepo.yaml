@@ -1,0 +1,10 @@
+# https://github.com/christianhuth/helm-charts/tree/main/charts/freshrss
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: karakeep-app
+  namespace: karakeep
+spec:
+  interval: 24h
+  url: https://karakeep-app.github.io/helm-charts

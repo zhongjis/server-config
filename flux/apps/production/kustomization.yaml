@@ -9,6 +9,7 @@ resources:
   - ../base/freshrss
   - ../base/home-assistant
   - ../base/homepage
+  - ../base/karakeep
   # - ../base/manyfold
   # - ../base/minio/operator
   # - ../base/minio/tenant
