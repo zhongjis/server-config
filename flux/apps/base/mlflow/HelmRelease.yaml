@@ -21,11 +21,11 @@ spec:
   valuesFrom:
     # externalPostgresql
     - kind: Secret
-      name: freshrss-cnpg-cluster-app
+      name: mlflow-cnpg-cluster-app
       valuesKey: dbname
       targetPath: backendStore.postgres.database
     - kind: Secret
-      name: freshrss-cnpg-cluster-app
+      name: mlflow-cnpg-cluster-app
       valuesKey: host
       targetPath: backendStore.postgres.host
   values:
