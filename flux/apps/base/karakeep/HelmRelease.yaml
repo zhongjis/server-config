@@ -36,6 +36,8 @@ spec:
       karakeep:
         containers:
           karakeep:
+            image:
+              tag: 0.30.0
             env:
               DISABLE_PASSWORD_AUTH: "true"
               DISABLE_SIGNUPS: "true"
