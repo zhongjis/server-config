@@ -93,9 +93,6 @@ spec:
             secretKeyRef:
               name: langfuse-secrets-flux
               key: AUTH_AUTHENTIK_ISSUER
-        # NOTE: for some reason langfuse.nextauth.url not working
-        - name: NEXTAUTH_URL
-          value: https://langfuse.zshen.me
 
     postgresql:
       deploy: false
