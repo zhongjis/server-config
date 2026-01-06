@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - ../base/actualbudget
   - ../base/authentik/
-  - ../base/capacitor
   - ../base/cloudflared
   - ../base/dify
   - ../base/freshrss
