@@ -93,7 +93,7 @@ spec:
         # username: langfuse_user
         # password: my-password
         # database: langfuse
-        existingSecret: langfuse-secrets-flux
+        existingSecret: langfuse-cnpg-cluster-app
         secretKeys:
           userPasswordKey: password
       # host: my-external-postgres-server.com
