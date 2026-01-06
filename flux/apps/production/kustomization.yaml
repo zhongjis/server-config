@@ -20,4 +20,4 @@ resources:
   # - ../base/open-webui
   - ../base/redis
   - ../base/stirling-pdf
-  - ../base/supabase
+  # - ../base/supabase
