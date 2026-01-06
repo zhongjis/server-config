@@ -96,6 +96,23 @@ spec:
                     operator: In
                     values:
                       - "true"
+      extraEnvVars:
+        - name: LANGSMITH_TRACING_V2
+          value: true
+        - name: LANGCHAIN_ENDPOINT
+          value: https://api.smith.langchain.com
+        - name: LANGCHAIN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: LANGCHAIN_API_KEY
+        - name: LANGCHAIN_PROJECT
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: LANGCHAIN_PROJECT
+        - name: LANGCHAIN_CALLBACKS_BACKGROUND
+          value: true
 
     api:
       enabled: true
@@ -140,6 +157,23 @@ spec:
                     operator: In
                     values:
                       - "true"
+      extraEnvVars:
+        - name: LANGSMITH_TRACING_V2
+          value: true
+        - name: LANGCHAIN_ENDPOINT
+          value: https://api.smith.langchain.com
+        - name: LANGCHAIN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: LANGCHAIN_API_KEY
+        - name: LANGCHAIN_PROJECT
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: LANGCHAIN_PROJECT
+        - name: LANGCHAIN_CALLBACKS_BACKGROUND
+          value: true
 
     taskRunners:
       mode: internal
@@ -170,6 +204,23 @@ spec:
                     operator: In
                     values:
                       - "true"
+      extraEnvVars:
+        - name: LANGSMITH_TRACING_V2
+          value: true
+        - name: LANGCHAIN_ENDPOINT
+          value: https://api.smith.langchain.com
+        - name: LANGCHAIN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: LANGCHAIN_API_KEY
+        - name: LANGCHAIN_PROJECT
+          valueFrom:
+            secretKeyRef:
+              name: n8n-secrets
+              key: LANGCHAIN_PROJECT
+        - name: LANGCHAIN_CALLBACKS_BACKGROUND
+          value: true
 
     externalRedis:
       database: 2
