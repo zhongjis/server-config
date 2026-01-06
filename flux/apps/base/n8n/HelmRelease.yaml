@@ -31,7 +31,7 @@ spec:
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_API_KEY
-      targetPath: api.extraEnvVars.LANGCHAIN_API_KEY
+      targetPath: worker.extraEnvVars.LANGCHAIN_API_KEY
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_PROJECT
@@ -39,7 +39,7 @@ spec:
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_API_KEY
-      targetPath: worker.extraEnvVars.LANGCHAIN_API_KEY
+      targetPath: webhook.extraEnvVars.LANGCHAIN_API_KEY
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_PROJECT
