@@ -10,6 +10,7 @@ resources:
   - ../base/home-assistant
   - ../base/homepage
   - ../base/karakeep
+  - ../base/langfuse
   # - ../base/manyfold
   # - ../base/minio/operator
   # - ../base/minio/tenant

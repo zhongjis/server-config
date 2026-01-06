@@ -1,0 +1,118 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: langfuse
+  namespace: langfuse
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: langfuse
+      version: langfuse-1.5.15
+      sourceRef:
+        kind: HelmRepository
+        name: langfuse
+        namespace: langfuse
+      interval: 12h
+  dependsOn:
+    - name: langfuse-cnpg-cluster
+  valuesFrom:
+    # externalPostgresql
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: langfuse.postgresql.auth.database
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: username
+      targetPath: langfuse.postgresql.auth.username
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: host
+      targetPath: langfuse.postgresql.host
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: uri
+      targetPath: langfuse.postgresql.directUrl
+  values:
+    langfuse:
+      encryptionKey:
+        secretKeyRef:
+          name: langfuse-secrets-flux
+          key: encryptionKey
+      salt:
+        secretKeyRef:
+          name: langfuse-secrets-flux
+          key: salt
+      # TODO: next auth setting https://langfuse.com/self-hosting/security/authentication-and-sso
+      nextauth:
+        secret:
+          secretKeyRef:
+            name: langfuse-secrets-flux
+            key: nextauth-secret
+      ingress:
+        enabled: true
+        annotations:
+          gethomepage.dev/description: The easiest way to add observability to your AI stack.
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Applications
+          gethomepage.dev/name: Langfuse
+          kubernetes.io/tls-acme: "true"
+        className: nginx
+        hosts:
+          - host: langfuse.zshen.me
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: langfuse-tls
+            hosts:
+              - langfuse.zshen.me
+      additionalEnv:
+        - name: AUTH_AUTHENTIK_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: langfuse-secrets-flux
+              key: AUTH_AUTHENTIK_CLIENT_ID
+        - name: AUTH_AUTHENTIK_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: langfuse-secrets-flux
+              key: AUTH_AUTHENTIK_CLIENT_SECRET
+        - name: AUTH_AUTHENTIK_ISSUER
+          valueFrom:
+            secretKeyRef:
+              name: langfuse-secrets-flux
+              key: AUTH_AUTHENTIK_ISSUER
+
+    postgresql:
+      deploy: false
+      auth:
+        # username: langfuse_user
+        # password: my-password
+        # database: langfuse
+        existingSecret: langfuse-secrets-flux
+        secretKeys:
+          userPasswordKey: password
+      # host: my-external-postgres-server.com
+      # directUrl: postgres://my-username:my-password@my-external-postgres-server.com
+
+    clickhouse:
+      auth:
+        existingSecret: langfuse-secrets-flux
+        existingSecretKey: clickhouse-user-password
+
+    redis:
+      deploy: false
+      auth:
+        existingSecret: langfuse-secrets-flux
+        existingSecretPasswordKey: redis-user-password
+
+    s3:
+      auth:
+        # If existingSecret is set, both root user and root password must be supplied via the secret
+        existingSecret: langfuse-secrets-flux
+        rootUserSecretKey: s3-user-username
+        rootPasswordSecretKey: s3-use-password
