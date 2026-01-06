@@ -43,7 +43,7 @@ spec:
   values:
     langfuse:
       features:
-        telemetryEnabled: false
+        telemetryEnabled: true
         experimentalFeaturesEnabled: true
       encryptionKey:
         secretKeyRef:
@@ -54,7 +54,7 @@ spec:
           name: langfuse-secrets-flux
           key: salt
       nextauth:
-        url: https://langfuse.zshen.me
+        url: "https://langfuse.zshen.me"
         secret:
           secretKeyRef:
             name: langfuse-secrets-flux
