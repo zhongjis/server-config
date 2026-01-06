@@ -1,20 +1,46 @@
 # https://dev.to/adoucoure/how-to-deploy-sentry-on-a-kubernetes-cluster-with-an-external-custom-ingress-3mmf
-# apiVersion: helm.toolkit.fluxcd.io/v2
-# kind: HelmRelease
-# metadata:
-#   name: sentry
-# spec:
-#   interval: 30m
-#   timeout: 15m
-#   chart:
-#     spec:
-#       chart: sentry
-#       version: v27.10.0
-#       sourceRef:
-#         kind: HelmRepository
-#         name: sentry
-#         namespace: monitoring
-#       interval: 12h
-#
-#   # https://github.com/sentry-kubernetes/charts
-#   values:
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sentry
+spec:
+  interval: 30m
+  timeout: 15m
+  chart:
+    spec:
+      chart: sentry
+      version: v27.10.0
+      sourceRef:
+        kind: HelmRepository
+        name: sentry
+        namespace: monitoring
+      interval: 12h
+
+  # https://github.com/sentry-kubernetes/charts
+  values:
+  # TODO: 1. sso. 2. who knows what else. 3. this thing is a monster im too poor to have my cluster to install it yet. not enough ram
+  #  kafka:
+  #    enabled: true
+  #  user:
+  #    create: true
+  #    email: <REDACTED>
+  #    password: <REDACTED>
+  #  asHook: true
+  #  sentry:
+  #    singleOrganization: false
+  #    worker:
+  #      replicas: 2
+  #  auth:
+  #    register: false
+  #  hooks:
+  #    activeDeadlineSeconds: 6500
+  #  ingress:
+  #    enabled: false
+  #  nginx:
+  #    enabled: false
+  #  clickhouse:
+  #    enabled: true
+  #    clickhouse:
+  #      replicas: "1"
+  #  postgresql:
+  #    enabled: true

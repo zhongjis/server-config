@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "sentry-web"
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  tls:
+    - hosts:
+        - sentry.zshen.me
+      secretName: "sentry-tls"
+  rules:
+    - host: sentry.zshen.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "sentry-web"
+                port:
+                  number: 9000

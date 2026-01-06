@@ -4,4 +4,5 @@ kind: Kustomization
 namespace: monitoring
 resources:
   - HelmRepo.yaml
-  - HelmRelease.yaml
+  # - HelmRelease.yaml
+  # - Ingress.yaml
