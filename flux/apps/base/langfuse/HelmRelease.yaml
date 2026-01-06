@@ -117,4 +117,4 @@ spec:
         # If existingSecret is set, both root user and root password must be supplied via the secret
         existingSecret: langfuse-secrets-flux
         rootUserSecretKey: s3-user-username
-        rootPasswordSecretKey: s3-use-password
+        rootPasswordSecretKey: s3-user-password
