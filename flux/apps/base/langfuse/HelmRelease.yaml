@@ -23,23 +23,23 @@ spec:
     - kind: Secret
       name: langfuse-cnpg-cluster-app
       valuesKey: host
-      targetPath: langfuse.postgresql.host
+      targetPath: postgresql.host
     - kind: Secret
       name: langfuse-cnpg-cluster-app
       valuesKey: port
-      targetPath: langfuse.postgresql.port
+      targetPath: postgresql.port
     - kind: Secret
       name: langfuse-cnpg-cluster-app
       valuesKey: dbname
-      targetPath: langfuse.postgresql.auth.database
+      targetPath: postgresql.auth.database
     - kind: Secret
       name: langfuse-cnpg-cluster-app
       valuesKey: username
-      targetPath: langfuse.postgresql.auth.username
-    # - kind: Secret
-    #   name: langfuse-cnpg-cluster-app
-    #   valuesKey: uri
-    #   targetPath: langfuse.postgresql.directUrl
+      targetPath: postgresql.auth.username
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: uri
+      targetPath: postgresql.directUrl
   values:
     langfuse:
       features:
@@ -96,12 +96,12 @@ spec:
 
     postgresql:
       deploy: false
-      # host: my-external-postgres-server.com
-      # directUrl: postgres://my-username:my-password@my-external-postgres-server.com
+      # host: my-external-postgres-server.com (set via valuesFrom)
+      # directUrl: postgres://my-username:my-password@my-external-postgres-server.com (set via valuesFrom)
       auth:
-        # username: langfuse_user
-        # password: my-password
-        # database: langfuse
+        # username: langfuse_user (set via valuesFrom)
+        # password: my-password (set via existingSecret)
+        # database: langfuse (set via valuesFrom)
         existingSecret: langfuse-cnpg-cluster-app
         secretKeys:
           userPasswordKey: password
@@ -113,9 +113,9 @@ spec:
 
     redis:
       deploy: false
-      database: 3
       host: "redis-master.redis.svc.cluster.local"
       auth:
+        database: 3
         existingSecret: langfuse-secrets-flux
         existingSecretPasswordKey: redis-user-password
 
