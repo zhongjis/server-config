@@ -22,22 +22,29 @@ spec:
     # externalPostgresql
     - kind: Secret
       name: langfuse-cnpg-cluster-app
+      valuesKey: host
+      targetPath: langfuse.postgresql.host
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: port
+      targetPath: langfuse.postgresql.port
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
       valuesKey: dbname
       targetPath: langfuse.postgresql.auth.database
     - kind: Secret
       name: langfuse-cnpg-cluster-app
       valuesKey: username
       targetPath: langfuse.postgresql.auth.username
-    - kind: Secret
-      name: langfuse-cnpg-cluster-app
-      valuesKey: host
-      targetPath: langfuse.postgresql.host
     # - kind: Secret
     #   name: langfuse-cnpg-cluster-app
     #   valuesKey: uri
     #   targetPath: langfuse.postgresql.directUrl
   values:
     langfuse:
+      features:
+        telemetryEnabled: false
+        experimentalFeaturesEnabled: true
       encryptionKey:
         secretKeyRef:
           name: langfuse-secrets-flux
@@ -89,6 +96,8 @@ spec:
 
     postgresql:
       deploy: false
+      # host: my-external-postgres-server.com
+      # directUrl: postgres://my-username:my-password@my-external-postgres-server.com
       auth:
         # username: langfuse_user
         # password: my-password
@@ -96,8 +105,6 @@ spec:
         existingSecret: langfuse-cnpg-cluster-app
         secretKeys:
           userPasswordKey: password
-      # host: my-external-postgres-server.com
-      # directUrl: postgres://my-username:my-password@my-external-postgres-server.com
 
     clickhouse:
       auth:
