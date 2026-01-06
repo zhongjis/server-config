@@ -52,6 +52,7 @@ spec:
           secretKeyRef:
             name: langfuse-secrets-flux
             key: nextauth-secret
+
       ingress:
         enabled: true
         annotations:
@@ -67,9 +68,8 @@ spec:
               - path: /
                 pathType: Prefix
         tls:
-          - secretName: langfuse-tls
-            hosts:
-              - langfuse.zshen.me
+          enabled: true
+          secretName: langfuse-tls
       additionalEnv:
         - name: AUTH_AUTHENTIK_CLIENT_ID
           valueFrom:
