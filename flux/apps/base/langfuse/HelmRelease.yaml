@@ -106,6 +106,8 @@ spec:
 
     redis:
       deploy: false
+      database: 3
+      host: "redis-master.redis.svc.cluster.local"
       auth:
         existingSecret: langfuse-secrets-flux
         existingSecretPasswordKey: redis-user-password
