@@ -53,7 +53,6 @@ spec:
         secretKeyRef:
           name: langfuse-secrets-flux
           key: salt
-      # TODO: next auth setting https://langfuse.com/self-hosting/security/authentication-and-sso
       nextauth:
         url: https://langfuse.zshen.me
         secret:
@@ -94,8 +93,6 @@ spec:
             secretKeyRef:
               name: langfuse-secrets-flux
               key: AUTH_AUTHENTIK_ISSUER
-        - name: NEXTAUTH_URL
-          value: https://langfuse.zshen.me
 
     postgresql:
       deploy: false
