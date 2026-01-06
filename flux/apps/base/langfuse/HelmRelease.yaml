@@ -32,10 +32,10 @@ spec:
       name: langfuse-cnpg-cluster-app
       valuesKey: host
       targetPath: langfuse.postgresql.host
-    - kind: Secret
-      name: langfuse-cnpg-cluster-app
-      valuesKey: uri
-      targetPath: langfuse.postgresql.directUrl
+    # - kind: Secret
+    #   name: langfuse-cnpg-cluster-app
+    #   valuesKey: uri
+    #   targetPath: langfuse.postgresql.directUrl
   values:
     langfuse:
       encryptionKey:
