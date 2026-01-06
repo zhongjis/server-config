@@ -19,6 +19,31 @@ spec:
   dependsOn:
     - name: n8n-cnpg-cluster
   valuesFrom:
+    # langsmith
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LANGCHAIN_API_KEY
+      targetPath: main.extraEnvVars.LANGCHAIN_API_KEY
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LANGCHAIN_PROJECT
+      targetPath: main.extraEnvVars.LANGCHAIN_PROJECT
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LANGCHAIN_API_KEY
+      targetPath: api.extraEnvVars.LANGCHAIN_API_KEY
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LANGCHAIN_PROJECT
+      targetPath: api.extraEnvVars.LANGCHAIN_PROJECT
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LANGCHAIN_API_KEY
+      targetPath: worker.extraEnvVars.LANGCHAIN_API_KEY
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LANGCHAIN_PROJECT
+      targetPath: woker.extraEnvVars.LANGCHAIN_PROJECT
     # postgres
     - kind: Secret
       name: n8n-cnpg-cluster-app
@@ -97,22 +122,9 @@ spec:
                     values:
                       - "true"
       extraEnvVars:
-        - name: LANGSMITH_TRACING_V2
-          value: true
-        - name: LANGCHAIN_ENDPOINT
-          value: https://api.smith.langchain.com
-        - name: LANGCHAIN_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: n8n-secrets
-              key: LANGCHAIN_API_KEY
-        - name: LANGCHAIN_PROJECT
-          valueFrom:
-            secretKeyRef:
-              name: n8n-secrets
-              key: LANGCHAIN_PROJECT
-        - name: LANGCHAIN_CALLBACKS_BACKGROUND
-          value: true
+        LANGSMITH_TRACING_V2: true
+        LANGCHAIN_ENDPOINT: https://api.smith.langchain.com
+        LANGCHAIN_CALLBACKS_BACKGROUND: true
 
     api:
       enabled: true
@@ -158,22 +170,9 @@ spec:
                     values:
                       - "true"
       extraEnvVars:
-        - name: LANGSMITH_TRACING_V2
-          value: true
-        - name: LANGCHAIN_ENDPOINT
-          value: https://api.smith.langchain.com
-        - name: LANGCHAIN_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: n8n-secrets
-              key: LANGCHAIN_API_KEY
-        - name: LANGCHAIN_PROJECT
-          valueFrom:
-            secretKeyRef:
-              name: n8n-secrets
-              key: LANGCHAIN_PROJECT
-        - name: LANGCHAIN_CALLBACKS_BACKGROUND
-          value: true
+        LANGSMITH_TRACING_V2: true
+        LANGCHAIN_ENDPOINT: https://api.smith.langchain.com
+        LANGCHAIN_CALLBACKS_BACKGROUND: true
 
     taskRunners:
       mode: internal
@@ -205,22 +204,9 @@ spec:
                     values:
                       - "true"
       extraEnvVars:
-        - name: LANGSMITH_TRACING_V2
-          value: true
-        - name: LANGCHAIN_ENDPOINT
-          value: https://api.smith.langchain.com
-        - name: LANGCHAIN_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: n8n-secrets
-              key: LANGCHAIN_API_KEY
-        - name: LANGCHAIN_PROJECT
-          valueFrom:
-            secretKeyRef:
-              name: n8n-secrets
-              key: LANGCHAIN_PROJECT
-        - name: LANGCHAIN_CALLBACKS_BACKGROUND
-          value: true
+        LANGSMITH_TRACING_V2: true
+        LANGCHAIN_ENDPOINT: https://api.smith.langchain.com
+        LANGCHAIN_CALLBACKS_BACKGROUND: true
 
     externalRedis:
       database: 2
