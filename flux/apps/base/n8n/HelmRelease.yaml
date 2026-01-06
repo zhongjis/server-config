@@ -35,7 +35,7 @@ spec:
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_PROJECT
-      targetPath: api.extraEnvVars.LANGCHAIN_PROJECT
+      targetPath: worker.extraEnvVars.LANGCHAIN_PROJECT
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_API_KEY
@@ -43,7 +43,7 @@ spec:
     - kind: Secret
       name: n8n-secrets
       valuesKey: LANGCHAIN_PROJECT
-      targetPath: woker.extraEnvVars.LANGCHAIN_PROJECT
+      targetPath: webhook.extraEnvVars.LANGCHAIN_PROJECT
     # postgres
     - kind: Secret
       name: n8n-cnpg-cluster-app
