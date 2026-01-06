@@ -121,7 +121,7 @@ spec:
         probeSelectorNilUsesHelmValues: false
         enableAdminAPI: true
         walCompression: true
-        scrapeInterval: 15s
+        scrapeInterval: 30s
         evaluationInterval: 30s
         retention: 15d
         resources:
