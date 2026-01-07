@@ -95,6 +95,22 @@ spec:
       mode: "filesystem"
       localStoragePath: "/home/node/.n8n/binary-data"
 
+    nodes:
+      builtin:
+        enabled: true
+        modules:
+          - crypto
+          - http
+          - https
+          - querystring
+          - url
+      external:
+        reinstallMissingPackages: true
+        packages:
+          - "iconv-lite@0.7.1"
+          - "n8n-nodes-ai-agent-langfuse@0.1.27"
+          - "@langfuse/n8n-nodes-langfuse@0.2.3"
+
     main:
       resources:
         requests:
