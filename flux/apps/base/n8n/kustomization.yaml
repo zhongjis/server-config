@@ -7,3 +7,5 @@ resources:
   # - ./HelmReleaseLegacy.yaml
   - ./GrafanaDashboard.yaml
   - ./Cluster.yaml
+  - ./LangfuseShipperBackfill.yaml
+  - ./LangfuseShipperCronJob.yaml

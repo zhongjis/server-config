@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: n8n-langfuse-shipper-backfill
+  namespace: n8n
+  labels:
+    app.kubernetes.io/name: n8n-langfuse-shipper
+    app.kubernetes.io/component: backfill
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 3600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: shipper
+        image: ghcr.io/zhongjis/n8n-langfuse-shipper:latest
+        command: ["n8n-shipper", "shipper", "--no-dry-run"]
+        envFrom:
+        - secretRef:
+            name: n8n-langfuse-shipper-secrets-flux
+        env:
+        - name: FILTER_AI_ONLY
+          value: "true"
+        - name: LANGFUSE_ENV
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: FETCH_BATCH_SIZE
+          value: "200"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi

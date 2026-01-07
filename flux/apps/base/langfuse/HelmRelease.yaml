@@ -112,6 +112,24 @@ spec:
       auth:
         existingSecret: langfuse-secrets-flux
         existingSecretKey: clickhouse-user-password
+      # Reduce from default preset to appropriate size for homelab workload
+      replicaCount: 2
+      primary:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+      replica:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
 
     redis:
       deploy: false
