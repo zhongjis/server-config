@@ -6,3 +6,4 @@ resources:
   - ./HelmRelease.yaml
   - ./GrafanaDashboard.yaml
   - ./Cluster.yaml
+  - ./langfuse-shipper
