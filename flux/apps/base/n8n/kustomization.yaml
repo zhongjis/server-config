@@ -4,9 +4,5 @@ resources:
   - ./Namespace.yaml
   - ./HelmRepo.yaml
   - ./HelmRelease.yaml
-  # - ./HelmReleaseLegacy.yaml
   - ./GrafanaDashboard.yaml
   - ./Cluster.yaml
-  - ./LangfuseShipperPVC.yaml
-  - ./LangfuseShipperBackfill.yaml
-  - ./LangfuseShipperCronJob.yaml
