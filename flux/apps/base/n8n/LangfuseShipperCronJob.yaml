@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -21,7 +22,8 @@ spec:
           restartPolicy: OnFailure
           volumes:
             - name: checkpoint-volume
-              emptyDir: {}
+              persistentVolumeClaim:
+                claimName: n8n-langfuse-shipper-checkpoint
           containers:
             - name: shipper
               image: ghcr.io/zhongjis/n8n-langfuse-shipper:latest

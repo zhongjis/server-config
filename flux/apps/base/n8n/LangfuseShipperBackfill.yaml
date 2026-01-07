@@ -15,7 +15,8 @@ spec:
       restartPolicy: OnFailure
       volumes:
         - name: checkpoint-volume
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: n8n-langfuse-shipper-checkpoint
       containers:
         - name: shipper
           image: ghcr.io/zhongjis/n8n-langfuse-shipper:latest
