@@ -14,26 +14,32 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
+      volumes:
+        - name: checkpoint-volume
+          emptyDir: {}
       containers:
-      - name: shipper
-        image: ghcr.io/zhongjis/n8n-langfuse-shipper:latest
-        command: ["n8n-shipper", "shipper", "--no-dry-run"]
-        envFrom:
-        - secretRef:
-            name: n8n-langfuse-shipper-secrets-flux
-        env:
-        - name: FILTER_AI_ONLY
-          value: "true"
-        - name: LANGFUSE_ENV
-          value: "production"
-        - name: LOG_LEVEL
-          value: "INFO"
-        - name: FETCH_BATCH_SIZE
-          value: "200"
-        resources:
-          requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
+        - name: shipper
+          image: ghcr.io/zhongjis/n8n-langfuse-shipper:latest
+          command: ["n8n-shipper", "shipper", "--no-dry-run"]
+          envFrom:
+            - secretRef:
+                name: n8n-langfuse-shipper-secrets-flux
+          env:
+            - name: FILTER_AI_ONLY
+              value: "true"
+            - name: LANGFUSE_ENV
+              value: "production"
+            - name: LOG_LEVEL
+              value: "INFO"
+            - name: FETCH_BATCH_SIZE
+              value: "200"
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: checkpoint-volume
+              mountPath: /data
