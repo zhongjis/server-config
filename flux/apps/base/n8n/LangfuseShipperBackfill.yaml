@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -38,8 +37,8 @@ spec:
               cpu: 200m
               memory: 512Mi
             limits:
-              cpu: 1000m
-              memory: 1Gi
+              cpu: 5000m
+              memory: 2Gi
           volumeMounts:
             - name: checkpoint-volume
               mountPath: /data
