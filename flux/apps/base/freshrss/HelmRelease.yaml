@@ -106,7 +106,7 @@ spec:
     freshrss:
       baseUrl: "https://rss.zshen.me"
       cronjob:
-        type: sidecar
+        type: internal
       database:
         type: postgresql
       initialization:
