@@ -46,6 +46,9 @@ spec:
             model: gpt-3.5-turbo
             api_key: os.environ/OPENAI_API_KEY
 
+    environmentSecrets:
+      - litellm-secrets-env-flux
+
     ingress:
       enabled: true
       annotations:
