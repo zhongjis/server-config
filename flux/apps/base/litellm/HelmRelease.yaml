@@ -46,6 +46,22 @@ spec:
           litellm_params:
             model: gpt-3.5-turbo
             api_key: os.environ/OPENAI_API_KEY
+        - model_name: qwen3-coder
+          litellm_params:
+            model: openrouter/qwen/qwen3-coder
+            api_key: os.environ/OPENROUTER_API_KEY
+        - model_name: deepseek-chat
+          litellm_params:
+            model: deepseek/deepseek-chat
+            api_key: os.environ/DEEPSEEK_API_KEY
+        - model_name: deepseek-coder
+          litellm_params:
+            model: deepseek/deepseek-coder
+            api_key: os.environ/DEEPSEEK_API_KEY
+        - model_name: deepseek-reasoner
+          litellm_params:
+            model: deepseek/deepseek-reasoner
+            api_key: os.environ/DEEPSEEK_API_KEY
 
     environmentSecrets:
       - litellm-secrets-env-flux
