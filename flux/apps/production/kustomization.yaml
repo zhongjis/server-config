@@ -10,6 +10,7 @@ resources:
   - ../base/homepage
   - ../base/karakeep
   - ../base/langfuse
+  - ../base/litellm
   # - ../base/manyfold
   # - ../base/minio/operator
   # - ../base/minio/tenant

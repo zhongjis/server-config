@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: litellm
+  namespace: litellm
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: litellm-helm
+      version: 1.8.1
+      sourceRef:
+        kind: HelmRepository
+        name: litellm
+        namespace: litellm
+      interval: 24h
+  dependsOn:
+    - name: litellm-cnpg-cluster
+  valuesFrom:
+    # externalPostgresql
+    - kind: Secret
+      name: litellm-cnpg-cluster-app
+      valuesKey: host
+      targetPath: db.endpoint
+    - kind: Secret
+      name: litellm-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: db.database
+    - kind: Secret
+      name: litellm-cnpg-cluster-app
+      valuesKey: uri
+      targetPath: db.url
+  values:
+    replicaCount: 2
+    numWorkers: 2
+
+    db:
+      useExisting: true
+      secret:
+        name: litellm-cnpg-cluster-app
+        usernameKey: username
+        passwordKey: password
+
+    masterkeySecretName: "litellm-secrets-flux"
+    masterkeySecretKey: "masterKey"
+
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description: A service that lets you access multiple language models (LLMs) using the OpenAI input/output format.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Backend
+        gethomepage.dev/name: LiteLLM
+        kubernetes.io/tls-acme: "true"
+      className: nginx
+      hosts:
+        - host: litellm.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: litellm-tls
+          hosts:
+            - litellm.zshen.me
+
+    serviceMonitor:
+      enabled: true

@@ -4,3 +4,4 @@
 - 1 - Manyfold
 - 2 - n8n
 - 3 - langfuse
+- 4 - litellm
