@@ -123,7 +123,7 @@ spec:
         walCompression: true
         scrapeInterval: 30s
         evaluationInterval: 30s
-        retention: 15d
+        retention: 7d
         resources:
           requests:
             cpu: 500m
@@ -137,7 +137,7 @@ spec:
               storageClassName: longhorn
               resources:
                 requests:
-                  storage: 100Gi
+                  storage: 200Gi
       ingress:
         enabled: true
         annotations:
