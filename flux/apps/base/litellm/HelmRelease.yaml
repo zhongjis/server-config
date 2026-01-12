@@ -17,14 +17,6 @@ spec:
     # externalPostgresql
     - kind: Secret
       name: litellm-cnpg-cluster-app
-      valuesKey: host
-      targetPath: db.endpoint
-    - kind: Secret
-      name: litellm-cnpg-cluster-app
-      valuesKey: dbname
-      targetPath: db.database
-    - kind: Secret
-      name: litellm-cnpg-cluster-app
       valuesKey: uri
       targetPath: db.url
   values:
