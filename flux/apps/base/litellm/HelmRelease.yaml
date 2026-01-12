@@ -25,6 +25,7 @@ spec:
 
     db:
       useExisting: true
+      deployStandalone: false
       secret:
         name: litellm-cnpg-cluster-app
         usernameKey: username
