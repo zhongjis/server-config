@@ -40,7 +40,9 @@ spec:
 
     proxy_config:
       litellm_settings:
-        callbacks: ["langfuse_otel"]
+        # callbacks: ["langfuse_otel"]
+        success_callback: ["langfuse_otel"]
+        failure_callback: ["langfuse_otel"]
       model_list:
         # openai
         - model_name: gpt-3.5-turbo
