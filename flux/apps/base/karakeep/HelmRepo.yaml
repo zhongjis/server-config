@@ -1,4 +1,4 @@
-# https://github.com/christianhuth/helm-charts/tree/main/charts/freshrss
+# https://github.com/karakeep-app/helm-charts/tree/main
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
