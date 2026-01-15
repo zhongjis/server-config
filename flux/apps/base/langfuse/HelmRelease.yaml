@@ -59,6 +59,9 @@ spec:
           secretKeyRef:
             name: langfuse-secrets-flux
             key: nextauth-secret
+      worker:
+        hpa:
+          enabled: true
 
       ingress:
         enabled: true
