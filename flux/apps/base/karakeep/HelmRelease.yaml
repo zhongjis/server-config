@@ -45,6 +45,9 @@ spec:
               OAUTH_PROVIDER_NAME: OIDC
               OAUTH_SCOPE: openid email profile
               OAUTH_WELLKNOWN_URL: https://authentik.zshen.me/application/o/karakeep/.well-known/openid-configuration
+              OPENAI_BASE_URL: https://litellm.zshen.me
+              INFERENCE_TEXT_MODEL: deepseek/deepseek-v3.2-exp
+              INFERENCE_IMAGE_MODEL: gpt-4o-mini
 
     ingress:
       karakeep:

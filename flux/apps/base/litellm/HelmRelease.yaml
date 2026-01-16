@@ -94,7 +94,11 @@ spec:
             api_key: os.environ/OPENROUTER_API_KEY
         - model_name: cohere/command-r7b-12-2024
           litellm_params:
-            model: cohere/command-r7b-12-2024
+            model: openrouter/cohere/command-r7b-12-2024
+            api_key: os.environ/OPENROUTER_API_KEY
+        - model_name: deepseek/deepseek-v3.2-exp
+          litellm_params:
+            model: openrouter/deepseek/deepseek-v3.2-exp
             api_key: os.environ/OPENROUTER_API_KEY
         # deepseek
         - model_name: deepseek-chat
