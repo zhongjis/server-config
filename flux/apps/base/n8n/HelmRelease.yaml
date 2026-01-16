@@ -19,6 +19,11 @@ spec:
   dependsOn:
     - name: n8n-cnpg-cluster
   valuesFrom:
+    # litellm
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LITELLM_API_KEY
+      targetPath: main.extraEnvVars.LITELLM_API_KEY
     # langsmith
     - kind: Secret
       name: n8n-secrets
