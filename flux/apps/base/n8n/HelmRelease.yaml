@@ -24,6 +24,10 @@ spec:
       name: n8n-secrets
       valuesKey: LITELLM_API_KEY
       targetPath: main.extraEnvVars.LITELLM_API_KEY
+    - kind: Secret
+      name: n8n-secrets
+      valuesKey: LITELLM_API_KEY
+      targetPath: worker.extraEnvVars.LITELLM_API_KEY
     # langsmith
     - kind: Secret
       name: n8n-secrets
