@@ -39,6 +39,9 @@ spec:
       key: "config.yaml"
 
     proxy_config:
+      general_settings:
+        store_model_in_db: true
+        store_prompts_in_spend_logs: true
       litellm_settings:
         # callbacks: ["langfuse_otel"]
         success_callback: ["langfuse_otel"]
