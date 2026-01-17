@@ -44,8 +44,8 @@ spec:
         store_prompts_in_spend_logs: true
       litellm_settings:
         # callbacks: ["langfuse_otel"]
-        success_callback: ["langfuse"]
-        failure_callback: ["langfuse"]
+        success_callback: ["langfuse_otel"]
+        failure_callback: ["langfuse_otel"]
         turn_off_message_logging: True
       model_list:
         # openai
