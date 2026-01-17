@@ -19,40 +19,31 @@ spec:
   dependsOn:
     - name: n8n-cnpg-cluster
   valuesFrom:
-    # litellm
+    # langfuse
     - kind: Secret
       name: n8n-secrets
-      valuesKey: LITELLM_API_KEY
-      targetPath: main.extraEnvVars.OPENAI_API_KEY
+      valuesKey: LANGFUSE_SECRET_KEY
+      targetPath: main.extraEnvVars.LANGFUSE_SECRET_KEY
     - kind: Secret
       name: n8n-secrets
-      valuesKey: LITELLM_API_KEY
-      targetPath: worker.extraEnvVars.OPENAI_API_KEY
-    # langsmith
+      valuesKey: LANGFUSE_PUBLIC_KEY
+      targetPath: main.extraEnvVars.LANGFUSE_PUBLIC_KEY
     - kind: Secret
       name: n8n-secrets
-      valuesKey: LANGCHAIN_API_KEY
-      targetPath: main.extraEnvVars.LANGCHAIN_API_KEY
+      valuesKey: LANGFUSE_BASE_URL
+      targetPath: main.extraEnvVars.LANGFUSE_BASE_URL
     - kind: Secret
       name: n8n-secrets
-      valuesKey: LANGCHAIN_PROJECT
-      targetPath: main.extraEnvVars.LANGCHAIN_PROJECT
+      valuesKey: LANGFUSE_SECRET_KEY
+      targetPath: worker.extraEnvVars.LANGFUSE_SECRET_KEY
     - kind: Secret
       name: n8n-secrets
-      valuesKey: LANGCHAIN_API_KEY
-      targetPath: worker.extraEnvVars.LANGCHAIN_API_KEY
+      valuesKey: LANGFUSE_PUBLIC_KEY
+      targetPath: worker.extraEnvVars.LANGFUSE_PUBLIC_KEY
     - kind: Secret
       name: n8n-secrets
-      valuesKey: LANGCHAIN_PROJECT
-      targetPath: worker.extraEnvVars.LANGCHAIN_PROJECT
-    - kind: Secret
-      name: n8n-secrets
-      valuesKey: LANGCHAIN_API_KEY
-      targetPath: webhook.extraEnvVars.LANGCHAIN_API_KEY
-    - kind: Secret
-      name: n8n-secrets
-      valuesKey: LANGCHAIN_PROJECT
-      targetPath: webhook.extraEnvVars.LANGCHAIN_PROJECT
+      valuesKey: LANGFUSE_BASE_URL
+      targetPath: worker.extraEnvVars.LANGFUSE_BASE_URL
     # postgres
     - kind: Secret
       name: n8n-cnpg-cluster-app
