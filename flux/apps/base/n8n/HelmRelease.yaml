@@ -157,7 +157,7 @@ spec:
         enabled: true
       autoscaling:
         enabled: true
-        minReplicas: 3
+        minReplicas: 2
         maxReplicas: 10
         metrics:
           - type: Resource
