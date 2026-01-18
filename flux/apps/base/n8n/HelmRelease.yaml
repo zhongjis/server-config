@@ -106,7 +106,7 @@ spec:
           - url
       external:
         allowAll: true
-        reinstallMissingPackages: false
+        reinstallMissingPackages: true
         packages:
           - "iconv-lite@0.7.1"
           - "@langfuse/n8n-nodes-langfuse@0.2.3"
