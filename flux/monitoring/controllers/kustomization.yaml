@@ -7,5 +7,5 @@ resources:
   - HelmRepo.yaml
   - ./kube-prometheus-stack
   - ./loki
-  # - ./tempo
+  - ./tempo
   # - ./alloy
