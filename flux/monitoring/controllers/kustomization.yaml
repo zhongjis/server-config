@@ -6,6 +6,6 @@ resources:
   - Namespace.yaml
   - HelmRepo.yaml
   - ./kube-prometheus-stack
-  # - ./loki
+  - ./loki
   # - ./tempo
   # - ./alloy
