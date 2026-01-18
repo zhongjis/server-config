@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: freshrss
-      version: 2.4.0
+      version: 2.4.1
       sourceRef:
         kind: HelmRepository
         name: christianhuth
@@ -107,6 +107,7 @@ spec:
       baseUrl: "https://rss.zshen.me"
       cronjob:
         type: internal
+        minutes: "1,31"
       database:
         type: postgresql
       initialization:
