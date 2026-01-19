@@ -60,8 +60,18 @@ spec:
             name: langfuse-secrets-flux
             key: nextauth-secret
       worker:
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
         hpa:
           enabled: true
+          minReplicas: 1
+          maxReplicas: 3
+          targetCPUUtilizationPercentage: 70
 
       ingress:
         enabled: true
