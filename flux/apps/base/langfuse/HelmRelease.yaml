@@ -107,7 +107,7 @@ spec:
               name: langfuse-secrets-flux
               key: AUTH_AUTHENTIK_ISSUER
         - name: AUTH_DISABLE_USERNAME_PASSWORD
-          value: true
+          value: "true"
 
     postgresql:
       deploy: false
