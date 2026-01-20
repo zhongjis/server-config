@@ -166,3 +166,10 @@ spec:
         existingSecret: langfuse-secrets-flux
         rootUserSecretKey: s3-user-username
         rootPasswordSecretKey: s3-user-password
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 250m
+        limits:
+          memory: 768Mi
+          cpu: 500m
