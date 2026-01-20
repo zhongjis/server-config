@@ -43,10 +43,7 @@ spec:
         store_model_in_db: true
         store_prompts_in_spend_logs: true
       litellm_settings:
-        # callbacks: ["langfuse_otel"]
-        success_callback: ["langfuse_otel"]
-        failure_callback: ["langfuse_otel"]
-        # turn_off_message_logging: True
+        callbacks: ["langfuse_otel"]
       model_list:
         # openai
         - model_name: openai/gpt-3.5-turbo
