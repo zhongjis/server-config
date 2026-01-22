@@ -27,37 +27,50 @@
     ...
   } @ inputs: let
     myLib = import ./lib/defaults.nix {inherit inputs nixpkgs colmena disko sops-nix;};
-  in
-    with myLib; {
-      colmenaHive = colmena.lib.makeHive {
-        meta = {
-          nixpkgs = import nixpkgs {
-            system = "x86_64-linux";
-          };
-          specialArgs = {inherit inputs nixpkgs disko sops-nix;};
-          nodeSpecialArgs = {
-            homelab-0 = mkHiveSpecialArgs "homelab-0" {
-              isMaster = true;
-              labels = ["n8n-node=true"];
-            };
 
-            homelab-1 = mkHiveSpecialArgs "homelab-1" {
-              master = "192.168.50.104";
-            };
-          };
+    hive = colmena.lib.makeHive {
+      meta = {
+        nixpkgs = import nixpkgs {
+          system = "x86_64-linux";
         };
+        specialArgs = {inherit inputs nixpkgs disko sops-nix;};
+        nodeSpecialArgs = {
+          homelab-0 = myLib.mkHiveSpecialArgs "homelab-0" {
+            isMaster = true;
+            labels = ["n8n-node=true"];
+          };
 
-        homelab-0 = mkHiveK3s "homelab-0" {
-          host = "192.168.50.104";
-          hostModule = ./hosts/k3s/configuration.nix;
-          tags = ["homelab" "master"];
-        };
+          homelab-1 = myLib.mkHiveSpecialArgs "homelab-1" {
+            master = "192.168.50.104";
+          };
 
-        homelab-1 = mkHiveK3s "homelab-1" {
-          host = "192.168.50.103";
-          hostModule = ./hosts/k3s/configuration.nix;
-          tags = ["homelab"];
+          homelab-2 = myLib.mkHiveSpecialArgs "homelab-2" {
+            master = "192.168.50.104";
+          };
         };
       };
+
+      homelab-0 = myLib.mkHiveK3s "homelab-0" {
+        host = "192.168.50.104";
+        hostModule = ./hosts/k3s/configuration.nix;
+        tags = ["homelab" "master"];
+      };
+
+      homelab-1 = myLib.mkHiveK3s "homelab-1" {
+        host = "192.168.50.103";
+        hostModule = ./hosts/k3s/configuration.nix;
+        tags = ["homelab"];
+      };
+
+      homelab-2 = myLib.mkHiveK3s "homelab-2" {
+        host = "192.168.50.159";
+        hostModule = ./hosts/k3s/configuration.nix;
+        tags = ["homelab"];
+      };
+    };
+  in
+    with myLib; {
+      colmenaHive = hive;
+      nixosConfigurations = hive.nodes;
     };
 }

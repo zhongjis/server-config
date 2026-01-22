@@ -15,10 +15,10 @@
 
 ```nix
 nix run nixpkgs#nixos-anywhere -- \
---flake .#homelab-0 \
+--flake .#homelab-2 \
 --generate-hardware-config nixos-generate-config ./hosts/k3s/hardware-configuration-homelab-0.nix \
 --extra-files /home/zshen/.config/sops/age \
-nixos@192.168.50.192
+nixos@192.168.50.159
 ```
 
 #### darwin
