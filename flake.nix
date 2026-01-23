@@ -59,13 +59,13 @@
       homelab-1 = myLib.mkHiveK3s "homelab-1" {
         host = "192.168.50.103";
         hostModule = ./hosts/k3s/configuration.nix;
-        tags = ["homelab"];
+        tags = ["homelab" "worker"];
       };
 
       homelab-2 = myLib.mkHiveK3s "homelab-2" {
         host = "192.168.50.159";
         hostModule = ./hosts/k3s/configuration.nix;
-        tags = ["homelab"];
+        tags = ["homelab" "worker"];
       };
     };
   in
