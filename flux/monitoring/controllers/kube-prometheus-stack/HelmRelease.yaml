@@ -172,6 +172,7 @@ spec:
       endpoints: # ips of servers
         - 192.168.50.103
         - 192.168.50.104
+        - 192.168.50.105
 
     coreDns:
       enabled: true
@@ -184,6 +185,7 @@ spec:
       endpoints: # ips of servers
         - 192.168.50.103
         - 192.168.50.104
+        - 192.168.50.105
       service:
         enabled: true
         port: 2381
@@ -194,12 +196,14 @@ spec:
       endpoints: # ips of servers
         - 192.168.50.103
         - 192.168.50.104
+        - 192.168.50.105
 
     kubeProxy:
       enabled: true
       endpoints: # ips of servers
         - 192.168.50.103
         - 192.168.50.104
+        - 192.168.50.105
 
     kubeStateMetrics:
       enabled: true

@@ -22,7 +22,7 @@ spec:
       postgresql: "17"
     mode: standalone
     cluster:
-      instances: 2 # only two nodes now
+      instances: 3
       storage:
         size: 5Gi
         storageClass: "longhorn"

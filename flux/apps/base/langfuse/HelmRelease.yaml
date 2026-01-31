@@ -126,7 +126,7 @@ spec:
         existingSecret: langfuse-secrets-flux
         existingSecretKey: clickhouse-user-password
       # Reduce from default preset to appropriate size for homelab workload
-      replicaCount: 2
+      replicaCount: 3
       primary:
         resources:
           requests:
