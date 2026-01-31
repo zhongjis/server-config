@@ -20,8 +20,8 @@ spec:
       valuesKey: uri
       targetPath: db.url
   values:
-    replicaCount: 2
-    numWorkers: 2
+    replicaCount: 3
+    numWorkers: 3
 
     db:
       useExisting: true
