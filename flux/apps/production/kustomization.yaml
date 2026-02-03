@@ -4,7 +4,7 @@ resources:
   - ../base/actualbudget
   - ../base/authentik/
   - ../base/cloudflared
-  - ../base/dify
+  # - ../base/dify
   - ../base/freshrss
   - ../base/home-assistant
   - ../base/homepage
@@ -14,7 +14,7 @@ resources:
   # - ../base/manyfold
   # - ../base/minio/operator
   # - ../base/minio/tenant
-  - ../base/mlflow
+  # - ../base/mlflow
   # - ../base/mongodb
   - ../base/n8n
   # - ../base/open-webui
