@@ -8,4 +8,4 @@ spec:
   interval: 12h
   url: oci://docker.litellm.ai/berriai/litellm-helm
   ref:
-    tag: "0.1.837"
+    tag: "1.81.13"
