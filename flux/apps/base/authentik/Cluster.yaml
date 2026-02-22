@@ -22,7 +22,9 @@ spec:
       postgresql: "17"
     mode: standalone
     cluster:
-      instances: 3
+      instances: 2
+      affinity:
+        topologyKey: kubernetes.io/hostname
       storage:
         size: 20Gi
         storageClass: "longhorn"
