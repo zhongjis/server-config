@@ -20,6 +20,8 @@ spec:
       valuesKey: uri
       targetPath: db.url
   values:
+    image:
+      tag: "main-v1.81.12-stable"
     replicaCount: 3
     numWorkers: 3
 
