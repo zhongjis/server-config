@@ -1,0 +1,44 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-db
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: infra-configs
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/apps/production-db
+  prune: false
+  wait: true
+  timeout: 10m0s
+  healthChecks:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: authentik-cnpg-cluster
+      namespace: authentik
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: freshrss-cnpg-cluster
+      namespace: freshrss
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: langfuse-cnpg-cluster
+      namespace: langfuse
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: litellm-cnpg-cluster
+      namespace: litellm
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: n8n-cnpg-cluster
+      namespace: n8n
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      current: "has(status) && has(status.conditions) && status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'True')"
+      inProgress: "!has(status) || !has(status.conditions) || !status.conditions.exists(condition, condition.type == 'Ready') || status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'Unknown')"
+      failed: "has(status) && has(status.conditions) && status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'False')"

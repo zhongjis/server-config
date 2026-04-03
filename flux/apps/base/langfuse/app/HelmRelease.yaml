@@ -1,0 +1,175 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: langfuse
+  namespace: langfuse
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: langfuse
+      version: 1.5.17
+      sourceRef:
+        kind: HelmRepository
+        name: langfuse
+        namespace: langfuse
+      interval: 12h
+  dependsOn:
+    - name: langfuse-cnpg-cluster
+  valuesFrom:
+    # externalPostgresql
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: host
+      targetPath: postgresql.host
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: port
+      targetPath: postgresql.port
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: postgresql.auth.database
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: username
+      targetPath: postgresql.auth.username
+    - kind: Secret
+      name: langfuse-cnpg-cluster-app
+      valuesKey: uri
+      targetPath: postgresql.directUrl
+  values:
+    langfuse:
+      features:
+        telemetryEnabled: true
+        experimentalFeaturesEnabled: true
+      encryptionKey:
+        secretKeyRef:
+          name: langfuse-secrets-flux
+          key: encryptionKey
+      salt:
+        secretKeyRef:
+          name: langfuse-secrets-flux
+          key: salt
+      nextauth:
+        url: "https://langfuse.zshen.me"
+        secret:
+          secretKeyRef:
+            name: langfuse-secrets-flux
+            key: nextauth-secret
+      worker:
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        hpa:
+          enabled: true
+          minReplicas: 1
+          maxReplicas: 3
+          targetCPUUtilizationPercentage: 70
+
+      ingress:
+        enabled: true
+        annotations:
+          gethomepage.dev/description: The easiest way to add observability to your AI stack.
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Applications
+          gethomepage.dev/name: Langfuse
+          kubernetes.io/tls-acme: "true"
+        className: nginx
+        hosts:
+          - host: langfuse.zshen.me
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          enabled: true
+          secretName: langfuse-tls
+      additionalEnv:
+        - name: AUTH_AUTHENTIK_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: langfuse-secrets-flux
+              key: AUTH_AUTHENTIK_CLIENT_ID
+        - name: AUTH_AUTHENTIK_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: langfuse-secrets-flux
+              key: AUTH_AUTHENTIK_CLIENT_SECRET
+        - name: AUTH_AUTHENTIK_ISSUER
+          valueFrom:
+            secretKeyRef:
+              name: langfuse-secrets-flux
+              key: AUTH_AUTHENTIK_ISSUER
+        - name: AUTH_DISABLE_USERNAME_PASSWORD
+          value: "true"
+
+    postgresql:
+      deploy: false
+      # host: my-external-postgres-server.com (set via valuesFrom)
+      # directUrl: postgres://my-username:my-password@my-external-postgres-server.com (set via valuesFrom)
+      auth:
+        # username: langfuse_user (set via valuesFrom)
+        # password: my-password (set via existingSecret)
+        # database: langfuse (set via valuesFrom)
+        existingSecret: langfuse-cnpg-cluster-app
+        secretKeys:
+          userPasswordKey: password
+
+    clickhouse:
+      auth:
+        existingSecret: langfuse-secrets-flux
+        existingSecretKey: clickhouse-user-password
+      # Reduce from default preset to appropriate size for homelab workload
+      replicaCount: 3
+      primary:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+      replica:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+      zookeeper:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+
+    redis:
+      deploy: false
+      host: "redis-master.redis.svc.cluster.local"
+      auth:
+        database: 3
+        existingSecret: langfuse-secrets-flux
+        existingSecretPasswordKey: redis-user-password
+
+    s3:
+      auth:
+        # If existingSecret is set, both root user and root password must be supplied via the secret
+        existingSecret: langfuse-secrets-flux
+        rootUserSecretKey: s3-user-username
+        rootPasswordSecretKey: s3-user-password
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 250m
+        limits:
+          memory: 768Mi
+          cpu: 500m

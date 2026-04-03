@@ -12,6 +12,10 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./flux/apps/production
-  prune: true
+  # Legacy monolithic owner during the production app split.
+  # Suspend this Kustomization before any push that removes ownership from
+  # ./flux/apps/production, then retire it only after apps-db and apps-nondb
+  # are healthy.
+  prune: false
   wait: true
   timeout: 5m0s

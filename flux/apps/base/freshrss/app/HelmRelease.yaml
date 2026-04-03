@@ -1,0 +1,145 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: freshrss
+  namespace: freshrss
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: freshrss
+      version: 2.4.1
+      sourceRef:
+        kind: HelmRepository
+        name: christianhuth
+        namespace: freshrss
+      interval: 12h
+  dependsOn:
+    - name: freshrss-cnpg-cluster
+  valuesFrom:
+    # externalPostgresql
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: dbname
+      targetPath: externalPostgresql.auth.database
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: username
+      targetPath: externalPostgresql.auth.username
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: password
+      targetPath: externalPostgresql.auth.password
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: host
+      targetPath: externalPostgresql.hostname
+    - kind: Secret
+      name: freshrss-cnpg-cluster-app
+      valuesKey: port
+      targetPath: externalPostgresql.port
+    # init
+    - kind: Secret
+      name: freshrss-secrets-fluxcd
+      valuesKey: admin-api-password
+      targetPath: freshrss.initialization.admin.apiPassword
+    - kind: Secret
+      name: freshrss-secrets-fluxcd
+      valuesKey: admin-username
+      targetPath: freshrss.initialization.admin.username
+    - kind: Secret
+      name: freshrss-secrets-fluxcd
+      valuesKey: admin-email
+      targetPath: freshrss.initialization.admin.email
+    - kind: Secret
+      name: freshrss-secrets-fluxcd
+      valuesKey: admin-password
+      targetPath: freshrss.initialization.admin.password
+  values:
+    image:
+      type: debian # alpine does not work for oidc
+    autoscaling:
+      enabled: false
+
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description: A self-hosted RSS and Atom feed aggregator. It is lightweight, easy to work with, powerful, and customizable.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Applications
+        gethomepage.dev/name: FreshRSS
+        kubernetes.io/tls-acme: "true"
+      className: nginx
+      hosts:
+        - host: rss.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: freshrss-tls
+          hosts:
+            - rss.zshen.me
+
+    extraEnv:
+      - name: OIDC_ENABLED
+        value: "1"
+      - name: OIDC_PROVIDER_METADATA_URL
+        value: "https://authentik.zshen.me/application/o/freshrss/.well-known/openid-configuration"
+      - name: OIDC_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: freshrss-secrets-fluxcd
+            key: OIDC_CLIENT_ID
+      - name: OIDC_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: freshrss-secrets-fluxcd
+            key: OIDC_CLIENT_SECRET
+      - name: OIDC_X_FORWARDED_HEADERS
+        value: "X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host"
+      - name: OIDC_SCOPES
+        value: "openid email profile"
+
+    freshrss:
+      baseUrl: "https://rss.zshen.me"
+      cronjob:
+        type: internal
+        minutes: "1,31"
+      database:
+        type: postgresql
+      initialization:
+        enabled: false
+        apiEnabled: true
+        # admin:
+        #   apiPassword:
+        #   email:
+        #   password:
+        #   username:
+      persistence:
+        enabled: true
+        storageClass: longhorn
+        data:
+          storageClass: longhorn
+        extensions:
+          storageClass: longhorn
+      timezone: America/Los_Angeles
+
+    # from secret values
+    # extraEnv:
+    #   - OIDC_ENABLED=1
+    #   - OIDC_PROVIDER_METADATA_URL=https://authentik.zshen.me/application/o/freshrss/.well-known/openid-configuration
+    #   - OIDC_CLIENT_ID=<Your Client ID from authentik<>
+    #   - OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
+    #   - OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
+    #   - OIDC_SCOPES=openid email profile
+
+    # from secret values
+    # externalPostgresql:
+    #   auth:
+    #     database: "freshrss"
+    #     username: "freshrss_user"
+    #     password:
+    #   hostname: "postgresql.postgresql"
+    #   port: 5432

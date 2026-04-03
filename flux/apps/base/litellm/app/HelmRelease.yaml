@@ -1,0 +1,147 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: litellm
+  namespace: litellm
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: litellm
+    namespace: litellm
+  dependsOn:
+    - name: litellm-cnpg-cluster
+  valuesFrom:
+    # externalPostgresql
+    - kind: Secret
+      name: litellm-cnpg-cluster-app
+      valuesKey: uri
+      targetPath: db.url
+  values:
+    image:
+      tag: "main-v1.81.12-stable"
+    replicaCount: 3
+    numWorkers: 3
+
+    db:
+      useExisting: true
+      deployStandalone: false
+      secret:
+        name: litellm-cnpg-cluster-app
+        usernameKey: username
+        passwordKey: password
+
+    masterkeySecretName: "litellm-secrets-flux"
+    masterkeySecretKey: "masterKey"
+
+    proxyConfigMap:
+      create: true
+      key: "config.yaml"
+
+    proxy_config:
+      general_settings:
+        store_model_in_db: true
+        store_prompts_in_spend_logs: true
+      litellm_settings:
+        callbacks: ["langfuse_otel"]
+      model_list:
+        # openai
+        - model_name: openai/gpt-3.5-turbo
+          litellm_params:
+            model: gpt-3.5-turbo
+            api_key: os.environ/OPENAI_API_KEY
+        - model_name: openai/gpt-4o-mini
+          litellm_params:
+            model: gpt-4o-mini
+            api_key: os.environ/OPENAI_API_KEY
+        - model_name: openai/gpt-5-mini
+          litellm_params:
+            model: gpt-5-mini
+            api_key: os.environ/OPENAI_API_KEY
+        - model_name: openai/gpt-5-nano
+          litellm_params:
+            model: gpt-5-nano
+            api_key: os.environ/OPENAI_API_KEY
+        - model_name: openai/gpt-o3-mini
+          litellm_params:
+            model: gpt-o3-mini
+            api_key: os.environ/OPENAI_API_KEY
+        - model_name: openai/gpt-o4-mini
+          litellm_params:
+            model: gpt-o4-mini
+            api_key: os.environ/OPENAI_API_KEY
+        # anthropic
+        - model_name: anthropic/claude-haiku-4-5
+          litellm_params:
+            model: claude-haiku-4-5
+            api_key: os.environ/ANTHROPIC_API_KEY
+        - model_name: anthropic/claude-haiku-3-5
+          litellm_params:
+            model: claude-haiku-3-5
+            api_key: os.environ/ANTHROPIC_API_KEY
+        - model_name: anthropic/claude-sonnet-4-5
+          litellm_params:
+            model: claude-sonnet-4-5
+            api_key: os.environ/ANTHROPIC_API_KEY
+        # GEMINI
+        - model_name: google/gemini-2.5-flash
+          litellm_params:
+            model: gemini/gemini-2.5-flash
+            api_key: os.environ/GEMINI_API_KEY
+        - model_name: google/gemini-2.5-pro
+          litellm_params:
+            model: gemini/gemini-2.5-pro
+            api_key: os.environ/GEMINI_API_KEY
+        # openrouter
+        - model_name: qwen/qwen3-coder
+          litellm_params:
+            model: openrouter/qwen/qwen3-coder
+            api_key: os.environ/OPENROUTER_API_KEY
+        - model_name: cohere/command-r7b-12-2024
+          litellm_params:
+            model: openrouter/cohere/command-r7b-12-2024
+            api_key: os.environ/OPENROUTER_API_KEY
+        - model_name: deepseek/deepseek-v3.2-exp
+          litellm_params:
+            model: openrouter/deepseek/deepseek-v3.2-exp
+            api_key: os.environ/OPENROUTER_API_KEY
+        # deepseek
+        - model_name: deepseek/deepseek-chat
+          litellm_params:
+            model: deepseek/deepseek-chat
+            api_key: os.environ/DEEPSEEK_API_KEY
+        - model_name: deepseek/deepseek-coder
+          litellm_params:
+            model: deepseek/deepseek-coder
+            api_key: os.environ/DEEPSEEK_API_KEY
+        - model_name: deepseek/deepseek-reasoner
+          litellm_params:
+            model: deepseek/deepseek-reasoner
+            api_key: os.environ/DEEPSEEK_API_KEY
+
+    environmentSecrets:
+      - litellm-secrets-env-flux
+
+    ingress:
+      enabled: true
+      annotations:
+        gethomepage.dev/description: A service that lets you access multiple language models (LLMs) using the OpenAI input/output format.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Backend
+        gethomepage.dev/name: LiteLLM
+        kubernetes.io/tls-acme: "true"
+      className: nginx
+      hosts:
+        - host: litellm.zshen.me
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: litellm-tls
+          hosts:
+            - litellm.zshen.me
+
+    serviceMonitor:
+      enabled: true

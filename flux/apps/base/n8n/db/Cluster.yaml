@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: n8n-cnpg-cluster
+  namespace: n8n
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: cluster
+      version: 0.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: cnpg-system
+      interval: 12h
+  values:
+    type: postgresql
+    version:
+      postgresql: "17"
+    mode: standalone
+    cluster:
+      instances: 2
+      affinity:
+        topologyKey: kubernetes.io/hostname
+      storage:
+        size: 5Gi
+        storageClass: "longhorn"
+      initdb:
+        database: n8n
+        owner: n8n_user
+      monitoring:
+        enabled: true
+        podMonitor:
+          enabled: true
+      roles:
+        - name: dota2_wokman_user
+          login: true
+          passwordSecret:
+            name: dota2-wokman-secrets
+    databases:
+      - name: dota2_wokman
+        owner: dota2_wokman_user
