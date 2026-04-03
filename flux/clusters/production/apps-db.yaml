@@ -39,6 +39,6 @@ spec:
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
-      current: "has(status) && has(status.conditions) && status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'True')"
-      inProgress: "!has(status) || !has(status.conditions) || !status.conditions.exists(condition, condition.type == 'Ready') || status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'Unknown')"
-      failed: "has(status) && has(status.conditions) && status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'False')"
+      current: "has(self.status) && has(self.status.conditions) && self.status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'True')"
+      inProgress: "!has(self.status) || !has(self.status.conditions) || !self.status.conditions.exists(condition, condition.type == 'Ready') || self.status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'Unknown')"
+      failed: "has(self.status) && has(self.status.conditions) && self.status.conditions.exists(condition, condition.type == 'Ready' && condition.status == 'False')"
