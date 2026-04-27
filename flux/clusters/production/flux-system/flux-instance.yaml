@@ -18,7 +18,7 @@ spec:
     name: flux-system
     interval: 1m
     url: ssh://git@github.com/zhongjis/server-config
-    ref: main
+    ref: refs/heads/main
     path: ./flux/clusters/production
     pullSecret: flux-system
   kustomize:
