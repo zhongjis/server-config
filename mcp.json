@@ -13,6 +13,12 @@
       "args": ["run", "github:utensils/mcp-nixos", "--"],
       "directTools": true,
       "lifecycle": "lazy"
+    },
+    "flux": {
+      "command": "nix",
+      "args": ["run", "nixpkgs#fluxcd-operator-mcp", "--", "serve", "--read-only", "--mask-secrets"],
+      "directTools": true,
+      "lifecycle": "lazy"
     }
   }
 }
