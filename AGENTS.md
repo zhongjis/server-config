@@ -1,227 +1,118 @@
-# Agent Guidelines for Server Config
+# server-config
 
-## Repository Overview
+> Root instructions for NixOS hosts + repo-wide workflows. For Kubernetes manifests, read `flux/AGENTS.md` first.
 
-This repository has a **two-part architecture**:
+**Generated:** 2026-04-26
+**Commit:** e52d053
+**Branch:** main
 
-1. **NixOS Host Configuration** (this directory) - Declarative system configuration for Kubernetes nodes using Colmena
-2. **FluxCD GitOps Configuration** (`flux/` subdirectory) - Kubernetes application deployment and management via GitOps
+## Overview
+- Homelab infrastructure repo: Colmena-managed NixOS k3s nodes + Flux-managed Kubernetes apps.
+- Two domains: root NixOS host config; `flux/` GitOps manifests reconciled by Flux v2.
 
-**Important**: When asked about Kubernetes operations, always check `flux/AGENTS.md` first.
+## Structure
+```
+./
+├── flake.nix              # Colmena hive: homelab-0/1/2
+├── lib/defaults.nix       # mkHiveSpecialArgs + mkHiveK3s wrappers
+├── hosts/k3s/             # shared node config, disko, hardware configs
+├── modules/               # NixOS modules: cache, users, sops, k3s
+├── secrets/homelab.yaml   # SOPS-encrypted NixOS secrets
+├── flux/                  # Kubernetes/Flux subsystem; has its own AGENTS.md
+└── .github/workflows/     # Flux validation + Kind e2e only
+```
 
-## Architecture
+## Where to Look
+| Task | Location | Notes |
+|------|----------|-------|
+| Add/change k3s node | `flake.nix`, `hosts/k3s/` | `custHostConfig` comes from `lib/defaults.nix`. |
+| Change k3s flags | `modules/k3s/default.nix` | servicelb/traefik disabled; metrics exposed. |
+| Change users/SOPS | `modules/user.nix`, `modules/sops.nix`, `secrets/homelab.yaml` | Root secrets differ from Flux secrets. |
+| Deploy NixOS | `flake.nix` | Use Colmena; build before apply when possible. |
+| Node maintenance | `UPGRADE.md` | Drain → apply/reboot → uncordon; CNPG pre/post checks still TODO. |
+| Kubernetes apps/infra | `flux/` | Read `flux/AGENTS.md`; run `./flux/scripts/validate.sh`. |
+| CI behavior | `.github/workflows/*.yaml` | Only Flux manifests/e2e; no NixOS CI build. |
+| Renovate rules | `renovate.json` | Nix + Kubernetes managers; gotk-components ignored by Kubernetes manager. |
+| MCP hints | `mcp.json` | `context7`, `nixos` MCP servers configured lazy. |
 
-### Part 1: NixOS Configuration (This Directory)
+## Host Map
+| Host | Role | IP | Notes |
+|------|------|----|-------|
+| `homelab-0` | k3s server/master | `192.168.50.104` | `isMaster = true`, label `n8n-node=true`. |
+| `homelab-1` | k3s server/worker | `192.168.50.103` | Joins `https://192.168.50.104:6443`. |
+| `homelab-2` | k3s server/worker | `192.168.50.105` | Present in flake + hardware config; older docs may omit it. |
 
-#### Core Components
-- **`flake.nix`**: Main Nix flake defining system configurations using Colmena for multi-node management
-  - `homelab-0`: Master node (isMaster=true) at 192.168.50.104
-  - `homelab-1`: Worker node (master points to 192.168.50.104) at 192.168.50.103
-- **`lib/defaults.nix`**: Helper functions for Colmena configuration:
-  - `mkNodeSpecialArgs`: Creates custom host configuration parameters (hostName, isK3sMaster, masterAddr)
-  - `mkHive`: Creates Colmena node configurations with sops-nix and disko modules
-- **`hosts/k3s/`**: Shared k3s node configuration
-  - `configuration.nix`: Base configuration imported by both nodes with firewall rules, timezone, system packages
-  - `disko-config.nix`: Disk partitioning scheme for NVMe drives
-  - `hardware-configuration-{hostname}.nix`: Hardware-specific settings per node (optional)
-- **`modules/`**: Reusable NixOS modules
-  - `default.nix`: Global nix configuration with cache settings and experimental features
-  - `k3s/`: k3s service configuration with disabled servicelb/traefik, metrics enabled, etcd metrics
-  - `sops.nix`: SOPS age key management with sops package
-  - `user.nix`: User account configuration with SSH keys and hashed passwords
+## Code Map
+| Symbol / Pattern | Type | Location | Role |
+|------------------|------|----------|------|
+| `mkHiveSpecialArgs` | Nix helper | `lib/defaults.nix` | Builds `custHostConfig` for modules. |
+| `mkHiveK3s` | Nix helper | `lib/defaults.nix` | Adds deployment target + sops-nix + disko imports. |
+| `custHostConfig` | special arg | `hosts/k3s/configuration.nix`, `modules/k3s/default.nix` | Hostname, master flag, join address, labels. |
+| `services.k3s.extraFlags` | k3s tuning | `modules/k3s/default.nix` | Disables k3s defaults; exposes metrics endpoints. |
+| `.sops.yaml` creation rules | secret policy | `.sops.yaml` | Root secrets: primary key; Flux secrets: primary + homelab keys. |
 
-### Part 2: Kubernetes/Flux Configuration (`flux/` Directory)
-
-**For all FluxCD and Kubernetes operations, refer to `flux/AGENTS.md`.**
-
-Key components in `flux/`:
-- **`apps/`**: Application deployments with base configurations and environment overlays
-- **`infrastructure/`**: Core infrastructure components (cert-manager, ingress-nginx, longhorn, metallb)
-- **`clusters/`**: Flux configuration per environment (staging/production)
-- **`monitoring/`**: Observability stack (Prometheus, Grafana, Loki)
-- **`secrets/`**: SOPS-encrypted secrets
-- **`scripts/validate.sh`**: Validation script using kubeconform and kustomize
-
-## Key Technologies
-
-### NixOS Kubernetes Nodes/Hosts
-- **NixOS**: Declarative operating system configuration
-- **Colmena**: Multi-node NixOS deployment and management
-- **Disko**: Declarative disk partitioning (automated during nixos-anywhere deployment)
-- **K3s**: Lightweight Kubernetes distribution (servicelb and traefik disabled in favor of metallb/ingress-nginx)
-- **SOPS**: Secret encryption with age keys (requires age key at `~/.config/sops/age/keys.txt` on deployment machine)
-
-### K3s Kubernetes Cluster
-- **Flux v2**: GitOps operator for Kubernetes - See `flux/AGENTS.md`
-- **Helm**: Package manager for Kubernetes applications - See `flux/AGENTS.md`
-- **Kustomize**: Configuration management via overlays - See `flux/AGENTS.md`
-
-## Common Commands
-
-### Colmena Deployment / NixOS Deployment
+## Commands
 ```bash
-# Deploy configuration to all nodes using Colmena
-colmena apply
-
-# Apply to a specific node
-colmena apply --on homelab-0
-
-# Build configuration locally
+# NixOS / Colmena
 colmena build
-```
+colmena apply
+colmena apply --on homelab-0
+colmena apply --on homelab-1
+colmena apply --on homelab-2
+colmena apply --on homelab-0 --reboot
 
-### Flux/Kubernetes Operations
-**All Flux commands are documented in `flux/AGENTS.md`. Key references:**
+# Node maintenance pattern
+kubectl drain <node> --ignore-daemonsets --disable-eviction --delete-emptydir-data --force
+colmena apply --on <node> --reboot
+kubectl uncordon <node>
 
-```bash
-# Validate all manifests and overlays
-./flux/scripts/validate.sh
-
-# Check Flux prerequisites
-flux check --pre
-
-# Watch Helm releases across all namespaces
-flux get helmreleases --all-namespaces
-
-# Watch kustomizations
-flux get kustomizations --watch
-
-# Force reconciliation
-flux reconcile kustomization flux-system --with-source
-
-# Build and preview overlays
-kustomize build ./flux/apps/staging
-kustomize build ./flux/apps/production
-```
-
-### Secret Management
-
-#### NixOS Secrets (this directory)
-```bash
-# Encrypt a NixOS secret with SOPS (stored in secrets/homelab.yaml)
-sops --age=age1gff6wle45ktarxc89vfqnq6qawwjcxd5jed4jnuhhddpeqxz6d7q8wq8gn \
-  --encrypt --in-place secrets/homelab.yaml
-
-# Edit encrypted secrets (automatically decrypts/re-encrypts)
+# NixOS secrets
 sops secrets/homelab.yaml
+sops --age=age1gff6wle45ktarxc89vfqnq6qawwjcxd5jed4jnuhhddpeqxz6d7q8wq8gn --encrypt --in-place secrets/homelab.yaml
+
+# Flux validation from repo root
+./flux/scripts/validate.sh
+kustomize build ./flux/apps/production
+kustomize build ./flux/apps/production-db
+kustomize build ./flux/apps/production-nondb
 ```
 
-#### Kubernetes Secrets (flux/ directory)
-**Refer to `flux/AGENTS.md` for Kubernetes secret management.**
+## Always
+- For Kubernetes, Flux, HelmRelease, Kustomization, Secret, CNPG, or kubectl work: read `flux/AGENTS.md` first.
+- Keep `system.stateVersion = "24.05"` unless explicitly doing a NixOS state migration.
+- Keep k3s `servicelb` and `traefik` disabled; Flux supplies MetalLB + ingress-nginx.
+- Build or evaluate before applying NixOS changes when possible: `colmena build`.
+- Preserve `custHostConfig` flow: `flake.nix` → `lib/defaults.nix` → host/modules.
+- Verify age key availability before SOPS/Colmena deploys: `~/.config/sops/age/keys.txt` locally; target key copied by nixos-anywhere.
 
-```bash
-# Note: Age keys must exist at ~/.config/sops/age/keys.txt on the machine running SOPS
-# On deployed NixOS hosts, keys are copied to /var/lib/sops-nix/keys.txt during deployment
-# Configuration in .sops.yaml defines primary and homelab age keys for different paths.
-```
+## Ask First
+- Changing node IPs, hostnames, or master election.
+- Changing `system.stateVersion`, nixpkgs channel, disk layout, or k3s token.
+- Running `colmena apply` against all nodes when workloads are stateful.
+- Editing Kubernetes resources outside GitOps reconciliation.
 
-## Infrastructure Components
+## Never
+- Do not edit `flux/clusters/*/flux-system/gotk-components.yaml` or `gotk-sync.yaml` directly; generated by Flux.
+- Do not rely on README nixos-anywhere examples without checking `flake.nix`; current docs have stale IP/hardware-config examples.
+- Do not commit decrypted `secrets/homelab.yaml` or ad-hoc plaintext Kubernetes Secrets.
+- Do not enable k3s servicelb/traefik unless also redesigning Flux infrastructure.
 
-The k3s cluster runs core infrastructure managed by FluxCD. For details, see `flux/AGENTS.md`.
+## Gotchas
+- `homelab-2` exists in `flake.nix` and hardware configs; older docs mention only homelab-0/1.
+- Disko device is hardcoded: `/dev/nvme0n1` in `hosts/k3s/configuration.nix`. Verify before nixos-anywhere.
+- Hardware config inclusion is filename-sensitive: `hardware-configuration-${hostName}.nix`; mismatches silently skip.
+- `modules/k3s/default.nix` sets `sops.age.keyFile = "keys.txt"`, overriding the absolute default from `modules/sops.nix`.
+- k3s metrics bind to `0.0.0.0`; firewall assumes trusted LAN.
+- CNPG-aware node upgrade steps are incomplete in `UPGRADE.md`; check PostgreSQL cluster health manually before drains.
+- Older AGENTS content referenced absent OpenCode context files; do not add path references unless files exist.
 
-## Application Patterns (FluxCD)
-
-**For application deployment patterns, refer to `flux/AGENTS.md`.**
-
-### Key Patterns:
-- Application directory: `flux/apps/base/<app-name>/`
-- Standard files: `Namespace.yaml`, `HelmRepo.yaml` or `OCIRepository.yaml`, `HelmRelease.yaml`, `kustomization.yaml`
-- Optional files: `Cluster.yaml` (CloudNativePG), `GrafanaDashboard.yaml`
-- Secret naming: `flux/secrets/production/<app>-secrets-flux.yaml` (new pattern)
-- Legacy secret patterns: `*-secrets-fluxcd.yaml`, `*-secrets.yaml`
-
-### Discovering Current Applications:
-```bash
-# List all deployed applications
-ls /home/zshen/personal/server-config/flux/apps/base/
-```
-
-## Development Workflow
-
-1. **NixOS changes**: Modify host configurations in `hosts/` or modules in `modules/`, then deploy with `colmena apply`
-2. **Application changes**: Modify configurations in `flux/apps/`, changes are automatically synced by Flux
-3. **Infrastructure changes**: Modify configurations in `flux/infrastructure/`, validate with `./flux/scripts/validate.sh` before committing
-4. **Secrets**: Always encrypt with SOPS before committing
-5. **Testing overlays**: Use `kustomize build ./flux/apps/{environment}` to preview manifests
-
-## Cluster Architecture
-
-- **homelab-0** (192.168.50.104): k3s master node running on ThinkCentre i7
-  - Configured with `isMaster=true` in flake.nix
-  - Runs `k3s server --cluster-init`
-- **homelab-1** (192.168.50.103): k3s worker node running on ThinkCentre i5
-  - Configured with `master="192.168.50.104"` to join the cluster
-  - Runs `k3s server` pointing to homelab-0
-- **Storage**: Longhorn distributed storage across both nodes
-- **Networking**:
-  - metallb for load balancing (k3s servicelb disabled)
-  - ingress-nginx for HTTP routing (k3s traefik disabled)
-  - Firewall: TCP ports 2379-2381, 6443, 9100, 10249-10250, 10257, 10259, 5001; UDP ports 8472, 51820-51821
-
-## Important Architecture Details
-
-- **mkNodeSpecialArgs helper**: The `lib/defaults.nix` file contains the `mkNodeSpecialArgs` function which creates custom host configuration parameters for Colmena.
-- **Shared configuration**: Both nodes use the same `hosts/k3s/configuration.nix` but with different host-specific parameters passed via `custHostConfig`.
-- **k3s module structure**: The k3s module includes `longhorn.nix` and `nfs.nix` submodules for additional storage options.
-- **k3s customization**: The k3s module (`modules/k3s/default.nix`) disables default servicelb and traefik, enables metrics endpoints, and configures etcd metrics exposure.
-- **NixOS version**: Uses nixpkgs 25.11 with system.stateVersion "24.05" for compatibility.
-- **Nix cache configuration**: Multiple substituters configured for faster builds (CUDA, Hyprland, devenv, nix-gaming, nix-community caches).
-
-**Note**: Flux performance tuning details are in `flux/AGENTS.md`.
-
-## Agent Guidance
-
-### OpenCode Standards
-This repository uses OpenCode standards for consistent agent interactions. Key files:
-
-- **Agent Rules**: `.opencode/context/core/standards/rules.md`
-  - When to check which AGENTS.md file
-  - Kubernetes context usage guidelines
-  - Secret naming patterns
-  - App discovery patterns
-
-- **Code Standards**: `.opencode/context/core/standards/code.md`
-  - YAML formatting (2-space indentation)
-  - Kubernetes resource naming conventions
-  - File naming patterns
-
-- **Workflows**: `.opencode/context/core/workflows/`
-  - `deploy-new-app.md`: Steps to deploy a new application
-  - `update-flux.md`: Steps to update Flux components
-  - `troubleshoot-flux.md`: Common Flux troubleshooting
-
-- **Domain Context**: `.opencode/context/domain/server-config.md`
-  - Two-part architecture overview
-  - Technology stack details
-
-### Core Agent Rules
-1. **When asked about Kubernetes operations, always check `flux/AGENTS.md` first.**
-2. **When working with Kubernetes operations, unless otherwise specified, use the default Kubernetes context.**
-3. **For app-specific questions, first check the app's directory structure in `flux/apps/base/`.**
-4. **New secrets should follow the pattern: `<app>-secrets-flux.yaml`.**
-5. **Always run validation before committing changes: `./flux/scripts/validate.sh`.**
-
-## Build/Test Commands
-
-- **Validate all manifests**: `./flux/scripts/validate.sh`
-- **Run CI tests**: Triggered via `.github/workflows/test.yaml`
-- **Run e2e tests**: Triggered via `.github/workflows/e2e.yaml`
-- **Manual validation**: `kubeconform -strict -ignore-missing-schemas <file.yaml>`
-
-## Code Style Guidelines
-
-- **YAML format**: 2-space indentation, lowercase for resource names
-- **Kubernetes conventions**: Use `app.kubernetes.io/name` labels consistently
-- **Flux GitOps**: Structure resources under `flux/apps/base/` and `flux/apps/production/`
-- **File naming**: Use PascalCase for Kubernetes resources (e.g., `Deployment.yaml`, `Service.yaml`)
-- **Kustomize**: All overlays must have `kustomization.yaml` with proper resource references
-- **Secrets**: Use SOPS encryption, skip Secret validation in kubeconform
-- **Image tags**: Pin specific versions (e.g., `v1.8.0`) with `imagePullPolicy: Always`
-- **Namespace**: Every app should have its own namespace with matching resources
-
-## Reference Documentation
-
-- **Flux AGENTS.md**: `/home/zshen/personal/server-config/flux/AGENTS.md` - Complete FluxCD/Kubernetes documentation
-- **OpenCode Index**: `.opencode/context/index.md` - All OpenCode standards and workflows
-- **Agent Rules**: `.opencode/context/core/standards/rules.md` - Detailed agent interaction rules
-- **Deploy New App**: `.opencode/context/core/workflows/deploy-new-app.md` - Step-by-step application deployment
+## Child AGENTS.md Files
+- `flux/AGENTS.md` — Flux/Kubernetes scope.
+- `flux/apps/AGENTS.md` — app overlays and app onboarding.
+- `flux/apps/base/AGENTS.md` — base app manifest patterns.
+- `flux/clusters/AGENTS.md` — reconciliation entrypoints and split app ownership.
+- `flux/infrastructure/AGENTS.md` — platform controllers/configs.
+- `flux/monitoring/AGENTS.md` — observability stack.
+- `flux/secrets/AGENTS.md` — Kubernetes SOPS secrets.
+- `hosts/k3s/AGENTS.md` — node-level host config.
+- `modules/k3s/AGENTS.md` — k3s service module.
