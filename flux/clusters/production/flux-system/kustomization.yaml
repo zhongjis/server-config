@@ -4,6 +4,7 @@ resources:
   - gotk-components.yaml
   - gotk-sync.yaml
   - flux-operator.yaml
+  - flux-instance.yaml
   # - weave-gitops.yaml
 labels:
   - pairs:
