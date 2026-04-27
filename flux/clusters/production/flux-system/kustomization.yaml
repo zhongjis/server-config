@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - flux-operator.yaml
   - flux-instance.yaml
-  # - weave-gitops.yaml
 labels:
   - pairs:
       toolkit.fluxcd.io/tenant: sre-team
