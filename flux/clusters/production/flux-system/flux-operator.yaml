@@ -34,5 +34,23 @@ spec:
       retryInterval: 5m
   values:
     web:
+      enabled: true
+      # Anonymous Web UI is accepted for private homelab-only access.
       ingress:
-        enabled: false
+        enabled: true
+        className: nginx
+        annotations:
+          gethomepage.dev/description: Flux Operator Web UI for GitOps status.
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Cluster Management
+          gethomepage.dev/name: Flux Web UI
+          kubernetes.io/tls-acme: "true"
+        hosts:
+          - host: gitops.zshen.me
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: flux-web-ui-tls
+            hosts:
+              - gitops.zshen.me
