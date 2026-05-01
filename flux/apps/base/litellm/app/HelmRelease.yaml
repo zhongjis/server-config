@@ -129,6 +129,7 @@ spec:
       annotations:
         gethomepage.dev/description: A service that lets you access multiple language models (LLMs) using the OpenAI input/output format.
         gethomepage.dev/enabled: "true"
+        gethomepage.dev/external: "true"
         gethomepage.dev/group: Backend
         gethomepage.dev/name: LiteLLM
         kubernetes.io/tls-acme: "true"

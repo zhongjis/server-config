@@ -22,6 +22,7 @@ spec:
       annotations:
         gethomepage.dev/description: A powerful, open-source PDF editing platform.
         gethomepage.dev/enabled: "true"
+        gethomepage.dev/external: "true"
         gethomepage.dev/group: Applications
         gethomepage.dev/name: Stirling PDF
         kubernetes.io/tls-acme: "true"
