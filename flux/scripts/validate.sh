@@ -20,7 +20,7 @@
 # limitations under the License.
 
 # Prerequisites
-# - yq v4.34
+# - yq (mikefarah v4.34+ or Python yq)
 # - kustomize v5.3
 # - kubeconform v0.6
 
@@ -35,6 +35,16 @@ kustomize_config="kustomization.yaml"
 kubeconform_flags=("-skip=Secret")
 kubeconform_config=("-strict" "-ignore-missing-schemas" "-schema-location" "default" "-schema-location" "/tmp/flux-crd-schemas" "-verbose")
 
+
+validate_yaml() {
+  local file="$1"
+
+  if yq --version 2>&1 | grep -qi 'mikefarah'; then
+    yq e 'true' "$file" > /dev/null
+  else
+    yq '.' "$file" > /dev/null
+  fi
+}
 echo "INFO - Downloading Flux OpenAPI schemas"
 mkdir -p /tmp/flux-crd-schemas/master-standalone-strict
 curl -sL https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-crd-schemas/master-standalone-strict
@@ -42,7 +52,7 @@ curl -sL https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.ta
 find . -type f -name '*.yaml' -print0 | while IFS= read -r -d $'\0' file;
   do
     echo "INFO - Validating $file"
-    yq e 'true' "$file" > /dev/null
+    validate_yaml "$file"
 done
 
 echo "INFO - Validating clusters"
