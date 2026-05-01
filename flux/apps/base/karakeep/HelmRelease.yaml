@@ -55,6 +55,7 @@ spec:
         annotations:
           gethomepage.dev/description: The Bookmark Everything app.
           gethomepage.dev/enabled: "true"
+          gethomepage.dev/external: "true"
           gethomepage.dev/group: Applications
           gethomepage.dev/name: Karakeep
           kubernetes.io/tls-acme: "true"

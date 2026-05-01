@@ -38,6 +38,7 @@ spec:
       annotations:
         gethomepage.dev/description: A super fast and privacy-focused app for managing your finances. At its heart is the well proven and much loved Envelope Budgeting methodology.
         gethomepage.dev/enabled: "true"
+        gethomepage.dev/external: "true"
         gethomepage.dev/group: Applications
         gethomepage.dev/name: ActualBudget
         kubernetes.io/tls-acme: "true"
