@@ -51,6 +51,13 @@ data:
         - Nextcloud:
             href: http://truenas.home:30027
             description: A suite of client-server software for creating and using file hosting services.
+        - Uptime Kuma:
+            href: https://status.zshen.me
+            description: Service status dashboard.
+            widget:
+              type: uptimekuma
+              url: https://status.zshen.me
+              slug: default
   widgets.yaml: |
     - kubernetes:
         cluster:
