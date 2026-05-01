@@ -60,6 +60,7 @@ spec:
         annotations:
           gethomepage.dev/description: A self-hosted, open source identity provider means prioritizing security and taking control of your most sensitive data.A self-hosted, open source identity provider means prioritizing security and taking control of your most sensitive data.
           gethomepage.dev/enabled: "true"
+          gethomepage.dev/external: "true"
           gethomepage.dev/group: Backend
           gethomepage.dev/name: Authentik
           kubernetes.io/tls-acme: "true"

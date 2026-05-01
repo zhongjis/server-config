@@ -78,6 +78,7 @@ spec:
         annotations:
           gethomepage.dev/description: The easiest way to add observability to your AI stack.
           gethomepage.dev/enabled: "true"
+          gethomepage.dev/external: "true"
           gethomepage.dev/group: Applications
           gethomepage.dev/name: Langfuse
           kubernetes.io/tls-acme: "true"

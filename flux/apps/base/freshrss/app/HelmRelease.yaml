@@ -68,6 +68,7 @@ spec:
       annotations:
         gethomepage.dev/description: A self-hosted RSS and Atom feed aggregator. It is lightweight, easy to work with, powerful, and customizable.
         gethomepage.dev/enabled: "true"
+        gethomepage.dev/external: "true"
         gethomepage.dev/group: Applications
         gethomepage.dev/name: FreshRSS
         kubernetes.io/tls-acme: "true"
