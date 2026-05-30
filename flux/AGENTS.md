@@ -33,6 +33,8 @@ flux/
 
 # Validate from repo root
 ./flux/scripts/validate.sh
+# Validate from repo root when kubeconform is missing locally
+nix shell nixpkgs#kubeconform -c ./flux/scripts/validate.sh
 
 # Flux status
 flux get kustomizations

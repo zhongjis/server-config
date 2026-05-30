@@ -2,10 +2,6 @@
 
 > Root instructions for NixOS hosts + repo-wide workflows. For Kubernetes manifests, read `flux/AGENTS.md` first.
 
-**Generated:** 2026-04-26
-**Commit:** e52d053
-**Branch:** main
-
 ## Overview
 - Homelab infrastructure repo: Colmena-managed NixOS k3s nodes + Flux-managed Kubernetes apps.
 - Two domains: root NixOS host config; `flux/` GitOps manifests reconciled by Flux v2.
@@ -73,6 +69,8 @@ sops --age=age1gff6wle45ktarxc89vfqnq6qawwjcxd5jed4jnuhhddpeqxz6d7q8wq8gn --encr
 
 # Flux validation from repo root
 ./flux/scripts/validate.sh
+# If kubeconform is missing locally
+nix shell nixpkgs#kubeconform -c ./flux/scripts/validate.sh
 kustomize build ./flux/apps/production
 kustomize build ./flux/apps/production-db
 kustomize build ./flux/apps/production-nondb
