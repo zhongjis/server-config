@@ -1,0 +1,82 @@
+---
+apiVersion: paperclip.inc/v1alpha1
+kind: Instance
+metadata:
+  name: paperclip
+  namespace: paperclip
+spec:
+  image:
+    repository: ghcr.io/paperclipai/paperclip
+    digest: "sha256:d9293c26de7c1cbb3e1c5026cced013063408568100684e3d26be0d033fe3997"
+    pullPolicy: IfNotPresent
+
+  deployment:
+    mode: authenticated
+    exposure: public
+    publicURL: https://paperclip.zshen.me
+    allowedHostnames:
+      - paperclip.zshen.me
+
+  database:
+    mode: external
+    externalURLSecretRef:
+      name: paperclip-cnpg-cluster-app
+      key: uri
+
+  auth:
+    secretRef:
+      name: paperclip-secrets-flux
+      key: BETTER_AUTH_SECRET
+
+  storage:
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: longhorn
+      accessModes:
+        - ReadWriteOnce
+
+  adapters:
+    apiKeysSecretRef:
+      name: paperclip-secrets-flux
+
+  networking:
+    service:
+      type: ClusterIP
+      port: 3100
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - paperclip.zshen.me
+      tls:
+        - hosts:
+            - paperclip.zshen.me
+          secretName: paperclip-tls
+      annotations:
+        gethomepage.dev/description: AI agent management workspace.
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/external: "true"
+        gethomepage.dev/group: Applications
+        gethomepage.dev/name: Paperclip
+        kubernetes.io/tls-acme: "true"
+        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+
+  observability:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: 30s
+    logging:
+      level: info
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 4Gi
