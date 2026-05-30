@@ -63,6 +63,7 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./infrastructure/controll
 - Read the child `AGENTS.md` for the subtree you are editing when one exists.
 - Use the default Kubernetes context unless the user specifies a different context.
 - Keep changes declarative and GitOps-managed; prefer manifests over live-only cluster edits.
+- IMPORTANT: Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main` via `clusters/production/flux-system/gotk-sync.yaml`; local commits do not reconcile until pushed. `flux reconcile source git flux-system -n flux-system` fetches that remote source, not this local checkout.
 - Name new app secret manifests `<app>-secrets-flux.yaml`.
 - Validate with `./scripts/validate.sh` from `flux/` or `./flux/scripts/validate.sh` from repo root before commit.
 

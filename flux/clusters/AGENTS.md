@@ -54,7 +54,7 @@ find ./flux/clusters -maxdepth 2 -type f -name '*.yaml' | sort
 flux get kustomizations -A
 flux describe kustomization <name> -n flux-system
 
-# Reconcile an entrypoint after a commit is available to Flux
+# Reconcile an entrypoint after the commit is pushed to the remote GitHub source
 flux reconcile kustomization <name> -n flux-system --with-source
 ```
 

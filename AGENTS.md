@@ -9,6 +9,7 @@
 ## Overview
 - Homelab infrastructure repo: Colmena-managed NixOS k3s nodes + Flux-managed Kubernetes apps.
 - Two domains: root NixOS host config; `flux/` GitOps manifests reconciled by Flux v2.
+- Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main`; local commits do not reconcile until pushed.
 
 ## Structure
 ```
