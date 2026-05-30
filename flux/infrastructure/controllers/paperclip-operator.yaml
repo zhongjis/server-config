@@ -6,15 +6,15 @@ metadata:
 
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
+kind: GitRepository
 metadata:
   name: paperclip-operator
   namespace: paperclip-system
 spec:
   interval: 12h
-  url: oci://ghcr.io/paperclipinc/charts/paperclip-operator
+  url: https://github.com/paperclipinc/paperclip-operator
   ref:
-    tag: "0.11.1"
+    tag: v0.11.1
 
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
@@ -25,10 +25,14 @@ metadata:
   namespace: paperclip-system
 spec:
   interval: 30m
-  chartRef:
-    kind: OCIRepository
-    name: paperclip-operator
-    namespace: paperclip-system
+  chart:
+    spec:
+      chart: charts/paperclip-operator
+      sourceRef:
+        kind: GitRepository
+        name: paperclip-operator
+        namespace: paperclip-system
+      interval: 12h
   install:
     crds: CreateReplace
   upgrade:
