@@ -37,6 +37,3 @@ spec:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
-  values:
-    image:
-      tag: "0.11.1"
