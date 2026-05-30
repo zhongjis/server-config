@@ -68,7 +68,7 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./flux/infrastructure/con
 kustomize build --load-restrictor=LoadRestrictionsNone ./flux/infrastructure/configs
 
 # Inspect reconciliation status
-flux get kustomizations -n flux-system | grep infra
+flux get kustomizations -n flux-system | rg infra
 flux get helmreleases --all-namespaces
 
 # Reconcile infrastructure owners

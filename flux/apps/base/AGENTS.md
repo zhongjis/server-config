@@ -3,7 +3,7 @@
 Guidance for base application manifests under `flux/apps/base/`. Keep this file focused on base resources only; environment overlays decide which bases are enabled.
 
 ## Scope
-- Contains 20 app bases: `actualbudget`, `authentik`, `capacitor`, `cloudflared`, `dify`, `freshrss`, `home-assistant`, `homepage`, `karakeep`, `langfuse`, `litellm`, `manyfold`, `minio`, `mlflow`, `mongodb`, `n8n`, `open-webui`, `redis`, `stirling-pdf`, `supabase`.
+- App bases are directory-driven; discover the current list with `fd -t d -d 1 . flux/apps/base` instead of trusting a hand-maintained inventory.
 - Use this directory for reusable app manifests: Namespaces, Flux sources, HelmReleases, CNPG database definitions, and app-local raw manifests.
 - Do not put production/staging selection rules here; overlays own inclusion and environment-specific patches.
 

@@ -48,7 +48,7 @@
 ./flux/scripts/validate.sh
 
 # Inspect declared entrypoints in Git
-find ./flux/clusters -maxdepth 2 -type f -name '*.yaml' | sort
+fd -e yaml . ./flux/clusters -d 2 | sort
 
 # Inspect live reconciliation
 flux get kustomizations -A
