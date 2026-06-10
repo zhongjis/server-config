@@ -6,4 +6,4 @@ resources:
   - ../base/langfuse/db
   - ../base/litellm/db
   - ../base/n8n/db
-  # - ../base/paperclip/db
+  - ../base/paperclip/db

@@ -12,6 +12,6 @@ resources:
   - ../base/langfuse/app
   - ../base/litellm/app
   - ../base/n8n/app
-  # - ../base/paperclip/app
+  - ../base/paperclip/app
   - ../base/redis
   - ../base/stirling-pdf
