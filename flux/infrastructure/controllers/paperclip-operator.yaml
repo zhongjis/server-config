@@ -33,6 +33,9 @@ spec:
         name: paperclip-operator
         namespace: paperclip-system
       interval: 12h
+  values:
+    leaderElection:
+      enabled: false
   install:
     crds: CreateReplace
   upgrade:
