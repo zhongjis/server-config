@@ -17,6 +17,10 @@ spec:
     allowedHostnames:
       - paperclip.zshen.me
 
+  env:
+    - name: NODE_OPTIONS
+      value: ""
+
   database:
     mode: external
     externalURLSecretRef:
