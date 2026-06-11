@@ -70,10 +70,9 @@ spec:
 
   observability:
     metrics:
-      enabled: true
+      enabled: false
       serviceMonitor:
-        enabled: true
-        interval: 30s
+        enabled: false
     logging:
       level: info
 
