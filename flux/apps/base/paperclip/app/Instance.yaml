@@ -17,6 +17,8 @@ spec:
     allowedHostnames:
       - paperclip.zshen.me
 
+  suspended: true
+
   env:
     - name: NODE_OPTIONS
       value: ""
