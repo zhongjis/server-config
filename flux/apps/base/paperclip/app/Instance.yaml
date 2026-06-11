@@ -38,15 +38,9 @@ spec:
       name: paperclip-secrets-flux
       key: BETTER_AUTH_SECRET
     # Paperclip operator v0.15.0 bootstrap inherits this setting and uses the sign-up endpoint.
-    # Fresh clusters need this set to false until paperclip-bootstrap succeeds and the first admin exists;
-    # after bootstrap, set it back to true and rotate/remove the paperclip-admin password secret.
-    disableSignUp: false
-    adminUser:
-      email: you@example.com
-      name: Admin
-      passwordSecretRef:
-        name: paperclip-admin
-        key: password
+    # Fresh clusters must temporarily set this to false and provide auth.adminUser until bootstrap succeeds;
+    # then remove auth.adminUser, set this back to true, and rotate/remove the paperclip-admin password secret.
+    disableSignUp: true
 
   storage:
     persistence:
