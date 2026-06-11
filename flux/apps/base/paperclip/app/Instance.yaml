@@ -37,6 +37,13 @@ spec:
     secretRef:
       name: paperclip-secrets-flux
       key: BETTER_AUTH_SECRET
+    disableSignUp: true
+    adminUser:
+      email: you@example.com
+      name: Admin
+      passwordSecretRef:
+        name: paperclip-admin
+        key: password
 
   storage:
     persistence:
