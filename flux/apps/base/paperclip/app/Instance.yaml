@@ -7,7 +7,7 @@ metadata:
 spec:
   image:
     repository: ghcr.io/paperclipai/paperclip
-    digest: "sha256:d9293c26de7c1cbb3e1c5026cced013063408568100684e3d26be0d033fe3997"
+    tag: latest
     pullPolicy: IfNotPresent
 
   deployment:
