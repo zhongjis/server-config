@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: multica-config
+  namespace: multica
+  labels:
+    app.kubernetes.io/name: multica
+data:
+  PORT: "8080"
+  APP_ENV: "production"
+  MULTICA_APP_URL: "https://multica.zshen.me"
+  FRONTEND_ORIGIN: "https://multica.zshen.me"
+  CORS_ALLOWED_ORIGINS: "https://multica.zshen.me"
+  COOKIE_DOMAIN: ".zshen.me"
+  RESEND_FROM_EMAIL: "noreply@multica.zshen.me"
+  ALLOW_SIGNUP: "true"
+  ALLOWED_EMAILS: "jasonshen96115@gmail.com"
+  ALLOWED_EMAIL_DOMAINS: ""
+  DISABLE_WORKSPACE_CREATION: "false"
+  GOOGLE_CLIENT_ID: ""
+  GOOGLE_REDIRECT_URI: "https://multica.zshen.me/auth/callback"
+  S3_BUCKET: ""
+  S3_REGION: "us-west-2"
+  CLOUDFRONT_DOMAIN: ""
+  CLOUDFRONT_KEY_PAIR_ID: ""
+  LOCAL_UPLOAD_BASE_URL: "https://api.multica.zshen.me"
+  POSTGRES_DB: "multica"
+  POSTGRES_USER: "multica_user"

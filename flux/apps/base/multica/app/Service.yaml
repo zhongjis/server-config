@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multica-backend
+  namespace: multica
+  labels:
+    app.kubernetes.io/name: multica
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: multica
+    app.kubernetes.io/component: backend
+  ports:
+    - port: 8080
+      targetPort: http
+      name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: multica
+  labels:
+    app.kubernetes.io/name: multica
+    app.kubernetes.io/component: backend-alias
+spec:
+  type: ExternalName
+  externalName: multica-backend.multica.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multica-frontend
+  namespace: multica
+  labels:
+    app.kubernetes.io/name: multica
+    app.kubernetes.io/component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: multica
+    app.kubernetes.io/component: frontend
+  ports:
+    - port: 3000
+      targetPort: http
+      name: http

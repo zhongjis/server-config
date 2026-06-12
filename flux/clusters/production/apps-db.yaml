@@ -34,6 +34,10 @@ spec:
       namespace: litellm
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
+      name: multica-cnpg-cluster
+      namespace: multica
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
       name: n8n-cnpg-cluster
       namespace: n8n
     - apiVersion: postgresql.cnpg.io/v1
