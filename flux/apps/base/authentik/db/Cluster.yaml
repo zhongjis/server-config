@@ -26,7 +26,7 @@ spec:
       affinity:
         topologyKey: kubernetes.io/hostname
       storage:
-        size: 50Gi
+        size: 55Gi
         storageClass: "longhorn"
       initdb:
         database: authentik
