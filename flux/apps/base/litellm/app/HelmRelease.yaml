@@ -72,6 +72,42 @@ spec:
           litellm_params:
             model: gpt-o4-mini
             api_key: os.environ/OPENAI_API_KEY
+        # chatgpt subscription
+        - model_name: chatgpt/gpt-5.5
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.5
+        - model_name: chatgpt/gpt-5.4
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.4
+        - model_name: chatgpt/gpt-5.4-pro
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.4-pro
+        - model_name: chatgpt/gpt-5.3-codex
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.3-codex
+        - model_name: chatgpt/gpt-5.3-codex-spark
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.3-codex-spark
+        - model_name: chatgpt/gpt-5.3-instant
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.3-instant
+        - model_name: chatgpt/gpt-5.3-chat-latest
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-5.3-chat-latest
         # anthropic
         - model_name: anthropic/claude-haiku-4-5
           litellm_params:
