@@ -37,15 +37,7 @@ spec:
     secretRef:
       name: paperclip-secrets-flux
       key: BETTER_AUTH_SECRET
-    # Temporary bootstrap window: the operator bootstrap Job uses sign-up, then promotes the admin.
-    # After the Job completes, remove auth.adminUser and set disableSignUp back to true.
-    adminUser:
-      email: admin@example.com
-      name: Admin
-      passwordSecretRef:
-        name: paperclip-admin
-        key: password
-    disableSignUp: false
+    disableSignUp: true
 
   storage:
     persistence:
