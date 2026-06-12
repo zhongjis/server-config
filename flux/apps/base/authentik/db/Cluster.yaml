@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: authentik-cnpg-cluster
+  name: authentik-cnpg-cluster-v2
   namespace: authentik
 spec:
   interval: 30m
@@ -26,7 +26,7 @@ spec:
       affinity:
         topologyKey: kubernetes.io/hostname
       storage:
-        size: 55Gi
+        size: 10Gi
         storageClass: "longhorn"
       initdb:
         database: authentik

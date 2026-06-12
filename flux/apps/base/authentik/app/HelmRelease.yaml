@@ -17,30 +17,30 @@ spec:
         namespace: authentik
       interval: 24h
   dependsOn:
-    - name: authentik-cnpg-cluster
+    - name: authentik-cnpg-cluster-v2
   valuesFrom:
     - kind: Secret
       name: authentik-secrets-fluxcd
       valuesKey: authentik-secret-key
       targetPath: authentik.secret_key
     - kind: Secret
-      name: authentik-cnpg-cluster-app
+      name: authentik-cnpg-cluster-v2-app
       valuesKey: user
       targetPath: authentik.postgresql.user
     - kind: Secret
-      name: authentik-cnpg-cluster-app
+      name: authentik-cnpg-cluster-v2-app
       valuesKey: password
       targetPath: authentik.postgresql.password
     - kind: Secret
-      name: authentik-cnpg-cluster-app
+      name: authentik-cnpg-cluster-v2-app
       valuesKey: host
       targetPath: authentik.postgresql.host
     - kind: Secret
-      name: authentik-cnpg-cluster-app
+      name: authentik-cnpg-cluster-v2-app
       valuesKey: dbname
       targetPath: authentik.postgresql.name
     - kind: Secret
-      name: authentik-cnpg-cluster-app
+      name: authentik-cnpg-cluster-v2-app
       valuesKey: port
       targetPath: authentik.postgresql.port
   values:

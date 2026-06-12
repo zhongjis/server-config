@@ -18,7 +18,7 @@ spec:
   healthChecks:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
-      name: authentik-cnpg-cluster
+      name: authentik-cnpg-cluster-v2
       namespace: authentik
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
