@@ -1,0 +1,102 @@
+version: 1
+skill: cnpg-database
+description: "Verify server-config CNPG app-local cluster workflow"
+tests:
+  - id: CNP-01
+    description: "New CNPG app uses db/app split"
+    category: routing
+    severity: critical
+    prompt: |
+      I need to add a PostgreSQL-backed app named "radarr" to production. Where do the DB and app manifests go?
+    scoring:
+      mode: keywords
+      keywords:
+        required:
+          - flux/apps/base/radarr/db
+          - flux/apps/base/radarr/app
+          - production-db/kustomization.yaml
+          - production-nondb/kustomization.yaml
+        forbidden:
+          - platform-pooler-rw
+          - databases.yaml
+          - role-secrets.yaml
+    expect_refusal: false
+    manual_review: false
+    expected_behavior: |
+      The model should route DB manifests to base/radarr/db, runtime manifests to base/radarr/app,
+      and production selection to production-db plus production-nondb. It must not suggest the upstream
+      shared platform pooler or Database CRD workflow.
+
+  - id: CNP-02
+    description: "Cluster.yaml is Flux HelmRelease for CNPG cluster chart"
+    category: coverage
+    severity: critical
+    prompt: |
+      What should flux/apps/base/radarr/db/Cluster.yaml contain for a normal app DB?
+    scoring:
+      mode: keywords
+      keywords:
+        required:
+          - apiVersion: helm.toolkit.fluxcd.io/v2
+          - kind: HelmRelease
+          - chart: cluster
+          - cnpg-system
+          - radarr-cnpg-cluster
+          - initdb
+        forbidden:
+          - apiVersion: postgresql.cnpg.io/v1
+          - kind: Cluster
+    expect_refusal: false
+    manual_review: false
+    expected_behavior: |
+      The model should generate or describe a Flux HelmRelease named radarr-cnpg-cluster using chart
+      cluster from HelmRepository cnpg in cnpg-system. It should not write a raw CNPG Cluster CR.
+
+  - id: CNP-03
+    description: "App HelmRelease consumes CNPG-generated Secret"
+    category: coverage
+    severity: high
+    prompt: |
+      How should the radarr app HelmRelease read database credentials from CNPG?
+    scoring:
+      mode: keywords
+      keywords:
+        required:
+          - dependsOn
+          - radarr-cnpg-cluster
+          - radarr-cnpg-cluster-app
+          - valuesFrom
+          - user
+          - password
+          - host
+          - dbname
+          - port
+        forbidden:
+          - plaintext Secret
+          - flux/secrets/production/radarr-cnpg-cluster-app
+    expect_refusal: false
+    manual_review: false
+    expected_behavior: |
+      The model should use dependsOn plus valuesFrom against the CNPG-generated radarr-cnpg-cluster-app
+      Secret keys. It must not store the generated Secret in flux/secrets/production.
+
+  - id: CNP-04
+    description: "Production apps-db health check required"
+    category: coverage
+    severity: high
+    prompt: |
+      After adding a new CNPG DB app to production, what cluster entrypoint must also be updated?
+    scoring:
+      mode: keywords
+      keywords:
+        required:
+          - flux/clusters/production/apps-db.yaml
+          - healthChecks
+          - postgresql.cnpg.io/v1
+          - kind: Cluster
+          - radarr-cnpg-cluster
+    expect_refusal: false
+    manual_review: false
+    expected_behavior: |
+      The model should mention adding a health check for the generated CNPG Cluster to
+      flux/clusters/production/apps-db.yaml so Flux waits on DB readiness.
