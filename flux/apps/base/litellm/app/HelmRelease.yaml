@@ -22,8 +22,57 @@ spec:
   values:
     image:
       tag: "1.88.1"
-    replicaCount: 3
+    replicaCount: 1
     numWorkers: 3
+
+    envVars:
+      CHATGPT_TOKEN_DIR: /var/lib/litellm/chatgpt
+      CHATGPT_AUTH_FILE: auth.json
+
+    extraInitContainers:
+      - name: seed-chatgpt-auth
+        image: busybox:1.36
+        command:
+          - sh
+          - -ceu
+          - |
+            mkdir -p /var/lib/litellm/chatgpt
+            if [ ! -f /var/lib/litellm/chatgpt/auth.json ]; then
+              cp /seed/auth.json /var/lib/litellm/chatgpt/auth.json
+              chmod 600 /var/lib/litellm/chatgpt/auth.json
+            fi
+        volumeMounts:
+          - name: chatgpt-auth-seed
+            mountPath: /seed
+            readOnly: true
+          - name: chatgpt-auth
+            mountPath: /var/lib/litellm/chatgpt
+
+    volumes:
+      - name: chatgpt-auth-seed
+        secret:
+          secretName: litellm-chatgpt-auth-flux
+      - name: chatgpt-auth
+        persistentVolumeClaim:
+          claimName: litellm-chatgpt-auth
+
+    volumeMounts:
+      - name: chatgpt-auth
+        mountPath: /var/lib/litellm/chatgpt
+
+    extraResources:
+      - apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: litellm-chatgpt-auth
+          namespace: litellm
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 1Gi
 
     db:
       useExisting: true
