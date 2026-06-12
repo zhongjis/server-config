@@ -27,6 +27,7 @@
     ...
   } @ inputs: let
     myLib = import ./lib/defaults.nix {inherit inputs nixpkgs colmena disko sops-nix;};
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
 
     hive = colmena.lib.makeHive {
       meta = {
@@ -72,5 +73,11 @@
     with myLib; {
       colmenaHive = hive;
       nixosConfigurations = hive.nodes;
+
+      devShells.x86_64-linux.default = pkgs.mkShell {
+        packages = [
+          pkgs.kubeconform
+        ];
+      };
     };
 }
