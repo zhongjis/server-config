@@ -19,6 +19,23 @@ spec:
   dependsOn:
     - name: gitea-cnpg-cluster
   values:
+    deployment:
+      env:
+        - name: GITEA_OAUTH_KEY_0
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: AUTH_AUTHENTIK_CLIENT_ID
+        - name: GITEA_OAUTH_SECRET_0
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: AUTH_AUTHENTIK_CLIENT_SECRET
+        - name: GITEA_OAUTH_AUTODISCOVER_URL_0
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: AUTH_AUTHENTIK_ISSUER
     image:
       rootless: true
     replicaCount: 1
@@ -52,6 +69,12 @@ spec:
         existingSecret: gitea-secrets-flux
         email: jasonshen96115@gmail.com
         passwordMode: initialOnlyRequireReset
+      oauth:
+        - name: authentik
+          provider: openidConnect
+          autoDiscoverUrl: "${GITEA_OAUTH_AUTODISCOVER_URL_0}"
+          iconUrl: https://authentik.zshen.me/static/dist/assets/icons/icon.png
+          scopes: email profile
       config:
         database:
           DB_TYPE: postgres
