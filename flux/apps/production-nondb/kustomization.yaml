@@ -5,6 +5,7 @@ resources:
   - ../base/authentik/app
   - ../base/cloudflared
   - ../base/freshrss/app
+  - ../base/gitea/app
   - ../base/home-assistant
   - ../base/homepage
   - ../base/uptimekuma
