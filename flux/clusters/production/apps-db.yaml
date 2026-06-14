@@ -26,6 +26,10 @@ spec:
       namespace: freshrss
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
+      name: gitea-cnpg-cluster
+      namespace: gitea
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
       name: langfuse-cnpg-cluster
       namespace: langfuse
     - apiVersion: postgresql.cnpg.io/v1
