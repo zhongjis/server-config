@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/all.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: gitea
+      version: 12.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: gitea
+        namespace: gitea
+      interval: 24h
+  dependsOn:
+    - name: gitea-cnpg-cluster
+  values:
+    image:
+      rootless: true
+    replicaCount: 1
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: "longhorn"
+    service:
+      http:
+        type: ClusterIP
+        clusterIP:
+      ssh:
+        type: ClusterIP
+        clusterIP:
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        kubernetes.io/tls-acme: "true"
+      hosts:
+        - host: git.zshen.me
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: gitea-tls
+          hosts:
+            - git.zshen.me
+    gitea:
+      admin:
+        existingSecret: gitea-secrets-flux
+        passwordMode: initialOnlyRequireReset
+      config:
+        database:
+          DB_TYPE: postgres
+        service:
+          DISABLE_REGISTRATION: true
+        server:
+          HTTP_PORT: 3000
+          ROOT_URL: https://git.zshen.me/
+          DOMAIN: git.zshen.me
+          SSH_DOMAIN: git.zshen.me
+      additionalConfigFromEnvs:
+        - name: GITEA__DATABASE__HOST
+          valueFrom:
+            secretKeyRef:
+              name: gitea-cnpg-cluster-app
+              key: host
+        - name: GITEA__DATABASE__PORT
+          valueFrom:
+            secretKeyRef:
+              name: gitea-cnpg-cluster-app
+              key: port
+        - name: GITEA__DATABASE__NAME
+          valueFrom:
+            secretKeyRef:
+              name: gitea-cnpg-cluster-app
+              key: dbname
+        - name: GITEA__DATABASE__USER
+          valueFrom:
+            secretKeyRef:
+              name: gitea-cnpg-cluster-app
+              key: user
+        - name: GITEA__DATABASE__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: gitea-cnpg-cluster-app
+              key: password
+        - name: GITEA__SECURITY__SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: SECRET_KEY
+        - name: GITEA__SECURITY__INTERNAL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: INTERNAL_TOKEN
+        - name: GITEA__OAUTH2__JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: JWT_SECRET
+        - name: GITEA__SERVER__LFS_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: gitea-secrets-flux
+              key: LFS_JWT_SECRET
+    postgresql:
+      enabled: false
+    postgresql-ha:
+      enabled: false
+    valkey-cluster:
+      persistence:
+        storageClass: longhorn
