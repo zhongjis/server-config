@@ -50,6 +50,7 @@ spec:
     gitea:
       admin:
         existingSecret: gitea-secrets-flux
+        email: jasonshen96115@gmail.com
         passwordMode: initialOnlyRequireReset
       config:
         database:
