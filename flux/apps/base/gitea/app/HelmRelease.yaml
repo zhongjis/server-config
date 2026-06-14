@@ -68,7 +68,7 @@ spec:
       admin:
         existingSecret: gitea-secrets-flux
         email: jasonshen96115@gmail.com
-        passwordMode: initialOnlyRequireReset
+        passwordMode: keepUpdated
       oauth:
         - name: authentik
           provider: openidConnect
