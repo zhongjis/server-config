@@ -8,6 +8,7 @@ spec:
   image:
     repository: ghcr.io/paperclipai/paperclip
     tag: latest
+    digest: sha256:c3b0e9a763b8e7f1ebcb360f6836aca28f3c698e8bcc8bed43275d93876e1279
     pullPolicy: IfNotPresent
 
   deployment:
