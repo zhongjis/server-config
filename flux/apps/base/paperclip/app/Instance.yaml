@@ -65,6 +65,7 @@ spec:
             echo "paperclip-github-netrc secret not present; installing empty .netrc"
             : > /github-netrc/.netrc
           fi
+          chown 1000:1000 /github-netrc/.netrc
           chmod 0600 /github-netrc/.netrc
       volumeMounts:
         - name: github-netrc-secret
@@ -72,6 +73,15 @@ spec:
           readOnly: true
         - name: github-netrc
           mountPath: /github-netrc
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: false
+        runAsUser: 0
+        seccompProfile:
+          type: RuntimeDefault
 
   extraVolumes:
     - name: github-netrc-secret
