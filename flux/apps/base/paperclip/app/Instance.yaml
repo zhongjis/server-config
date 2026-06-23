@@ -26,7 +26,9 @@ spec:
     - name: PAPERCLIP_AUTH_BASE_URL_MODE
       value: explicit
     - name: PAPERCLIP_AUTH_PUBLIC_BASE_URL
-      value: https://paperclip.zshen.me
+
+  plugins:
+    - name: "@paperclip/plugin-llm-wiki"
 
   database:
     mode: external
@@ -51,7 +53,6 @@ spec:
   adapters:
     apiKeysSecretRef:
       name: paperclip-secrets-flux
-
 
   initContainers:
     - name: install-github-netrc
