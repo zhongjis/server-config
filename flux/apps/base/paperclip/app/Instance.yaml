@@ -29,7 +29,7 @@ spec:
       value: https://paperclip.zshen.me
 
   plugins:
-    - name: "@paperclip/plugin-llm-wiki"
+    - name: "@paperclipai/plugin-llm-wiki"
 
   database:
     mode: external
