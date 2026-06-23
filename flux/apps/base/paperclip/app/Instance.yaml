@@ -52,6 +52,44 @@ spec:
     apiKeysSecretRef:
       name: paperclip-secrets-flux
 
+
+  initContainers:
+    - name: install-github-netrc
+      image: busybox:1.36
+      command: ["/bin/sh", "-ec"]
+      args:
+        - |
+          if [ -f /github-netrc-secret/.netrc ]; then
+            cp /github-netrc-secret/.netrc /github-netrc/.netrc
+          else
+            echo "paperclip-github-netrc secret not present; installing empty .netrc"
+            : > /github-netrc/.netrc
+          fi
+          chmod 0600 /github-netrc/.netrc
+      volumeMounts:
+        - name: github-netrc-secret
+          mountPath: /github-netrc-secret
+          readOnly: true
+        - name: github-netrc
+          mountPath: /github-netrc
+
+  extraVolumes:
+    - name: github-netrc-secret
+      secret:
+        secretName: paperclip-secrets-flux
+        optional: true
+        items:
+          - key: .netrc
+            path: .netrc
+            mode: 0444
+    - name: github-netrc
+      emptyDir: {}
+
+  extraVolumeMounts:
+    - name: github-netrc
+      mountPath: /paperclip/.netrc
+      subPath: .netrc
+      readOnly: true
   networking:
     service:
       type: ClusterIP
