@@ -59,20 +59,21 @@ spec:
       command: ["/bin/sh", "-ec"]
       args:
         - |
+          rm -rf /paperclip/.netrc
           if [ -f /github-netrc-secret/.netrc ]; then
-            cp /github-netrc-secret/.netrc /github-netrc/.netrc
+            cp /github-netrc-secret/.netrc /paperclip/.netrc
           else
-            echo "paperclip-github-netrc secret not present; installing empty .netrc"
-            : > /github-netrc/.netrc
+            echo "paperclip-secrets-flux .netrc key not present; installing empty .netrc"
+            : > /paperclip/.netrc
           fi
-          chown 1000:1000 /github-netrc/.netrc
-          chmod 0600 /github-netrc/.netrc
+          chown 1000:1000 /paperclip/.netrc
+          chmod 0600 /paperclip/.netrc
       volumeMounts:
         - name: github-netrc-secret
           mountPath: /github-netrc-secret
           readOnly: true
-        - name: github-netrc
-          mountPath: /github-netrc
+        - name: paperclip-data
+          mountPath: /paperclip
       securityContext:
         allowPrivilegeEscalation: false
         capabilities:
@@ -95,14 +96,6 @@ spec:
           - key: .netrc
             path: .netrc
             mode: 0444
-    - name: github-netrc
-      emptyDir: {}
-
-  extraVolumeMounts:
-    - name: github-netrc
-      mountPath: /paperclip/.netrc
-      subPath: .netrc
-      readOnly: true
   networking:
     service:
       type: ClusterIP
