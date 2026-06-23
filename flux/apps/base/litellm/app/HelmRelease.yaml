@@ -21,7 +21,7 @@ spec:
       targetPath: db.url
   values:
     image:
-      tag: "1.88.1"
+      tag: "1.89.3"
     replicaCount: 1
     numWorkers: 3
 
