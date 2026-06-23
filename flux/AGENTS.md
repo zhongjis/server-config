@@ -23,7 +23,7 @@ flux/
 | Platform controllers/config | `infrastructure/` | cert-manager, ingress, MetalLB, storage, DNS, CNPG operator, and dependent CRs. |
 | Application manifests | `apps/` | App bases plus production overlays and split app groups. |
 | Observability | `monitoring/` | Prometheus/Grafana/Loki resources and dashboards. |
-| Kubernetes secrets | `secrets/` | SOPS-encrypted Secret manifests; new app secrets use `<app>-secrets-flux.yaml`. |
+| Kubernetes secrets | `secrets/` | SOPS-encrypted Secret manifests; new manually-managed Secrets should be grouped by namespace file. |
 | Validation behavior | `scripts/validate.sh` | YAML, schema, and kustomize checks used before commit. |
 
 ## COMMANDS
@@ -66,7 +66,7 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./infrastructure/controll
 - Use the default Kubernetes context unless the user specifies a different context.
 - Keep changes declarative and GitOps-managed; prefer manifests over live-only cluster edits.
 - IMPORTANT: Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main` via `clusters/production/flux-system/gotk-sync.yaml`; local commits do not reconcile until pushed. `flux reconcile source git flux-system -n flux-system` fetches that remote source, not this local checkout.
-- Name new app secret manifests `<app>-secrets-flux.yaml`.
+- For new manually-managed Kubernetes Secrets, prefer one SOPS file per namespace; see `secrets/AGENTS.md`.
 - Validate with `./scripts/validate.sh` from `flux/` or `./flux/scripts/validate.sh` from repo root before commit.
 
 ## ASK FIRST
