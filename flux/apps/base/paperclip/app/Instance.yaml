@@ -28,8 +28,8 @@ spec:
     - name: PAPERCLIP_AUTH_PUBLIC_BASE_URL
       value: https://paperclip.zshen.me
 
-  plugins:
-    - name: "@paperclipai/plugin-llm-wiki"
+  # plugins:
+  #   - name: "@paperclipai/plugin-llm-wiki"
 
   database:
     mode: external
