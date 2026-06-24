@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ./Namespace.yaml
   - ./Cluster.yaml
+  - ./DevelopmentCluster.yaml

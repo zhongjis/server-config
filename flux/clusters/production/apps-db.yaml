@@ -48,6 +48,10 @@ spec:
       kind: Cluster
       name: paperclip-cnpg-cluster
       namespace: paperclip
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: paperclip-dev-cnpg-cluster
+      namespace: paperclip
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
