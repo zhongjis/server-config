@@ -1,17 +1,22 @@
-# homelab-1
+# Node upgrade runbook
 
-TODO: missing cnpg cluster's node upgrade before/post actions.
-
-```bash
-kubectl drain homelab-1 --ignore-daemonsets --disable-eviction --delete-emptydir-data --force
-colmena apply --on homelab-1 --reboot
-kubectl uncordon homelab-1
-```
-
-# homelab-0
+Before draining any node, check stateful workloads:
 
 ```bash
-kubectl drain homelab-0 --ignore-daemonsets --disable-eviction --delete-emptydir-data --force
-colmena apply --on homelab-0 --reboot
-kubectl uncordon homelab-0
+kubectl get nodes
+kubectl get clusters.postgresql.cnpg.io -A
+kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded
 ```
+
+Upgrade one node at a time:
+
+```bash
+node=<homelab-0|homelab-1|homelab-2>
+kubectl drain "$node" --ignore-daemonsets --disable-eviction --delete-emptydir-data --force
+colmena apply --on "$node" --reboot
+kubectl uncordon "$node"
+kubectl get nodes
+kubectl get clusters.postgresql.cnpg.io -A
+```
+
+Do not run `colmena apply` across all nodes while CNPG or other stateful workloads are unhealthy.

@@ -30,7 +30,7 @@ apps/
 
 ## Overlay Rules
 - `production/` is legacy monolithic owner with `prune: false` in `clusters/production/apps.yaml`.
-- `production-db/` is owned by `apps-db`; includes CNPG apps: `authentik`, `freshrss`, `langfuse`, `litellm`, `n8n`.
+- `production-db/` is owned by `apps-db`; includes CNPG app DB tiers selected in `production-db/kustomization.yaml` (`authentik`, `freshrss`, `gitea`, `langfuse`, `litellm`, `n8n`, `paperclip`; `multica` remains commented).
 - `production-nondb/` is owned by `apps-nondb`; depends on `apps-db` and contains simple apps plus `base/<app>/app` tiers.
 - Keep split app paths tiered: DB resources in `base/<app>/db`, runtime resources in `base/<app>/app`.
 - Add simple non-CNPG apps directly as `../base/<app>` in `production-nondb/`.

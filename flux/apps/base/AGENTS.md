@@ -10,7 +10,7 @@ Guidance for base application manifests under `flux/apps/base/`. Keep this file 
 ## Where to Look
 - Standard single-tier Helm app: `actualbudget/`, `home-assistant/`, `karakeep/`, `manyfold/`, `open-webui/`, `stirling-pdf/`, `supabase/`.
 - OCI source examples: `mongodb/OCIRepository.yaml`, `redis/OCIRepository.yaml`.
-- Multi-tier CNPG examples: `authentik/`, `langfuse/`, `litellm/`, `n8n/` with parent `kustomization.yaml` loading `./db` then `./app`.
+- Multi-tier CNPG examples: `authentik/`, `gitea/`, `langfuse/`, `litellm/`, `n8n/`, `paperclip/` with parent `kustomization.yaml` loading `./db` then `./app`.
 - Legacy or transitional CNPG layouts: `dify/`, `freshrss/`, `mlflow/` may still keep root-level `Cluster.yaml` and HelmRelease files.
 - Raw manifest exceptions: `homepage/` and `cloudflared/`.
 
@@ -38,7 +38,7 @@ Guidance for base application manifests under `flux/apps/base/`. Keep this file 
 - `cloudflared/` is a namespace plus one raw manifest.
 - `n8n/` includes `HelmReleaseLegacy.yaml` and optional `langfuse-shipper/`; parent currently comments the shipper out.
 - `dify/` includes `Cluster.bkp.yaml`; preserve it unless explicitly asked to clean legacy backups.
-- `minio/operator` and `minio/tenant` are separate bases and are disabled in production today.
+- `minio/operator` and `minio/tenant` are separate bases and are not selected by production overlays.
 - `mongodb/HelmRelease.yaml` has a FIXME noting single-user secrets never works; do not assume that auth pattern is safe.
 
 ## Always

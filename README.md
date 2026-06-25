@@ -1,32 +1,35 @@
 # Server Config
 
-## hosts
+Homelab infrastructure repo for three Colmena-managed NixOS k3s nodes plus Flux-managed Kubernetes apps.
 
-| hostname  | usage    | where?         |
-| --------- | -------- | -------------- |
-| homelab-0 | k3s node | thinkcentre-i7 |
-| homelab-1 | k3s node | thinkcentre-i5 |
+## Hosts
 
-## commands
+| Host | Role | IP | Notes |
+|------|------|----|-------|
+| `homelab-0` | k3s server/master | `192.168.50.104` | Labeled `n8n-node=true`. |
+| `homelab-1` | k3s server/worker | `192.168.50.103` | Joins `homelab-0`. |
+| `homelab-2` | k3s server/worker | `192.168.50.105` | Joins `homelab-0`. |
 
-### initial deployment (nixos-anywhere)
+## Common commands
 
-#### linux
-
-```nix
-nix run nixpkgs#nixos-anywhere -- \
---flake .#homelab-2 \
---generate-hardware-config nixos-generate-config ./hosts/k3s/hardware-configuration-homelab-0.nix \
---extra-files /home/zshen/.config/sops/age \
-nixos@192.168.50.159
+```bash
+colmena build
+colmena apply --on homelab-0
+colmena apply --on homelab-1
+colmena apply --on homelab-2
+./flux/scripts/validate.sh
 ```
 
-#### darwin
+## Initial deployment with nixos-anywhere
 
-```nix
+Run from repo root. Replace `<host>` and `<ip>` with one row from the host table.
+
+```bash
 nix run nixpkgs#nixos-anywhere -- \
---flake .#homelab-0 \
---generate-hardware-config nixos-generate-config ./hosts/k3s/hardware-configuration-homelab-0.nix \
---extra-files /Users/zshen/.config/sops/age \
-nixos@192.168.50.192
+  --flake .#<host> \
+  --generate-hardware-config nixos-generate-config ./hosts/k3s/hardware-configuration-<host>.nix \
+  --extra-files /home/zshen/.config/sops/age \
+  nixos@<ip>
 ```
+
+On macOS, use `/Users/zshen/.config/sops/age` for `--extra-files`.
