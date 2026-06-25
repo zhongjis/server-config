@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implementation plan — Agent Sandbox + Paperclip runtime</title>
+  <script>
+    (() => {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) document.documentElement.classList.add('dark');
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #faf8f1;
+      --panel: #ffffff;
+      --panel-2: #f1eadf;
+      --ink: #171512;
+      --muted: #615d55;
+      --soft: #8a8378;
+      --line: #d8cfc0;
+      --accent: #d56d45;
+      --accent-2: #657b4f;
+      --danger: #b43b2f;
+      --danger-bg: #f8dfd9;
+      --warn: #9a6500;
+      --warn-bg: #fff0cf;
+      --ok: #276a4d;
+      --ok-bg: #dff1e7;
+      --code-bg: #191816;
+      --code-ink: #f4efe5;
+      --shadow: 0 18px 50px rgba(34, 27, 18, 0.10);
+      --serif: ui-serif, Georgia, 'Times New Roman', serif;
+      --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --mono: ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+    }
+
+    html.dark {
+      color-scheme: dark;
+      --bg: #11100e;
+      --panel: #1b1916;
+      --panel-2: #252119;
+      --ink: #f6efe2;
+      --muted: #c6baaa;
+      --soft: #9a9083;
+      --line: #3a342b;
+      --accent: #ff996f;
+      --accent-2: #a8c987;
+      --danger: #ff8b80;
+      --danger-bg: #3a1f1b;
+      --warn: #ffc66d;
+      --warn-bg: #332714;
+      --ok: #92d7b0;
+      --ok-bg: #153122;
+      --code-bg: #070706;
+      --code-ink: #f7efe2;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      padding: 52px 28px 96px;
+      font-family: var(--sans);
+      color: var(--muted);
+      background:
+        radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 34rem),
+        var(--bg);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page { max-width: 1120px; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 38px; }
+    .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); margin-bottom: 12px; }
+    h1, h2, h3 { color: var(--ink); line-height: 1.14; letter-spacing: -0.02em; margin: 0; }
+    h1 { max-width: 760px; font-family: var(--serif); font-weight: 520; font-size: clamp(2.2rem, 4.8vw, 4.5rem); }
+    h2 { font-family: var(--serif); font-weight: 520; font-size: clamp(1.65rem, 2.3vw, 2.3rem); }
+    h3 { font-size: 1.08rem; margin-bottom: 6px; }
+    p { margin: 0 0 12px; max-width: 74ch; }
+    code { font-family: var(--mono); font-size: 0.93em; }
+    p code, li code, td code { background: var(--panel-2); color: var(--ink); border-radius: 6px; padding: 0.12em 0.34em; }
+    a { color: var(--accent); }
+
+    .theme-toggle {
+      flex: 0 0 auto;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--ink);
+      padding: 9px 13px;
+      font: 700 12px var(--mono);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
+
+    .prompt-box {
+      margin-top: 22px;
+      max-width: 850px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-2);
+      padding: 16px 18px;
+      color: var(--muted);
+    }
+    .prompt-box .label { display: block; font: 700 11px var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--soft); margin-bottom: 6px; }
+
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 34px 0 56px; }
+    .cell, section, .card, .risk-row, .q, .diagram, .code-panel { border: 1.5px solid var(--line); background: var(--panel); border-radius: 14px; }
+    .cell { padding: 17px 18px; }
+    .cell .k { font: 700 11px var(--mono); text-transform: uppercase; letter-spacing: 0.07em; color: var(--soft); margin-bottom: 6px; }
+    .cell .v { color: var(--ink); font-weight: 750; font-size: 1.03rem; }
+    .cell .v.accent { color: var(--accent); }
+
+    section { margin-bottom: 54px; padding: 28px; box-shadow: 0 10px 24px rgba(24, 20, 14, 0.045); }
+    .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+    .num { font: 700 12px var(--mono); color: var(--ink); background: var(--panel-2); border-radius: 8px; padding: 3px 9px; }
+    .sec-intro { color: var(--soft); margin-bottom: 24px; }
+
+    .milestones { display: flex; flex-direction: column; }
+    .milestone { display: grid; grid-template-columns: 128px 28px 1fr; gap: 0 18px; }
+    .when { text-align: right; font: 700 12px var(--mono); color: var(--soft); padding-top: 3px; }
+    .dot-col { display: flex; flex-direction: column; align-items: center; }
+    .dot { width: 15px; height: 15px; border: 3px solid var(--accent); border-radius: 50%; background: var(--panel); margin-top: 3px; }
+    .dot.gate { border-color: var(--warn); }
+    .dot.done { background: var(--accent-2); border-color: var(--accent-2); }
+    .line { width: 2px; flex: 1; background: var(--line); margin: 5px 0; }
+    .milestone:last-child .line { display: none; }
+    .body { padding-bottom: 34px; }
+    .body p { font-size: 14px; color: var(--muted); }
+    .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+    .tag { font: 700 11px var(--mono); color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-radius: 7px; padding: 3px 7px; }
+
+    .diagram { overflow-x: auto; padding: 24px; }
+    svg { display: block; min-width: 840px; }
+    svg text { font-family: var(--mono); }
+    .caption { font-size: 13px; color: var(--soft); margin-top: 12px; }
+
+    .code-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .file-label { font: 700 12px var(--mono); color: var(--soft); margin-bottom: 8px; }
+    pre { margin: 0; overflow-x: auto; padding: 16px; border-radius: 12px; background: var(--code-bg); color: var(--code-ink); font: 12.5px/1.6 var(--mono); }
+
+    .risk-table { border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
+    .risk-row { display: grid; grid-template-columns: 1.35fr 90px 1.65fr; border: 0; border-radius: 0; }
+    .risk-row + .risk-row { border-top: 1.5px solid var(--line); }
+    .risk-cell { padding: 14px 16px; font-size: 13.5px; }
+    .risk-cell + .risk-cell { border-left: 1.5px solid var(--line); }
+    .head { background: var(--panel-2); color: var(--ink); font: 800 11px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+    .sev { display: inline-block; border-radius: 7px; padding: 3px 8px; font: 800 11px var(--mono); }
+    .sev.high { background: var(--danger-bg); color: var(--danger); }
+    .sev.med { background: var(--warn-bg); color: var(--warn); }
+    .sev.low { background: var(--ok-bg); color: var(--ok); }
+
+    .open-q { display: grid; gap: 12px; max-width: 860px; }
+    .q { padding: 16px 18px; border-left: 4px solid var(--accent); }
+    .qt { color: var(--ink); font-weight: 750; margin-bottom: 4px; }
+    .owner { margin-top: 8px; color: var(--soft); font: 700 11.5px var(--mono); }
+
+    .callout { border-radius: 12px; padding: 14px 16px; margin: 18px 0 0; }
+    .callout.warn { background: var(--warn-bg); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
+    .callout.danger { background: var(--danger-bg); border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent); }
+    .callout.ok { background: var(--ok-bg); border: 1px solid color-mix(in srgb, var(--ok) 35%, transparent); }
+
+    ul, ol { margin: 10px 0 0; padding-left: 1.25rem; }
+    li { margin: 7px 0; }
+    footer { color: var(--soft); font-size: 13px; text-align: center; margin-top: 30px; }
+
+    @media (max-width: 900px) {
+      body { padding: 32px 16px 72px; }
+      .topbar { flex-direction: column; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .milestone { grid-template-columns: 1fr; gap: 8px; }
+      .when { text-align: left; }
+      .dot-col { display: none; }
+      .code-grid { grid-template-columns: 1fr; }
+      .risk-row { grid-template-columns: 1fr; }
+      .risk-cell + .risk-cell { border-left: 0; border-top: 1px dashed var(--line); }
+    }
+    @media (max-width: 560px) { .summary { grid-template-columns: 1fr; } section { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <header>
+        <div class="eyebrow">Implementation plan · server-config · Flux/k3s</div>
+        <h1>Agent Sandbox + Paperclip Kubernetes runtime</h1>
+        <div class="prompt-box">
+          <span class="label">Goal</span>
+          Add Kubernetes-backed Paperclip agent execution safely: first prove the operator/plugin path with <code>backend: job</code>, then introduce Agent Sandbox <code>sandbox-cr</code> only after API compatibility, isolation, and cleanup gates pass.
+        </div>
+      </header>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">Theme</button>
+    </div>
+
+    <div class="summary" aria-label="Plan summary">
+      <div class="cell"><div class="k">Effort</div><div class="v accent">2–4 focused sessions</div></div>
+      <div class="cell"><div class="k">Primary files</div><div class="v">4–6 Flux files</div></div>
+      <div class="cell"><div class="k">First backend</div><div class="v">job smoke</div></div>
+      <div class="cell"><div class="k">Prod gate</div><div class="v">sandbox-cr E2E</div></div>
+    </div>
+
+    <section>
+      <div class="sec-head"><span class="num">01</span><h2>Milestones</h2></div>
+      <p class="sec-intro">Small, reviewable commits. Do not mix Paperclip plugin enablement, Agent Sandbox install, and runtime hardening in one change.</p>
+      <div class="milestones">
+        <div class="milestone">
+          <div class="when">Slice 0</div>
+          <div class="dot-col"><span class="dot done"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Confirm installed API surface</h3>
+            <p>Render current Paperclip operator CRD and confirm <code>spec.plugins</code>, <code>spec.adapters.execution</code>, <code>backend</code>, quota, limitrange, and egress fields match operator <code>v0.17.2</code>.</p>
+            <div class="tags"><span class="tag">flux/infrastructure/controllers/paperclip-operator.yaml</span><span class="tag">kubectl explain</span><span class="tag">no manifest edits</span></div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="when">Slice 1</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Enable Paperclip Kubernetes plugin with job backend</h3>
+            <p>Edit the existing Paperclip Instance only: uncomment/add <code>plugins</code>, add <code>@paperclipai/plugin-kubernetes</code>, set <code>execution.mode: kubernetes</code>, set <code>backend: job</code>, add namespace prefix plus quotas/limitranges.</p>
+            <div class="tags"><span class="tag">flux/apps/base/paperclip/app/Instance.yaml</span><span class="tag">backend: job</span><span class="tag">smoke only</span></div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="when">Slice 2</div>
+          <div class="dot-col"><span class="dot gate"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Validate smoke behavior</h3>
+            <p>After Flux reconcile, run one Paperclip Environment/agent execution. Inspect created namespace, service account, Role/RoleBinding, ResourceQuota, LimitRange, NetworkPolicy, Secret, Job, Pod logs, and cleanup.</p>
+            <div class="tags"><span class="tag">flux get kustomizations</span><span class="tag">kubectl get jobs</span><span class="tag">rollback ready</span></div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="when">Slice 3</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Introduce Agent Sandbox controller</h3>
+            <p>Prefer a HelmRelease if the Agent Sandbox chart is published for the chosen release. Otherwise explicitly approve vendoring the exact release <code>manifest.yaml</code>. Keep extensions separate unless <code>SandboxTemplate</code>, <code>SandboxClaim</code>, or <code>SandboxWarmPool</code> are needed.</p>
+            <div class="tags"><span class="tag">flux/infrastructure/controllers/agent-sandbox.yaml</span><span class="tag">pinned release</span><span class="tag">CRDs first</span></div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="when">Slice 4</div>
+          <div class="dot-col"><span class="dot gate"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Switch to sandbox-cr only after compatibility proof</h3>
+            <p>Change Paperclip from <code>backend: job</code> to <code>backend: sandbox-cr</code> only when the plugin emits the Agent Sandbox API version installed in cluster. If plugin still expects <code>v1alpha1</code>, pin compatible Agent Sandbox or wait for plugin update.</p>
+            <div class="tags"><span class="tag">backend: sandbox-cr</span><span class="tag">v1alpha1/v1beta1 gate</span><span class="tag">E2E required</span></div>
+          </div>
+        </div>
+        <div class="milestone">
+          <div class="when">Slice 5</div>
+          <div class="dot-col"><span class="dot"></span></div>
+          <div class="body">
+            <h3>Harden isolation and operations</h3>
+            <p>Decide whether shared-kernel pod isolation is acceptable. For hostile code, install/configure gVisor or Kata as k3s runtime classes first. Add monitoring for orphaned namespaces, Jobs, Sandboxes, Secrets, PVCs, and quota pressure.</p>
+            <div class="tags"><span class="tag">runtimeClassName</span><span class="tag">network policy</span><span class="tag">cleanup SLO</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="num">02</span><h2>GitOps flow</h2></div>
+      <p class="sec-intro">Controller dependencies stay in infrastructure. Paperclip runtime config stays in the app tier.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flux implementation flow">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a8378"/></marker>
+            <marker id="arrowAccent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d56d45"/></marker>
+          </defs>
+          <g font-size="12" fill="currentColor">
+            <rect x="30" y="40" width="170" height="58" rx="12" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="115" y="64" text-anchor="middle" font-weight="700" fill="var(--ink)">Git commit</text>
+            <text x="115" y="82" text-anchor="middle" fill="var(--soft)" font-size="10.5">remote main only</text>
+
+            <rect x="260" y="40" width="170" height="58" rx="12" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="345" y="64" text-anchor="middle" font-weight="700" fill="var(--ink)">infra-controllers</text>
+            <text x="345" y="82" text-anchor="middle" fill="var(--soft)" font-size="10.5">paperclip + agent-sandbox</text>
+
+            <rect x="500" y="40" width="170" height="58" rx="12" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+            <text x="585" y="64" text-anchor="middle" font-weight="700" fill="var(--ink)">apps-nondb</text>
+            <text x="585" y="82" text-anchor="middle" fill="var(--soft)" font-size="10.5">Paperclip Instance</text>
+
+            <rect x="700" y="40" width="170" height="58" rx="12" fill="var(--panel-2)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="785" y="64" text-anchor="middle" font-weight="700" fill="var(--ink)">Execution backend</text>
+            <text x="785" y="82" text-anchor="middle" fill="var(--soft)" font-size="10.5">job → sandbox-cr</text>
+
+            <rect x="260" y="210" width="170" height="58" rx="12" fill="var(--warn-bg)" stroke="var(--warn)" stroke-width="1.5"/>
+            <text x="345" y="234" text-anchor="middle" font-weight="700" fill="var(--ink)">API gate</text>
+            <text x="345" y="252" text-anchor="middle" fill="var(--soft)" font-size="10.5">v1alpha1 vs v1beta1</text>
+
+            <rect x="500" y="210" width="170" height="58" rx="12" fill="var(--danger-bg)" stroke="var(--danger)" stroke-width="1.5"/>
+            <text x="585" y="234" text-anchor="middle" font-weight="700" fill="var(--ink)">Security gate</text>
+            <text x="585" y="252" text-anchor="middle" fill="var(--soft)" font-size="10.5">runtimeClass / egress</text>
+          </g>
+          <g stroke="#8a8378" stroke-width="1.7" fill="none">
+            <path d="M200 69 L260 69" marker-end="url(#arrow)"/>
+            <path d="M430 69 L500 69" marker-end="url(#arrow)"/>
+            <path d="M670 69 L700 69" marker-end="url(#arrow)"/>
+          </g>
+          <g stroke="#d56d45" stroke-width="1.7" fill="none" stroke-dasharray="5 4">
+            <path d="M785 98 C 770 170, 650 190, 585 210" marker-end="url(#arrowAccent)"/>
+            <path d="M700 69 C 560 150, 430 170, 345 210" marker-end="url(#arrowAccent)"/>
+          </g>
+        </svg>
+        <p class="caption">Solid path = normal GitOps dependency order. Dashed path = gates that block the <code>sandbox-cr</code> switch.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="num">03</span><h2>Key changes to write</h2></div>
+      <p class="sec-intro">Exact YAML should be checked against the live CRD before merge. These are the intended diffs, not blind paste blocks.</p>
+      <div class="code-grid">
+        <div>
+          <div class="file-label">flux/apps/base/paperclip/app/Instance.yaml</div>
+          <pre><code>spec:
+  plugins:
+    - name: "@paperclipai/plugin-kubernetes"
+      version: "0.1.0"
+
+  adapters:
+    apiKeysSecretRef:
+      name: paperclip-secrets-flux
+    execution:
+      mode: kubernetes
+      kubernetes:
+        backend: job
+        namespacePrefix: paperclip-exec-
+        egressMode: standard
+        perTenantQuota:
+          pods: "10"
+          requestsCpu: "2"
+          requestsMemory: 4Gi
+          limitsCpu: "4"
+          limitsMemory: 8Gi
+        perTenantLimitRange:
+          defaultCpu: "1"
+          defaultMemory: 1Gi
+          defaultRequestCpu: 250m
+          defaultRequestMemory: 512Mi
+          maxCpu: "2"
+          maxMemory: 2Gi</code></pre>
+        </div>
+        <div>
+          <div class="file-label">flux/infrastructure/controllers/agent-sandbox.yaml</div>
+          <pre><code># Preferred if chart is published for selected release:
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: agent-sandbox
+  namespace: flux-system
+spec:
+  interval: 12h
+  url: https://github.com/kubernetes-sigs/agent-sandbox
+  ref:
+    tag: v0.4.6 # example; confirm compatibility first
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: agent-sandbox
+  namespace: flux-system
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: helm
+      sourceRef:
+        kind: GitRepository
+        name: agent-sandbox
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace</code></pre>
+        </div>
+      </div>
+      <div class="callout warn">
+        <p><strong>Important:</strong> if the Helm chart path/version does not render cleanly, stop. Do not hand-copy generated CRDs unless you explicitly choose the pinned release-manifest path and document why the chart path is not usable.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="num">04</span><h2>Validation commands</h2></div>
+      <p class="sec-intro">No evidence, not done. Run local render checks before any push; run live checks only after user approves cluster reconciliation.</p>
+      <div class="code-grid">
+        <div>
+          <div class="file-label">local</div>
+          <pre><code>./flux/scripts/validate.sh
+kustomize build --load-restrictor=LoadRestrictionsNone ./flux/infrastructure/controllers
+kustomize build --load-restrictor=LoadRestrictionsNone ./flux/apps/production-nondb</code></pre>
+        </div>
+        <div>
+          <div class="file-label">live read-only / after reconcile</div>
+          <pre><code>flux get kustomizations -n flux-system
+flux get helmreleases --all-namespaces
+kubectl get instance -n paperclip paperclip -o yaml
+kubectl get ns | rg '^paperclip-exec-'
+kubectl get jobs,pods,networkpolicy,resourcequota,limitrange -A | rg paperclip-exec</code></pre>
+        </div>
+      </div>
+      <div class="callout danger">
+        <p><strong>Do not use <code>backend: sandbox-cr</code> as the first test.</strong> The job backend proves RBAC/env/plugin wiring, but it does not prove the real multi-command Environment path.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="num">05</span><h2>Risks &amp; mitigations</h2></div>
+      <div class="risk-table">
+        <div class="risk-row"><div class="risk-cell head">Risk</div><div class="risk-cell head">Sev</div><div class="risk-cell head">Mitigation</div></div>
+        <div class="risk-row"><div class="risk-cell">Agent Sandbox API mismatch: Paperclip plugin expects <code>v1alpha1</code>, latest Agent Sandbox RC moved to <code>v1beta1</code>.</div><div class="risk-cell"><span class="sev high">HIGH</span></div><div class="risk-cell">Gate <code>sandbox-cr</code> on a generated Sandbox object test. Pin compatible release or wait for plugin update.</div></div>
+        <div class="risk-row"><div class="risk-cell">Weak isolation: default k3s pod sandbox shares host kernel.</div><div class="risk-cell"><span class="sev high">HIGH</span></div><div class="risk-cell">Do not claim hostile-code isolation until gVisor/Kata RuntimeClass is installed, detected by k3s, and tested.</div></div>
+        <div class="risk-row"><div class="risk-cell">Cilium-only FQDN policy configured on non-Cilium k3s.</div><div class="risk-cell"><span class="sev med">MED</span></div><div class="risk-cell">Use <code>egressMode: standard</code> first. Adopt Cilium only as a separate network-platform change.</div></div>
+        <div class="risk-row"><div class="risk-cell">Orphaned execution namespaces, Secrets, Jobs, PVCs, or Sandboxes.</div><div class="risk-cell"><span class="sev med">MED</span></div><div class="risk-cell">Add cleanup smoke checks before promotion; monitor namespace count and quota pressure.</div></div>
+        <div class="risk-row"><div class="risk-cell">Flux validation passes but CRD semantics fail at runtime.</div><div class="risk-cell"><span class="sev med">MED</span></div><div class="risk-cell">Use live CRD explain/dry-run where possible; treat <code>./flux/scripts/validate.sh</code> as render/schema sanity, not E2E proof.</div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><span class="num">06</span><h2>Open decisions before implementation</h2></div>
+      <div class="open-q">
+        <div class="q"><div class="qt">Do we accept a Phase 1 job-backend smoke that does not satisfy the final Runtime Environment goal?</div><div>Recommended: yes. It lowers risk by proving plugin/RBAC/namespace wiring before Agent Sandbox enters the blast radius.</div><div class="owner">Owner · user, before Slice 1</div></div>
+        <div class="q"><div class="qt">Which Agent Sandbox version should be pinned for <code>sandbox-cr</code>?</div><div>Recommended: test <code>v0.4.6</code> if plugin still emits <code>v1alpha1</code>; avoid <code>v0.5.0rc1</code> until plugin supports <code>v1beta1</code>.</div><div class="owner">Owner · implementer, before Slice 3</div></div>
+        <div class="q"><div class="qt">Is shared-kernel pod isolation acceptable for this homelab?</div><div>If no, runtimeClass work becomes a prerequisite, not a follow-up.</div><div class="owner">Owner · user, before Slice 4</div></div>
+        <div class="q"><div class="qt">Should Agent Sandbox extensions be installed?</div><div>Start core-only. Add extensions only when a design uses templates, claims, or warm pools.</div><div class="owner">Owner · implementer, during Slice 3</div></div>
+      </div>
+    </section>
+
+    <footer>Plan artifact. No cluster changes made. Validate against installed CRDs before editing production manifests.</footer>
+  </div>
+
+  <script>
+    const button = document.getElementById('themeToggle');
+    const label = () => { button.textContent = document.documentElement.classList.contains('dark') ? 'Light' : 'Dark'; };
+    label();
+    button.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      label();
+    });
+  </script>
+</body>
+</html>

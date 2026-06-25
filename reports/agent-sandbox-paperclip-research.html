@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Sandbox + Paperclip Kubernetes Runtime Research Report</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --ink: #172033;
+      --muted: #536075;
+      --soft: #768197;
+      --surface: #ffffff;
+      --surface-2: #eef3f8;
+      --line: #d8e0ea;
+      --accent: #1d6fd8;
+      --accent-ink: #0e3f82;
+      --accent-soft: #dcecff;
+      --warn: #a15c00;
+      --warn-soft: #fff2d8;
+      --danger: #b42318;
+      --danger-soft: #ffe7e4;
+      --success: #13795b;
+      --success-soft: #def7ed;
+      --code-bg: #101827;
+      --code-ink: #e8eef8;
+      --shadow: 0 18px 55px rgba(25, 35, 55, 0.10);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(29, 111, 216, 0.13), transparent 34rem),
+        linear-gradient(180deg, #fbfcfe 0%, var(--bg) 38%, #eef3f8 100%);
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: var(--accent-ink); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; }
+    a:hover { color: var(--accent); }
+    a:focus-visible { outline: 3px solid rgba(29, 111, 216, 0.38); outline-offset: 3px; border-radius: 4px; }
+
+    .page { max-width: var(--max); margin: 0 auto; padding: 48px 24px 72px; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+      gap: 32px;
+      align-items: stretch;
+      padding: 44px;
+      border: 1px solid rgba(216, 224, 234, 0.9);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(238,243,248,0.88));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -150px auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 999px;
+      background: rgba(29, 111, 216, 0.10);
+      pointer-events: none;
+    }
+
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding: 5px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .pill strong { color: var(--ink); }
+
+    h1, h2, h3, h4 { line-height: 1.16; margin: 0; letter-spacing: -0.025em; text-wrap: balance; }
+    h1 { max-width: 13ch; font-size: clamp(2.35rem, 5.2vw, 4.65rem); letter-spacing: -0.04em; }
+    h2 { font-size: clamp(1.65rem, 2.6vw, 2.45rem); margin-bottom: 16px; }
+    h3 { font-size: 1.22rem; margin-bottom: 10px; }
+    h4 { font-size: 1rem; margin: 20px 0 8px; }
+
+    p { max-width: 72ch; margin: 0 0 14px; color: var(--muted); text-wrap: pretty; }
+    strong { color: var(--ink); }
+
+    .lede { margin-top: 22px; max-width: 70ch; color: #38465b; font-size: 1.08rem; }
+
+    .recommendation {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px;
+      border-radius: var(--radius-md);
+      background: var(--danger-soft);
+      border: 1px solid rgba(180, 35, 24, 0.22);
+    }
+
+    .recommendation .label { color: var(--danger); font-weight: 800; font-size: 0.92rem; }
+    .recommendation p { color: #61302b; margin: 0; }
+
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0 34px;
+    }
+
+    .toc a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.76);
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .toc a:hover { background: var(--surface); color: var(--accent-ink); border-color: #b9cee8; }
+
+    main { display: grid; gap: 26px; }
+
+    section {
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 8px 26px rgba(25, 35, 55, 0.055);
+    }
+
+    .section-intro { margin-bottom: 20px; }
+
+    .callout {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface-2);
+      margin: 18px 0;
+    }
+
+    .callout.warning { background: var(--warn-soft); border-color: rgba(161, 92, 0, 0.24); }
+    .callout.success { background: var(--success-soft); border-color: rgba(19, 121, 91, 0.24); }
+    .callout.danger { background: var(--danger-soft); border-color: rgba(180, 35, 24, 0.22); }
+
+    .callout p:last-child { margin-bottom: 0; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+
+    .fact, .gate, .phase {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+    }
+
+    .fact p, .gate p, .phase p { margin-bottom: 0; }
+    .tag { display: inline-flex; margin-bottom: 10px; color: var(--accent-ink); font-size: 0.84rem; font-weight: 800; }
+
+    ul, ol { margin: 10px 0 0; padding-left: 1.2rem; color: var(--muted); }
+    li { margin: 8px 0; padding-left: 2px; }
+    li strong { color: var(--ink); }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+
+    .node {
+      position: relative;
+      min-height: 118px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid #cbd8e6;
+      background: #fbfdff;
+    }
+
+    .node::after {
+      content: "→";
+      position: absolute;
+      top: 44%;
+      right: -16px;
+      width: 18px;
+      color: var(--soft);
+      font-weight: 800;
+    }
+
+    .node:last-child::after { display: none; }
+    .node strong { display: block; margin-bottom: 6px; }
+    .node span { display: block; color: var(--muted); font-size: 0.92rem; }
+    .node.focus { background: var(--accent-soft); border-color: #9fc5f4; }
+    .node.risk { background: var(--warn-soft); border-color: rgba(161, 92, 0, 0.26); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.95rem; }
+    th, td { padding: 13px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--ink); background: var(--surface-2); font-size: 0.82rem; letter-spacing: 0.01em; }
+    td { color: var(--muted); }
+    tr:last-child td { border-bottom: 0; }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+    .table-wrap table { margin-top: 0; min-width: 760px; }
+
+    pre {
+      overflow-x: auto;
+      margin: 14px 0 0;
+      padding: 18px;
+      border-radius: var(--radius-md);
+      background: var(--code-bg);
+      color: var(--code-ink);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      tab-size: 2;
+    }
+
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 0.94em; }
+    p code, li code, td code { padding: 0.1em 0.33em; border-radius: 6px; background: #e9eef6; color: #24324a; }
+
+    .sources ol { columns: 1; padding-left: 1.35rem; }
+    .sources li { break-inside: avoid; color: var(--muted); }
+
+    footer { margin-top: 28px; color: var(--soft); font-size: 0.9rem; text-align: center; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding: 30px; }
+      h1 { max-width: 16ch; }
+      .diagram { grid-template-columns: 1fr; }
+      .node::after { content: "↓"; inset: auto auto -21px 22px; }
+    }
+
+    @media (max-width: 620px) {
+      .page { padding: 26px 14px 48px; }
+      .hero, section { border-radius: 22px; padding: 22px; }
+      .toc { gap: 8px; }
+      .toc a { width: 100%; justify-content: center; }
+      table { font-size: 0.9rem; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .hero, section { box-shadow: none; break-inside: avoid; }
+      .toc { display: none; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <div class="meta">
+          <span class="pill"><strong>Date</strong> 2026-06-24</span>
+          <span class="pill"><strong>Audience</strong> homelab/server-config maintainer</span>
+          <span class="pill"><strong>Status</strong> research recommendation</span>
+        </div>
+        <h1>Agent Sandbox + Paperclip Kubernetes Runtime Research Report</h1>
+        <p class="lede">A deployment-readiness readout for adding Kubernetes-backed Paperclip execution to this Flux-managed k3s homelab.</p>
+      </div>
+      <aside class="recommendation" aria-label="Executive recommendation">
+        <div>
+          <div class="label">Executive recommendation</div>
+          <p><strong>Do not deploy <code>sandbox-cr</code> straight to production.</strong> Start with a Phase 1 <code>job</code> backend smoke test only, then move to Phase 2 <code>sandbox-cr</code> after API-version compatibility and security gates pass.</p>
+        </div>
+        <p>Reason: Agent Sandbox is still moving fast, Paperclip's Kubernetes plugin is alpha, and the current sandbox-CR path appears coupled to older Agent Sandbox API expectations.</p>
+      </aside>
+    </header>
+
+    <nav class="toc" aria-label="Report sections">
+      <a href="#context">Repo context</a>
+      <a href="#agent-sandbox">Agent Sandbox</a>
+      <a href="#paperclip">Paperclip runtime</a>
+      <a href="#fit">k3s fit</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#plan">Phased plan</a>
+      <a href="#gates">Decision gates</a>
+      <a href="#yaml">YAML snippets</a>
+      <a href="#sources">Sources</a>
+    </nav>
+
+    <main>
+      <section id="context">
+        <h2>Current repo context</h2>
+        <p class="section-intro">This repo already has the GitOps shape needed for a careful rollout; the missing piece is not installation mechanics, but blast-radius control.</p>
+        <div class="grid">
+          <div class="fact"><span class="tag">GitOps path</span><p>Flux owns Kubernetes delivery; production Flux tracks remote GitHub <code>ssh://git@github.com/zhongjis/server-config</code> on branch <code>main</code>. Local changes do nothing until pushed.</p></div>
+          <div class="fact"><span class="tag">Installed controller</span><p><code>paperclip-operator</code> already exists at <code>flux/infrastructure/controllers/paperclip-operator.yaml</code>.</p></div>
+          <div class="fact"><span class="tag">App instance</span><p>Paperclip Instance already exists at <code>flux/apps/base/paperclip/app/Instance.yaml</code>.</p></div>
+          <div class="fact"><span class="tag">Validation</span><p>Repo validation path is <code>./flux/scripts/validate.sh</code>; any manifest change should pass before push.</p></div>
+        </div>
+        <div class="callout warning">
+          <p><strong>Implication:</strong> treat runtime changes as production infra changes. Add them as GitOps commits with reviewable diffs, explicit sequencing, and a rollback path.</p>
+        </div>
+      </section>
+
+      <section id="agent-sandbox">
+        <h2>Agent Sandbox: what it adds</h2>
+        <p class="section-intro">Agent Sandbox is a Kubernetes SIG Apps CRD/controller project for agent execution environments. The core concepts are <code>Sandbox</code>, <code>SandboxTemplate</code>, <code>SandboxClaim</code>, and <code>SandboxWarmPool</code> [1][3][4][5].</p>
+        <div class="grid">
+          <div class="fact"><span class="tag">Sandbox</span><p>Defines an isolated runtime unit backed by Kubernetes primitives, with API fields for container-like execution surfaces [3].</p></div>
+          <div class="fact"><span class="tag">SandboxTemplate</span><p>Provides reusable environment templates, so agents can claim pre-defined runtime shapes instead of rebuilding pod spec details each time [4].</p></div>
+          <div class="fact"><span class="tag">SandboxClaim</span><p>Lets consumers request a sandbox from a template or pool, separating request flow from runtime provisioning [5].</p></div>
+          <div class="fact"><span class="tag">SandboxWarmPool</span><p>Keeps pre-warmed sandboxes available for lower startup latency [5].</p></div>
+        </div>
+        <h3>Release posture</h3>
+        <ul>
+          <li>Installation should use exact release artifacts: <code>manifest.yaml</code> for core CRDs/controller, plus <code>extensions.yaml</code> when templates, claims, and warm pools are needed [2].</li>
+          <li>Current <code>v0.5.0rc1</code> is a pre-release and moves the API to <code>v1beta1</code> with no migration path noted in the release stream [6].</li>
+          <li><code>v0.4.6</code> stable exists, but the Paperclip plugin compatibility surface must be checked before choosing it [6].</li>
+        </ul>
+        <div class="callout danger">
+          <p><strong>Gate before Phase 2:</strong> confirm whether Paperclip's <code>sandbox-cr</code> backend targets Agent Sandbox <code>v1alpha1</code> or <code>v1beta1</code>. A CRD API mismatch will fail reconciliation or create invalid runtime objects.</p>
+        </div>
+      </section>
+
+      <section id="paperclip">
+        <h2>Paperclip operator + Kubernetes plugin</h2>
+        <p class="section-intro">Paperclip's operator can configure execution through <code>spec.plugins</code> and <code>spec.adapters.execution</code>; the newer execution adapter path supersedes older <code>cloudSandbox</code> configuration [7][8][9].</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Capability</th><th>Required setting</th><th>Deployment note</th></tr></thead>
+            <tbody>
+              <tr><td>Kubernetes sandbox provider</td><td><code>spec.plugins</code> includes <code>@paperclipai/plugin-kubernetes</code></td><td>Plugin package is alpha <code>0.1.0</code>; pin version deliberately [11][12].</td></tr>
+              <tr><td>Execution adapter</td><td><code>spec.adapters.execution.mode: kubernetes</code></td><td>Use execution adapter path, not legacy <code>cloudSandbox</code> [8][9].</td></tr>
+              <tr><td>Backend choice</td><td><code>backend: job</code> or <code>backend: sandbox-cr</code></td><td><code>job</code> uses <code>batch/v1</code>; <code>sandbox-cr</code> expects Agent Sandbox CRDs [9][11].</td></tr>
+              <tr><td>Isolation class</td><td><code>runtimeClassName</code></td><td>No runtime class means normal shared-kernel pod isolation.</td></tr>
+              <tr><td>Network control</td><td><code>egressMode: standard</code> or <code>egressMode: cilium</code></td><td>Cilium FQDN policy requires Cilium CNI, not default k3s networking [11][13].</td></tr>
+              <tr><td>Namespace hygiene</td><td><code>namespacePrefix</code>, quotas, limitranges</td><td>Required to make cleanup, cost, and blast-radius reviewable [9][10].</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warning">
+          <p><strong>Backend tradeoff:</strong> the <code>job</code> backend is safer for Phase 1 because it uses standard <code>batch/v1</code>, but it lacks multi-command exec. A Real Environment workflow likely needs <code>sandbox-cr</code> once API and security gates are cleared [11].</p>
+        </div>
+      </section>
+
+      <section id="fit">
+        <h2>k3s fit and constraints</h2>
+        <p class="section-intro">The homelab can run the early smoke path, but stronger sandbox claims require runtime and network decisions beyond default k3s.</p>
+        <div class="grid">
+          <div class="fact"><span class="tag">NetworkPolicy</span><p>Default k3s networking can support normal Kubernetes NetworkPolicy behavior when using compatible networking components; this is enough for standard egress tests [13].</p></div>
+          <div class="fact"><span class="tag">FQDN egress</span><p>Cilium FQDN rules are not available unless the cluster uses Cilium CNI. Do not set <code>egressMode: cilium</code> without that platform choice [11][13].</p></div>
+          <div class="fact"><span class="tag">Runtime isolation</span><p>gVisor/Kata are not default k3s runtimes. k3s supports alternate containerd runtimes, but they must be installed/configured before <code>runtimeClassName</code> means stronger isolation [14].</p></div>
+          <div class="fact"><span class="tag">Storage</span><p>k3s local-path storage exists, but distributed storage may be needed if sandbox state must survive node placement or support multi-node scheduling [15].</p></div>
+        </div>
+      </section>
+
+      <section id="architecture">
+        <h2>Proposed architecture</h2>
+        <p class="section-intro">Keep the first production-facing change inside Paperclip's existing operator boundary; introduce Agent Sandbox only after proving compatibility.</p>
+        <div class="diagram" aria-label="Architecture diagram">
+          <div class="node"><strong>Flux remote main</strong><span>GitOps source of truth; validates manifests before reconciliation.</span></div>
+          <div class="node"><strong>paperclip-operator</strong><span>Existing controller reconciles Paperclip Instance.</span></div>
+          <div class="node focus"><strong>Phase 1: job backend</strong><span>Smoke execution with <code>batch/v1</code>, quotas, standard egress.</span></div>
+          <div class="node risk"><strong>Phase 2: sandbox-cr</strong><span>Agent Sandbox CRDs, template/claim flow, runtime security gates.</span></div>
+        </div>
+        <div class="callout success">
+          <p><strong>Design principle:</strong> prove Paperclip can create, constrain, observe, and clean up Kubernetes execution namespaces before adding a second controller API dependency.</p>
+        </div>
+      </section>
+
+      <section id="plan">
+        <h2>Phased rollout plan</h2>
+        <div class="grid">
+          <div class="phase"><span class="tag">Phase 0 — inventory</span><p>Read current <code>Instance.yaml</code>, operator values, namespaces, RBAC, and secret references. Confirm no legacy <code>cloudSandbox</code> path remains.</p></div>
+          <div class="phase"><span class="tag">Phase 1 — job backend smoke</span><p>Enable <code>@paperclipai/plugin-kubernetes</code>, set execution mode to <code>kubernetes</code>, choose <code>backend: job</code>, add namespace prefix, quotas, limitranges, standard egress, and conservative resources.</p></div>
+          <div class="phase"><span class="tag">Phase 2 — sandbox-cr trial</span><p>Install exact Agent Sandbox release manifests in a non-production overlay or isolated namespace. Confirm CRD API version, RBAC, cleanup, runtimeClass behavior, and logs.</p></div>
+          <div class="phase"><span class="tag">Phase 3 — production promote</span><p>Promote only after gates pass: API compatibility, runtime isolation decision, network policy proof, storage decision, rollback tested.</p></div>
+        </div>
+        <h3>GitOps sequencing</h3>
+        <ol>
+          <li>Commit Paperclip Instance change for Phase 1 only.</li>
+          <li>Run <code>./flux/scripts/validate.sh</code>.</li>
+          <li>Push to remote <code>main</code>; watch Flux reconcile Paperclip resources.</li>
+          <li>Run smoke execution; inspect created namespace/job/RBAC/cleanup.</li>
+          <li>Only then add Agent Sandbox CRDs/controller as a separate commit.</li>
+          <li>Install <code>manifest.yaml</code> first; add <code>extensions.yaml</code> only if <code>SandboxTemplate</code>, <code>SandboxClaim</code>, or <code>SandboxWarmPool</code> is required [2][4][5].</li>
+        </ol>
+      </section>
+
+      <section id="gates">
+        <h2>Decision gates and validation checklist</h2>
+        <div class="grid">
+          <div class="gate"><span class="tag">API gate</span><p>Paperclip <code>sandbox-cr</code> emits Agent Sandbox API version installed in cluster. No <code>v1alpha1</code>/<code>v1beta1</code> mismatch.</p></div>
+          <div class="gate"><span class="tag">Security gate</span><p>RuntimeClass choice documented. Without gVisor/Kata, risk accepted as shared-kernel pod isolation [14].</p></div>
+          <div class="gate"><span class="tag">Network gate</span><p>Default deny plus required egress proven. Cilium mode rejected unless Cilium CNI is installed [11][13].</p></div>
+          <div class="gate"><span class="tag">Resource gate</span><p>Every sandbox namespace has ResourceQuota and LimitRange. Cleanup removes Jobs, Pods, PVCs, RBAC, and namespaces.</p></div>
+        </div>
+        <h3>Checklist</h3>
+        <ul>
+          <li><code>./flux/scripts/validate.sh</code> passes locally.</li>
+          <li>Flux Kustomizations reconcile cleanly after push.</li>
+          <li>Paperclip operator logs show plugin load and execution adapter config.</li>
+          <li>Phase 1 job creates under expected <code>namespacePrefix</code>.</li>
+          <li>Job backend cannot escape namespace policy, quotas, or allowed egress.</li>
+          <li>For Phase 2, Agent Sandbox CRDs exist at intended API version before Paperclip references them.</li>
+          <li>Rollback commit returns Paperclip to previous execution config without orphaned namespaces.</li>
+        </ul>
+      </section>
+
+      <section id="risks">
+        <h2>Risks</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Risk</th><th>Why it matters</th><th>Mitigation</th></tr></thead>
+            <tbody>
+              <tr><td>Agent Sandbox pre-release churn</td><td><code>v0.5.0rc1</code> moves API to <code>v1beta1</code>; migration story may be incomplete [6].</td><td>Pin exact release. Test CRD objects before prod.</td></tr>
+              <tr><td>Paperclip plugin alpha</td><td><code>@paperclipai/plugin-kubernetes</code> is <code>0.1.0</code> alpha [12].</td><td>Smoke with <code>job</code>; pin plugin; avoid broad rollout.</td></tr>
+              <tr><td>API mismatch</td><td>Plugin docs indicate <code>sandbox-cr</code> expects Agent Sandbox <code>v1alpha1</code>, while new Agent Sandbox release moves to <code>v1beta1</code> [6][11].</td><td>Gate Phase 2 on generated resource API check.</td></tr>
+              <tr><td>Weak isolation by default</td><td>No <code>runtimeClassName</code> means shared-kernel containers.</td><td>Install/configure gVisor or Kata before claiming stronger isolation [14].</td></tr>
+              <tr><td>Network assumptions</td><td>Cilium FQDN policy is not portable to default k3s CNI [11][13].</td><td>Use standard policy first; choose Cilium deliberately later.</td></tr>
+              <tr><td>Storage locality</td><td>local-path PVs bind state to nodes [15].</td><td>Use stateless smoke first; evaluate distributed storage for persistent sandboxes.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="yaml">
+        <h2>Sample YAML snippets</h2>
+        <p class="section-intro">Illustrative only. Match exact field names to the installed Paperclip operator CRD before committing.</p>
+        <h3>Phase 1: Paperclip Kubernetes job backend</h3>
+        <pre><code>apiVersion: paperclip.inc/v1alpha1
+kind: Instance
+metadata:
+  name: paperclip
+spec:
+  plugins:
+    - name: "@paperclipai/plugin-kubernetes"
+      version: "0.1.0"
+  adapters:
+    execution:
+      mode: kubernetes
+      kubernetes:
+        backend: job
+        namespacePrefix: paperclip-exec-
+        egressMode: standard
+        perTenantQuota:
+          pods: "10"
+          requestsCpu: "2"
+          requestsMemory: 4Gi
+          limitsCpu: "4"
+          limitsMemory: 8Gi
+        perTenantLimitRange:
+          defaultCpu: "1"
+          defaultMemory: 1Gi
+          defaultRequestCpu: 250m
+          defaultRequestMemory: 512Mi
+          maxCpu: "2"
+          maxMemory: 2Gi</code></pre>
+
+        <h3>Phase 1 namespace guardrails</h3>
+        <pre><code>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: paperclip-execution-quota
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: "4Gi"
+    limits.cpu: "4"
+    limits.memory: "8Gi"
+    pods: "10"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: paperclip-execution-defaults
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: "1"
+        memory: "1Gi"
+      defaultRequest:
+        cpu: "250m"
+        memory: "512Mi"</code></pre>
+
+        <h3>Phase 2: Agent Sandbox release source pinning</h3>
+        <pre><code># Prefer exact release URLs in GitOps, not floating branches.
+# Apply core first:
+# https://github.com/kubernetes-sigs/agent-sandbox/releases/download/&lt;version&gt;/manifest.yaml
+# Add only if needed:
+# https://github.com/kubernetes-sigs/agent-sandbox/releases/download/&lt;version&gt;/extensions.yaml</code></pre>
+      </section>
+
+      <section id="sources" class="sources">
+        <h2>Sources</h2>
+        <ol>
+          <li>Agent Sandbox README overview — <a href="https://github.com/kubernetes-sigs/agent-sandbox/blob/e361f39e92eb1cd9181ca4661ada61b953d8ee3d/README.md#L16-L38">github.com/kubernetes-sigs/agent-sandbox README lines 16–38</a></li>
+          <li>Agent Sandbox install — <a href="https://github.com/kubernetes-sigs/agent-sandbox/blob/e361f39e92eb1cd9181ca4661ada61b953d8ee3d/README.md#L85-L130">README lines 85–130</a></li>
+          <li>Agent Sandbox Sandbox API — <a href="https://github.com/kubernetes-sigs/agent-sandbox/blob/e361f39e92eb1cd9181ca4661ada61b953d8ee3d/api/v1beta1/sandbox_types.go#L149-L183">sandbox_types.go lines 149–183</a></li>
+          <li>Agent Sandbox Template API — <a href="https://github.com/kubernetes-sigs/agent-sandbox/blob/e361f39e92eb1cd9181ca4661ada61b953d8ee3d/extensions/api/v1beta1/sandboxtemplate_types.go#L87-L159">sandboxtemplate_types.go lines 87–159</a></li>
+          <li>Agent Sandbox Claim/WarmPool APIs — <a href="https://github.com/kubernetes-sigs/agent-sandbox/blob/e361f39e92eb1cd9181ca4661ada61b953d8ee3d/extensions/api/v1beta1/sandboxclaim_types.go#L107-L156">sandboxclaim_types.go lines 107–156</a></li>
+          <li>Agent Sandbox releases — <a href="https://github.com/kubernetes-sigs/agent-sandbox/releases">github.com/kubernetes-sigs/agent-sandbox/releases</a></li>
+          <li>Paperclip Operator README install/features — <a href="https://github.com/paperclipinc/paperclip-operator/blob/f21a9653b69a267ba8ee508227fc96a991d6b3c5/README.md#L1-L120">README lines 1–120</a></li>
+          <li>Paperclip Operator Cloud Sandbox README — <a href="https://github.com/paperclipinc/paperclip-operator/blob/f21a9653b69a267ba8ee508227fc96a991d6b3c5/README.md#L416-L461">README lines 416–461</a></li>
+          <li>Paperclip Operator ExecutionSpec API — <a href="https://github.com/paperclipinc/paperclip-operator/blob/f21a9653b69a267ba8ee508227fc96a991d6b3c5/api/v1alpha1/paperclipinstance_types.go#L580-L681">paperclipinstance_types.go lines 580–681</a></li>
+          <li>Paperclip Operator execution RBAC — <a href="https://github.com/paperclipinc/paperclip-operator/blob/f21a9653b69a267ba8ee508227fc96a991d6b3c5/internal/resources/execution_rbac.go#L19-L147">execution_rbac.go lines 19–147</a></li>
+          <li>@paperclipai/plugin-kubernetes README — <a href="https://github.com/paperclipai/paperclip/blob/ef37203a4805b8712bef4582492df0fff8eda76f/packages/plugins/sandbox-providers/kubernetes/README.md#L1-L137">plugin README lines 1–137</a></li>
+          <li>@paperclipai/plugin-kubernetes package.json — <a href="https://github.com/paperclipai/paperclip/blob/ef37203a4805b8712bef4582492df0fff8eda76f/packages/plugins/sandbox-providers/kubernetes/package.json#L1-L58">package.json lines 1–58</a></li>
+          <li>K3s Networking Services — <a href="https://docs.k3s.io/networking/networking-services">docs.k3s.io/networking/networking-services</a></li>
+          <li>K3s Advanced/containerd runtime — <a href="https://docs.k3s.io/advanced">docs.k3s.io/advanced</a></li>
+          <li>K3s Volumes and Storage — <a href="https://docs.k3s.io/add-ons/storage">docs.k3s.io/add-ons/storage</a></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>Standalone HTML report. No external assets, scripts, or runtime dependencies.</footer>
+  </div>
+</body>
+</html>
