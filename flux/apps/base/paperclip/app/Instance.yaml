@@ -31,6 +31,8 @@ spec:
   plugins:
     - name: "@paperclipai/plugin-kubernetes"
       version: "0.1.0"
+    - name: "@paperclipai/plugin-llm-wiki"
+      version: "0.1.0"
 
   database:
     mode: external
