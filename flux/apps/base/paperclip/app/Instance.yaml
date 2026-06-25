@@ -7,8 +7,8 @@ metadata:
 spec:
   image:
     repository: ghcr.io/paperclipai/paperclip
-    tag: latest
-    digest: sha256:c3b0e9a763b8e7f1ebcb360f6836aca28f3c698e8bcc8bed43275d93876e1279
+    tag: sha-bac15eb
+    digest: sha256:a49bcbcc565d956678171cef2fdc5206660c2db46ed457a4e9d3a3b3616f5c9f
     pullPolicy: IfNotPresent
 
   deployment:
@@ -30,7 +30,7 @@ spec:
 
   plugins:
     - name: "@paperclipai/plugin-kubernetes"
-      version: "0.1.0"
+      version: "2026.624.0-canary.4"
     - name: "@paperclipai/plugin-llm-wiki"
       version: "0.1.0"
 
