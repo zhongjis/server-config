@@ -61,19 +61,6 @@ spec:
         backend: sandbox-cr
         egressMode: standard
         namespacePrefix: paperclip-exec-
-        perTenantQuota:
-          pods: "10"
-          requestsCpu: "2"
-          requestsMemory: 4Gi
-          limitsCpu: "4"
-          limitsMemory: 8Gi
-        perTenantLimitRange:
-          defaultCpu: "1"
-          defaultMemory: 1Gi
-          defaultRequestCpu: 250m
-          defaultRequestMemory: 512Mi
-          maxCpu: "2"
-          maxMemory: 2Gi
 
   initContainers:
     - name: install-github-netrc
