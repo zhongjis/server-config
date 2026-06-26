@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1.6
+ARG NODE_VERSION=22
+ARG TARGETARCH
+
+FROM golang:1.25-bookworm AS shim-build
+ARG TARGETARCH
+WORKDIR /src
+COPY tools/paperclip-agent-shim/ ./
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH:-amd64} \
+    go build -ldflags='-s -w' -o /out/paperclip-agent-shim .
+
+FROM ubuntu:22.04 AS runtime
+ARG NODE_VERSION
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl git tini gnupg \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -g 1000 paperclip \
+    && useradd -u 1000 -g 1000 -d /home/paperclip -m -s /bin/bash paperclip \
+    && npm install -g @openai/codex@latest \
+    && { chown -R 1000:1000 /usr/lib/node_modules || true; }
+
+COPY --from=shim-build /out/paperclip-agent-shim /usr/local/bin/paperclip-agent-shim
+
+USER 1000:1000
+WORKDIR /workspace
+RUN command -v codex >/dev/null 2>&1 || (echo "codex not on PATH"; exit 1)
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/usr/local/bin/paperclip-agent-shim"]
