@@ -33,17 +33,19 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: bearer ${GH_TOKEN}" \
+            fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
 
       - name: Log in to GHCR
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
 
       - name: Collect image tags
         id: tags
@@ -69,11 +71,24 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Build and push Codex runtime
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: docker/paperclip-agent-runtime/Dockerfile.codex
-          platforms: linux/amd64
-          push: true
-          tags: ${{ steps.tags.outputs.tags }}
+      - name: Build Codex runtime
+        env:
+          DOCKER_BUILDKIT: 1
+          TAGS: ${{ steps.tags.outputs.tags }}
+        run: |
+          tag_args=()
+          while IFS= read -r tag; do
+            [ -n "${tag}" ] || continue
+            tag_args+=("-t" "${tag}")
+          done <<< "${TAGS}"
+
+          docker build -f docker/paperclip-agent-runtime/Dockerfile.codex "${tag_args[@]}" .
+
+      - name: Push Codex runtime
+        env:
+          TAGS: ${{ steps.tags.outputs.tags }}
+        run: |
+          while IFS= read -r tag; do
+            [ -n "${tag}" ] || continue
+            docker push "${tag}"
+          done <<< "${TAGS}"
