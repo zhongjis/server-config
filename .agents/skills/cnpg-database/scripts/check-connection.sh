@@ -1,29 +1,49 @@
 #!/usr/bin/env bash
-# check-connection.sh - Read-only CNPG/app DB readiness checks for server-config.
-# Usage: check-connection.sh <app-namespace> [cluster-name]
+# check-connection.sh - Verify CNPG cluster health and app connectivity
+# Usage: check-connection.sh <cluster-name> <app-namespace> [app-name]
+# cluster-name: dev, integration, or live
+# app-namespace: namespace of the consuming application
+# app-name: optional, used for targeted connectivity checks
 
 set -euo pipefail
 
-APP_NS="${1:?Usage: check-connection.sh <app-namespace> [cluster-name]}"
-CLUSTER_NAME="${2:-${APP_NS}-cnpg-cluster}"
-SECRET_NAME="${CLUSTER_NAME}-app"
+CLUSTER="${1:?Usage: check-connection.sh <cluster-name> <app-namespace> [app-name]}"
+APP_NS="${2:?Usage: check-connection.sh <cluster-name> <app-namespace> [app-name]}"
+APP_NAME="${3:-}"
 
-printf '=== Flux HelmRelease ===\n'
-flux get helmrelease "${CLUSTER_NAME}" -n "${APP_NS}" || true
+CONTEXT="${CLUSTER}"
 
-printf '\n=== CNPG Cluster ===\n'
-kubectl get clusters.postgresql.cnpg.io "${CLUSTER_NAME}" -n "${APP_NS}"
+echo "=== CNPG Cluster Status ==="
+kubectl --context "${CONTEXT}" get clusters.postgresql.cnpg.io -n database
 
-printf '\n=== CNPG Cluster Conditions ===\n'
-kubectl get clusters.postgresql.cnpg.io "${CLUSTER_NAME}" -n "${APP_NS}" \
-  -o jsonpath='{range .status.conditions[*]}{.type}{"="}{.status}{" reason="}{.reason}{"\n"}{end}'
-printf '\n'
+echo ""
+echo "=== Database Pods ==="
+kubectl --context "${CONTEXT}" get pods -n database -l cnpg.io/cluster=platform
 
-printf '\n=== CNPG Pods ===\n'
-kubectl get pods -n "${APP_NS}" -l "cnpg.io/cluster=${CLUSTER_NAME}" -o wide
+echo ""
+echo "=== Managed Databases ==="
+kubectl --context "${CONTEXT}" get databases.postgresql.cnpg.io -n database
 
-printf '\n=== Generated App Secret ===\n'
-kubectl get secret "${SECRET_NAME}" -n "${APP_NS}"
+echo ""
+echo "=== Pooler Status ==="
+kubectl --context "${CONTEXT}" get poolers.postgresql.cnpg.io -n database
 
-printf '\n=== Optional manual connection test ===\n'
-printf 'kubectl run -n %s pg-test --rm -it --image=postgres:17 -- psql "postgresql://<user>:[REDACTED]@<host>:<port>/<dbname>"\n' "${APP_NS}"
+if [[ -n "${APP_NAME}" ]]; then
+  echo ""
+  echo "=== Credential Secret in App Namespace (${APP_NS}) ==="
+  kubectl --context "${CONTEXT}" get secret "${APP_NAME}-db-credentials" -n "${APP_NS}" \
+    -o jsonpath='{.data.username}' | base64 -d && echo " (username decoded)"
+
+  echo ""
+  echo "=== Network Policy (Hubble) - App to Database ==="
+  echo "Run: hubble observe --from-namespace ${APP_NS} --to-namespace database --since 5m"
+
+  echo ""
+  echo "=== Test Connection (psql debug pod) ==="
+  echo "Run: kubectl --context ${CONTEXT} run -n ${APP_NS} pg-test --rm -it \\"
+  echo "  --image=postgres:17 -- psql \"postgresql://<user>:<pass>@platform-pooler-rw.database.svc:5432/<dbname>\""
+fi
+
+echo ""
+echo "=== CNPG Plugin (optional) ==="
+echo "kubectl cnpg status platform -n database"
