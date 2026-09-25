@@ -24,7 +24,7 @@ spec:
       tag: "1.102.1"
     replicaCount: 0
     migrationJob:
-      enabled: false
+      enabled: true
       hooks:
         argocd:
           enabled: false
