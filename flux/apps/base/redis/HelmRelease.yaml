@@ -12,6 +12,7 @@ spec:
     namespace: redis
   values:
     image:
+      tag: "8.4.0"
       digest: "sha256:a267ca7184a768d589e04a40cb0706181ab6e736ec79161a14f973230bec8783"
     architecture: standalone
     master:
@@ -23,6 +24,9 @@ spec:
       existingSecretPasswordKey: redis-password
     metrics:
       enabled: true
+      image:
+        tag: "1.92.0"
+        digest: "sha256:5c505fe0a1666711039cb2c0c7ad6d1a8eba9d2f3393b809a9846e9260243446"
       resources:
         requests:
           cpu: 100m
