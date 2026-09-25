@@ -26,7 +26,7 @@ spec:
     strategy:
       type: Recreate
     migrationJob:
-      enabled: true
+      enabled: false
       hooks:
         argocd:
           enabled: false
