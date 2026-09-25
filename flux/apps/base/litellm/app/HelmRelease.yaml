@@ -32,6 +32,8 @@ spec:
           enabled: false
         helm:
           enabled: true
+    podAnnotations:
+      config-reload: "2026-09-25T18:41:42Z"
     numWorkers: 3
 
     envVars:
