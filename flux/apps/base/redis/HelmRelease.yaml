@@ -11,6 +11,8 @@ spec:
     name: redis
     namespace: redis
   values:
+    image:
+      digest: "sha256:a267ca7184a768d589e04a40cb0706181ab6e736ec79161a14f973230bec8783"
     auth:
       enabled: true
       existingSecret: redis-secrets
