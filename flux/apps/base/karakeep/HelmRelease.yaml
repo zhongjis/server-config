@@ -33,6 +33,18 @@ spec:
     applicationProtocol: https
     applicationHost: karakeep.zshen.me
     controllers:
+      chrome:
+        containers:
+          chrome:
+            image:
+              repository: ghcr.io/karakeep-app/karakeep-chrome
+              tag: release
+            args:
+              - --disable-gpu
+              - --disable-dev-shm-usage
+              - --hide-scrollbars
+              - --disable-blink-features=AutomationControlled
+              - --window-size=1440,900
       karakeep:
         containers:
           karakeep:
