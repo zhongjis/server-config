@@ -100,6 +100,21 @@ spec:
             model: gpt-o4-mini
             api_key: os.environ/OPENAI_API_KEY
         # chatgpt subscription
+        - model_name: chatgpt/gpt-6-astra
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-6-astra
+        - model_name: chatgpt/gpt-6-sol
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-6-sol
+        - model_name: chatgpt/gpt-6-luna
+          model_info:
+            mode: responses
+          litellm_params:
+            model: chatgpt/gpt-6-luna
         - model_name: chatgpt/gpt-5.5
           model_info:
             mode: responses
