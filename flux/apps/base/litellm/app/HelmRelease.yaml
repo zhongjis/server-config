@@ -22,7 +22,9 @@ spec:
   values:
     image:
       tag: "1.102.1"
-    replicaCount: 0
+    replicaCount: 1
+    strategy:
+      type: Recreate
     migrationJob:
       enabled: true
       hooks:
