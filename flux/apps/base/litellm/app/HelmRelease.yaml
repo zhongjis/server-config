@@ -13,20 +13,6 @@ spec:
     namespace: litellm
   dependsOn:
     - name: litellm-cnpg-cluster
-  postRenderStrategy: combined
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              group: batch
-              version: v1
-              kind: Job
-              name: litellm-migrations
-            patch: |-
-              - op: remove
-                path: /spec/template/spec/containers/0/volumeMounts
-              - op: remove
-                path: /spec/template/spec/volumes
   valuesFrom:
     # externalPostgresql
     - kind: Secret
@@ -36,7 +22,7 @@ spec:
   values:
     image:
       tag: "1.102.1"
-    replicaCount: 1
+    replicaCount: 0
     strategy:
       type: Recreate
     migrationJob:
