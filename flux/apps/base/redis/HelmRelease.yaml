@@ -10,9 +10,14 @@ spec:
     kind: OCIRepository
     name: redis
     namespace: redis
+  suspend: true
   values:
     image:
       digest: "sha256:a267ca7184a768d589e04a40cb0706181ab6e736ec79161a14f973230bec8783"
+    architecture: standalone
+    master:
+      persistence:
+        existingClaim: redis-data-recovery
     auth:
       enabled: true
       existingSecret: redis-secrets
