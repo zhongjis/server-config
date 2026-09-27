@@ -14,6 +14,6 @@ resources:
   - ../base/litellm/app
   # - ../base/multica/app
   - ../base/n8n/app
-  - ../base/paperclip/app
+  # - ../base/paperclip/app
   - ../base/redis
   - ../base/stirling-pdf
