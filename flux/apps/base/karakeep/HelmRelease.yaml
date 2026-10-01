@@ -29,6 +29,10 @@ spec:
       name: karakeep-secrets-flux
       valuesKey: OPENAI_API_KEY
       targetPath: controllers.karakeep.containers.karakeep.env.OPENAI_API_KEY
+    - kind: Secret
+      name: karakeep-secrets-flux
+      valuesKey: MEILI_MASTER_KEY
+      targetPath: meilisearchMasterKey
   values:
     applicationProtocol: https
     applicationHost: karakeep.zshen.me
