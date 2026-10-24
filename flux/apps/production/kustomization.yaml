@@ -16,7 +16,8 @@ resources:
   # - ../base/minio/tenant
   # - ../base/mlflow
   # - ../base/mongodb
-  - ../base/n8n
+  - ../base/n8n/db
+  # - ../base/n8n/app
   # - ../base/open-webui
   - ../base/redis
   - ../base/stirling-pdf
