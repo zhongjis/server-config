@@ -10,7 +10,7 @@ resources:
   - ../base/homepage
   - ../base/uptimekuma
   - ../base/karakeep
-  - ../base/langfuse/app
+  # - ../base/langfuse/app
   - ../base/litellm/app
   # - ../base/multica/app
   - ../base/n8n/app

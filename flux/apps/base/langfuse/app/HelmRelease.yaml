@@ -7,27 +7,6 @@ metadata:
   namespace: langfuse
 spec:
   interval: 30m
-  # Keep the release and its data while stopping every Langfuse runtime.
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              group: apps
-              kind: (Deployment|StatefulSet)
-            patch: |
-              - op: add
-                path: /spec/replicas
-                value: 0
-          - target:
-              group: autoscaling
-              kind: HorizontalPodAutoscaler
-              name: langfuse-worker
-            patch: |
-              apiVersion: autoscaling/v2
-              kind: HorizontalPodAutoscaler
-              metadata:
-                name: langfuse-worker
-              $patch: delete
   chart:
     spec:
       chart: langfuse

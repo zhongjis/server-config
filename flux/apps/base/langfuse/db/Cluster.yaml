@@ -7,22 +7,6 @@ metadata:
   namespace: langfuse
 spec:
   interval: 30m
-  # Disk-full checks block hibernation; pause reconciliation before removing database pods.
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              group: postgresql.cnpg.io
-              kind: Cluster
-              name: langfuse-cnpg-cluster
-            patch: |
-              apiVersion: postgresql.cnpg.io/v1
-              kind: Cluster
-              metadata:
-                name: langfuse-cnpg-cluster
-                annotations:
-                  cnpg.io/hibernation: "on"
-                  cnpg.io/reconciliationLoop: "disabled"
   chart:
     spec:
       chart: cluster

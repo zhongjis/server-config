@@ -4,7 +4,7 @@ resources:
   - ../base/authentik/db
   - ../base/freshrss/db
   - ../base/gitea/db
-  - ../base/langfuse/db
+  # - ../base/langfuse/db
   - ../base/litellm/db
   # - ../base/multica/db
   - ../base/n8n/db
