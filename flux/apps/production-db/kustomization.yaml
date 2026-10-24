@@ -7,5 +7,5 @@ resources:
   # - ../base/langfuse/db
   - ../base/litellm/db
   # - ../base/multica/db
-  - ../base/n8n/db
+  # - ../base/n8n/db
   # - ../base/paperclip/db
