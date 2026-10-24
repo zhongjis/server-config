@@ -24,10 +24,10 @@ spec:
       kind: Cluster
       name: freshrss-cnpg-cluster
       namespace: freshrss
-    - apiVersion: postgresql.cnpg.io/v1
-      kind: Cluster
-      name: gitea-cnpg-cluster
-      namespace: gitea
+    # - apiVersion: postgresql.cnpg.io/v1
+    #   kind: Cluster
+    #   name: gitea-cnpg-cluster
+    #   namespace: gitea
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
       name: litellm-cnpg-cluster
