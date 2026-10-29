@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ./Namespace.yaml
   - ./cloudflared.yaml
+  - ./image-updates.yaml
