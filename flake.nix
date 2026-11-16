@@ -82,6 +82,7 @@
           pkgs.kubeconform
           pkgs.fluxcd
           pkgs.fluxcd-operator-mcp
+          colmena.packages.x86_64-linux.colmena
         ];
       };
     };

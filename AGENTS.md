@@ -96,7 +96,7 @@ Direct children of the root. Each child indexes its own subtree.
 - `tools/paperclip-agent-shim/AGENTS.md` — Paperclip agent shim (Go), its runtime image in `docker/paperclip-agent-runtime/`, and the GHCR build workflow.
 - `.agents/AGENTS.md` — repo agent skills: vendored ones pinned by `skills-lock.json`, plus local procedure skills.
 
-Owned by root (no child doc): `flake.nix`, `flake.lock`, `lib/`, `modules/{default,user,sops}.nix`, `secrets/homelab.yaml`, `.sops.yaml`, `.github/workflows/{test,e2e}.yaml`, `renovate.json`, `mcp.json` + `.pi/mcp.json` + `MCP-RUNBOOK.md`, `README.md`, `UPGRADE.md`, `reports/` (static HTML research/plan reports; not consumed by any build).
+Owned by root (no child doc): `flake.nix`, `flake.lock`, `lib/`, `modules/{default,user,sops}.nix`, `secrets/homelab.yaml`, `.sops.yaml`, `.github/workflows/{test,e2e}.yaml`, `renovate.json`, `mcp.json` + `.pi/mcp.json` + `MCP-RUNBOOK.md`, `README.md`, `reports/` (static HTML research/plan reports; not consumed by any build).
 
 Ignored local tool state, not part of the DOX tree: `.codex/`, `.omo/`, `.pi/`, `.sisyphus/`, `.gitnexus/`, `.codegraph/`, `.direnv/`.
 
@@ -109,7 +109,7 @@ Ignored local tool state, not part of the DOX tree: `.codex/`, `.omo/`, `.pi/`, 
 - Homelab infrastructure repo: Colmena-managed NixOS k3s nodes + Flux-managed Kubernetes apps.
 - Two domains: root NixOS host config; `flux/` GitOps manifests reconciled by Flux v2.
 - Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main`; local commits do not reconcile until pushed.
-- `nix develop` (direnv `use flake`) provides `kubeconform`, `flux`, and `flux-operator-mcp` from `flake.lock`.
+- `nix develop` (direnv `use flake`) provides `kubeconform`, `flux`, `flux-operator-mcp`, and `colmena` from `flake.lock`.
 
 ## Structure
 
@@ -136,7 +136,7 @@ Ignored local tool state, not part of the DOX tree: `.codex/`, `.omo/`, `.pi/`, 
 | Change k3s flags      | `modules/k3s/default.nix`                                      | servicelb/traefik disabled; metrics exposed.                              |
 | Change users/SOPS     | `modules/user.nix`, `modules/sops.nix`, `secrets/homelab.yaml` | Root secrets differ from Flux secrets.                                    |
 | Deploy NixOS          | `flake.nix`                                                    | Use Colmena; build before apply when possible.                            |
-| Node maintenance      | `UPGRADE.md`                                                   | Preflight → move CNPG primaries → drain → apply/reboot → verify.          |
+| Node maintenance      | `.agents/skills/`                                              | `powercycle-cluster`, `upgrade-cluster-nix`, `upgrade-cluster-program`.   |
 | Kubernetes apps/infra | `flux/`                                                        | Read `flux/AGENTS.md`; run `./flux/scripts/validate.sh`.                  |
 | CI behavior           | `.github/workflows/*.yaml`                                     | Flux manifests/e2e + Paperclip runtime image; no NixOS CI build.          |
 | Renovate rules        | `renovate.json`                                                | Nix + Kubernetes managers; Flux itself follows `flake.lock`.              |
@@ -173,7 +173,7 @@ colmena apply --on homelab-1
 colmena apply --on homelab-2
 colmena apply --on homelab-0 --reboot
 
-# Node maintenance: follow UPGRADE.md (one node at a time)
+# Node reboots and upgrades: powercycle-cluster / upgrade-cluster-nix skills (one node at a time)
 
 # NixOS secrets
 sops secrets/homelab.yaml
