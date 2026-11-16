@@ -74,9 +74,14 @@
       colmenaHive = hive;
       nixosConfigurations = hive.nodes;
 
+      # Flux CLI, flux-operator MCP, and the on-cluster Flux version all follow this lock.
+      packages.x86_64-linux.flux-operator-mcp = pkgs.fluxcd-operator-mcp;
+
       devShells.x86_64-linux.default = pkgs.mkShell {
         packages = [
           pkgs.kubeconform
+          pkgs.fluxcd
+          pkgs.fluxcd-operator-mcp
         ];
       };
     };

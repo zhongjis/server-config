@@ -1,6 +1,6 @@
 # Agent MCP Runbook
 
-Use MCP servers from the repo root with the checked-in `mcp.json`. The Flux MCP entry runs locally over stdio, read-only, and with secret masking enabled.
+Use MCP servers from the repo root with the checked-in `mcp.json` (Pi reads `.pi/mcp.json`; keep both identical). The Flux MCP entry runs `flux-operator-mcp` from this repo's flake (`nix run .#flux-operator-mcp`), so its version follows `flake.lock`. It runs locally over stdio, read-only, and with secret masking enabled.
 
 ## Safety rules
 - Secret values must remain masked in all MCP output.
@@ -14,7 +14,7 @@ Use MCP servers from the repo root with the checked-in `mcp.json`. The Flux MCP 
 
 ```bash
 # Package/help check
-nix run nixpkgs#fluxcd-operator-mcp -- --help
+nix run .#flux-operator-mcp -- --help
 ```
 
 - Inspect FluxInstance: use the Flux MCP server to read `FluxInstance/flux` in `flux-system`, then check status conditions and the configured distribution version.

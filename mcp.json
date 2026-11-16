@@ -4,7 +4,7 @@
       "command": "nix",
       "args": [
         "run",
-        "nixpkgs#fluxcd-operator-mcp",
+        ".#flux-operator-mcp",
         "--",
         "serve",
         "--read-only",

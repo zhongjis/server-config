@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "flux": {
+      "command": "nix",
+      "args": [
+        "run",
+        ".#flux-operator-mcp",
+        "--",
+        "serve",
+        "--read-only",
+        "--mask-secrets"
+      ],
+      "directTools": true,
+      "lifecycle": "lazy"
+    }
+  }
+}
