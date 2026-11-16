@@ -26,7 +26,7 @@ spec:
       affinity:
         topologyKey: kubernetes.io/hostname
       storage:
-        size: 20Gi
+        size: 30Gi
         storageClass: "longhorn"
       initdb:
         database: freshrss
