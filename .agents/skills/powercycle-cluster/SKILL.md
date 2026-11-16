@@ -34,9 +34,16 @@ Stop and diagnose on anything else; a red preflight is how a second node gets lo
    `kubectl cnpg promote <cluster> <instance-on-another-node> -n <ns>`; wait for the cluster to report healthy.
 3. Drain, respecting PodDisruptionBudgets:
    `kubectl drain <node> --ignore-daemonsets --delete-emptydir-data --timeout=10m`.
-   If a pod blocks, read why; delete it only when it is disposable.
+   If a pod blocks, read why; delete it only when it is disposable. A drain stuck only on a
+   Longhorn `instance-manager` PDB is safe to continue when no Kubernetes `VolumeAttachment`
+   on the node remains.
 4. Restart: `ssh root@<ip> reboot`, or `colmena apply --on <node> --reboot` when called for a deploy.
-5. Wait for `Ready`, then `kubectl uncordon <node>`.
+5. Wait for `Ready` and for `/run/flannel/subnet.env` on the node. If it is missing and k3s logs
+   `failed calling webhook "validator.longhorn.io"`, set `failurePolicy: Ignore` on
+   `validatingwebhookconfiguration/longhorn-webhook-validator` and
+   `mutatingwebhookconfiguration/longhorn-webhook-mutator`, `systemctl restart k3s` on the node,
+   wait for the file, then set both back to `Fail`. When the node is homelab-0, pass
+   `--server https://<homelab-1 IP>:6443` to kubectl. Then `kubectl uncordon <node>`.
 6. Done when preflight is green again, including Longhorn rebuilds finished. Only then start another node.
 
 ## Branch B: whole cluster off and on
