@@ -57,6 +57,7 @@ infrastructure/
 - Delete leftover `orphans.longhorn.io` only after confirming no live replica uses the same data directory.
 - Longhorn refuses to expand a degraded volume; set `numberOfReplicas` to the healthy replica count, expand, then restore it.
 - Volumes use 3 replicas, one per node; while a node is down every attached volume is `degraded`.
+- `nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod` force-deletes pods with Longhorn volumes on a dead node so they reschedule.
 - Longhorn's `validator.longhorn.io` and `mutator.longhorn.io` webhooks intercept core `nodes` UPDATE with `failurePolicy: Fail`. A rebooted k3s server can deadlock: its flannel annotations need the webhook, the webhook needs pod networking, and `/run/flannel/subnet.env` never appears. `powercycle-cluster` holds the workaround.
 - A drain can stall on the `instance-manager` PDB while an unused volume (no Kubernetes `VolumeAttachment`) keeps an engine on the node; the reboot is safe once workload pods are gone.
 

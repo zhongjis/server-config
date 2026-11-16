@@ -33,6 +33,7 @@ spec:
   values:
     defaultSettings:
       orphanResourceAutoDeletion: replica-data
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
     ingress:
       enabled: true
       ingressClassName: nginx
