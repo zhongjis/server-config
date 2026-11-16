@@ -31,6 +31,8 @@ spec:
         namespace: longhorn-system
       version: 1.11.0
   values:
+    defaultSettings:
+      orphanResourceAutoDeletion: replica-data
     ingress:
       enabled: true
       ingressClassName: nginx
