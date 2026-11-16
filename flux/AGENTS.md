@@ -93,10 +93,10 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./infrastructure/controll
 - Secrets for Flux apps are separate from root NixOS secrets.
 - Some app dependencies are enforced through Flux `dependsOn`; changing names can break reconciliation order.
 
-## CHILD AGENTS.md LIST
-- `flux/apps/AGENTS.md` — app overlays and app onboarding.
-- `flux/apps/base/AGENTS.md` — base app manifest patterns.
-- `flux/clusters/AGENTS.md` — reconciliation entrypoints and split app ownership.
-- `flux/infrastructure/AGENTS.md` — platform controllers and cluster configs.
-- `flux/monitoring/AGENTS.md` — observability stack.
-- `flux/secrets/AGENTS.md` — Kubernetes SOPS secrets.
+## Child DOX Index
+- `apps/AGENTS.md` — app overlays and app onboarding; indexes `apps/base/`.
+- `clusters/AGENTS.md` — reconciliation entrypoints and split app ownership.
+- `infrastructure/AGENTS.md` — platform controllers and cluster configs.
+- `monitoring/AGENTS.md` — observability stack.
+- `secrets/AGENTS.md` — Kubernetes SOPS secrets.
+- Owned here (no child doc): `scripts/validate.sh`, `README.md`, `UPGRADE.md`.

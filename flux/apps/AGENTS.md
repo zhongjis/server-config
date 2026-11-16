@@ -75,3 +75,7 @@ apps/
 - `apps-nondb` waits on all DB health, so one failing CNPG cluster can block app rollout.
 - Some base apps are present but commented out or not selected by production overlays.
 - Staging currently patches podinfo values only; it is not evidence that an app is production-ready.
+
+## Child DOX Index
+- `base/AGENTS.md` — base app manifest patterns, CNPG pattern, per-app exceptions.
+- Owned here (no child doc): overlays `production/`, `production-db/`, `production-nondb/`, `staging/`.
