@@ -83,7 +83,7 @@ When the user requests a durable behavior change, record it here or in the relev
 
 - Single production cluster only. There is no staging cluster; do not add staging overlays, entrypoints, or environments.
 - Tool and platform versions come from `flake.lock`. Docs and skills must not pin version numbers; read them from the flake or devShell instead.
-- The Flux CLI, flux-operator MCP server, and on-cluster Flux (FluxInstance distribution and flux-operator chart) follow the nixpkgs versions in `flake.lock`.
+- The Flux CLI, flux-operator MCP server, and on-cluster Flux (FluxInstance distribution minor and flux-operator chart) follow the nixpkgs versions in `flake.lock`.
 - Keep durable context in the DOX AGENTS.md nearest its implementation; skills hold procedures only.
 
 ## Child DOX Index

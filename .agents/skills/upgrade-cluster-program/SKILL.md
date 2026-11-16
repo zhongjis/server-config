@@ -8,8 +8,8 @@ description: >
 
 # Upgrade programs on the cluster
 
-Flux follows the flake: the `FluxInstance` distribution matches the devShell Flux CLI,
-and the flux-operator chart matches nixpkgs `fluxcd-operator`. Rules for each tree
+Flux follows the flake: the `FluxInstance` distribution matches the devShell Flux CLI
+minor (`"<major>.<minor>.x"`), and the flux-operator chart matches nixpkgs `fluxcd-operator`. Rules for each tree
 live in the nearest `flux/**/AGENTS.md`. Run from the repo root inside the devShell.
 
 ## Flux
@@ -18,11 +18,12 @@ live in the nearest `flux/**/AGENTS.md`. Run from the repo root inside the devSh
    `nix develop -c flux version --client` and
    `nix eval --raw --inputs-from . nixpkgs#fluxcd-operator.version`.
 2. Compare with `flux/clusters/production/flux-system/flux-instance.yaml`
-   (`distribution.version`) and `flux-operator.yaml` (`semver`). Equal: skip to Charts.
+   (`distribution.version`) and `flux-operator.yaml` (`semver`). Same minor and operator version: skip to Charts.
 3. Migrate APIs first: `flux migrate -f ./flux` with the new CLI, then
    `flux migrate` against the cluster. Review the diff.
-4. Bump the operator `semver` and the `FluxInstance` `distribution.version`.
-   Read the Flux release notes for every skipped minor.
+4. Bump the operator `semver` first and let it roll out; then set the `FluxInstance`
+   `distribution.version` to the CLI minor with a `.x` patch. Read the Flux release
+   notes for every skipped minor.
 5. `./flux/scripts/validate.sh`, commit, push to `main`, then
    `flux reconcile source git flux-system -n flux-system`.
 6. Done when `kubectl get fluxinstance -n flux-system` reports Ready on the new version,

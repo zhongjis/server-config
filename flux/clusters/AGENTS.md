@@ -32,7 +32,8 @@
 ## Flux Install Rules
 
 - flux-operator installs Flux; do not add `flux bootstrap` output (`gotk-components.yaml`, `gotk-sync.yaml`).
-- Set `FluxInstance` `distribution.version` to the Flux CLI version from `flake.lock`, and the flux-operator chart `semver` to the nixpkgs `fluxcd-operator` version.
+- Set `FluxInstance` `distribution.version` to the Flux CLI minor from `flake.lock` as `"<major>.<minor>.x"`, and the flux-operator chart `semver` to the nixpkgs `fluxcd-operator` version.
+- Keep the patch as `x`: the operator only installs patch versions embedded in its build, which can lag the nixpkgs CLI patch.
 - Do not add app, infrastructure, or monitoring child resources directly under `flux-system/`.
 - Do not remove the `./flux/` path prefix from Kustomization `spec.path` values.
 
