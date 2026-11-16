@@ -31,7 +31,7 @@ infrastructure/
 |------|------|-------|
 | Controller install | `controllers/*.yaml` | Namespace + HelmRepository + HelmRelease per controller. |
 | Controller resource list | `controllers/kustomization.yaml` | Add new controller YAML here. |
-| Cluster issuers | `configs/cluster-issuers.yaml` | Staging/default issuer config; production patch changes ACME server. |
+| Cluster issuers | `configs/cluster-issuers.yaml` | Default issuer uses the Let's Encrypt staging ACME URL; production patch changes it. |
 | CoreDNS customization | `configs/coredns-custom.yaml` | Cluster DNS ConfigMap customizations. |
 | MetalLB pools | `configs/metallb-pools.yaml` | Address pools and advertisements for service IPs. |
 | Config resource list | `configs/kustomization.yaml` | Add dependent controller CRs/config here. |
@@ -50,6 +50,13 @@ infrastructure/
 - Enable CRD install/upgrade values where the chart supports them, especially cert-manager and CNPG-style operators.
 - Do not hand-copy generated CRDs into this tree unless an upstream chart cannot manage them and the change is explicit.
 - For CRD schema changes, validate both `controllers/` and `configs/` because configs may fail only after CRDs change.
+
+## Longhorn
+- Each node's Longhorn disk is `/var/lib/longhorn` on the root filesystem; Longhorn data growth is root disk growth.
+- `controllers/longhorn.yaml` sets `orphanResourceAutoDeletion: replica-data`; orphans on failed or unknown nodes are not auto-deleted.
+- Delete leftover `orphans.longhorn.io` only after confirming no live replica uses the same data directory.
+- Longhorn refuses to expand a degraded volume; set `numberOfReplicas` to the healthy replica count, expand, then restore it.
+- Volumes use 3 replicas, one per node; while a node is down every attached volume is `degraded`.
 
 ## Gotchas
 - `clusters/production/infrastructure.yaml` patches `ClusterIssuer/cloudflare-issuer` to the Let's Encrypt production ACME server.

@@ -5,7 +5,7 @@ Guidance for base application manifests under `flux/apps/base/`. Keep this file 
 ## Scope
 - App bases are directory-driven; discover the current list with `fd -t d -d 1 . flux/apps/base` instead of trusting a hand-maintained inventory.
 - Use this directory for reusable app manifests: Namespaces, Flux sources, HelmReleases, CNPG database definitions, and app-local raw manifests.
-- Do not put production/staging selection rules here; overlays own inclusion and environment-specific patches.
+- Do not put overlay selection rules here; overlays own inclusion and environment-specific patches.
 
 ## Where to Look
 - Standard single-tier Helm app: `actualbudget/`, `home-assistant/`, `karakeep/`, `manyfold/`, `open-webui/`, `stirling-pdf/`, `supabase/`.
@@ -32,6 +32,14 @@ Guidance for base application manifests under `flux/apps/base/`. Keep this file 
 - App HelmRelease uses `dependsOn` for `<app>-cnpg-cluster` before reading DB credentials.
 - Use the CNPG-generated secret `<app>-cnpg-cluster-app` for `user`, `password`, `host`, `dbname`, and `port` values.
 - Put database manifests under `db/` for new multi-tier work unless matching a legacy app layout intentionally.
+- Exception: Authentik's cluster is `authentik-cnpg-cluster-v2`.
+
+## CNPG Operations
+- Clusters run 2 instances on Longhorn with HA replication slots and no WAL archive; one primary loss leaves a single instance.
+- A dead replica's inactive slot retains WAL until the primary disk fills; check `pg_replication_slots` on the primary.
+- A replica whose `pg_rewind` cannot find recycled WAL never recovers; rebuild it with `kubectl cnpg destroy <cluster> <instance> -n <ns>`.
+- In phase `Not enough disk space` the operator stops before resizing PVCs; raise `storage.size` in Git, then patch the PVC to the same size.
+- List primaries with `kubectl get pods -A -l cnpg.io/instanceRole=primary -o wide`.
 
 ## Exceptions
 - `homepage/` is full raw Kubernetes resources, including `Secret.yaml`; do not force Helm structure onto it.

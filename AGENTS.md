@@ -81,6 +81,11 @@ Default section order:
 
 When the user requests a durable behavior change, record it here or in the relevant child AGENTS.md
 
+- Single production cluster only. There is no staging cluster; do not add staging overlays, entrypoints, or environments.
+- Tool and platform versions come from `flake.lock`. Docs and skills must not pin version numbers; read them from the flake or devShell instead.
+- The Flux CLI, flux-operator MCP server, and on-cluster Flux (FluxInstance distribution and flux-operator chart) follow the nixpkgs versions in `flake.lock`.
+- Keep durable context in the DOX AGENTS.md nearest its implementation; skills hold procedures only.
+
 ## Child DOX Index
 
 Direct children of the root. Each child indexes its own subtree.
@@ -89,9 +94,9 @@ Direct children of the root. Each child indexes its own subtree.
 - `hosts/k3s/AGENTS.md` — node-level NixOS host config, disko, hardware configs.
 - `modules/k3s/AGENTS.md` — k3s service module and flags.
 - `tools/paperclip-agent-shim/AGENTS.md` — Paperclip agent shim (Go), its runtime image in `docker/paperclip-agent-runtime/`, and the GHCR build workflow.
-- `.agents/AGENTS.md` — vendored agent skills pinned by `skills-lock.json`.
+- `.agents/AGENTS.md` — repo agent skills: vendored ones pinned by `skills-lock.json`, plus local procedure skills.
 
-Owned by root (no child doc): `flake.nix`, `flake.lock`, `lib/`, `modules/{default,user,sops}.nix`, `secrets/homelab.yaml`, `.sops.yaml`, `.github/workflows/{test,e2e}.yaml`, `renovate.json`, `mcp.json` + `MCP-RUNBOOK.md`, `README.md`, `UPGRADE.md`, `reports/` (static HTML research/plan reports; not consumed by any build).
+Owned by root (no child doc): `flake.nix`, `flake.lock`, `lib/`, `modules/{default,user,sops}.nix`, `secrets/homelab.yaml`, `.sops.yaml`, `.github/workflows/{test,e2e}.yaml`, `renovate.json`, `mcp.json` + `.pi/mcp.json` + `MCP-RUNBOOK.md`, `README.md`, `UPGRADE.md`, `reports/` (static HTML research/plan reports; not consumed by any build).
 
 Ignored local tool state, not part of the DOX tree: `.codex/`, `.omo/`, `.pi/`, `.sisyphus/`, `.gitnexus/`, `.codegraph/`, `.direnv/`.
 
@@ -104,6 +109,7 @@ Ignored local tool state, not part of the DOX tree: `.codex/`, `.omo/`, `.pi/`, 
 - Homelab infrastructure repo: Colmena-managed NixOS k3s nodes + Flux-managed Kubernetes apps.
 - Two domains: root NixOS host config; `flux/` GitOps manifests reconciled by Flux v2.
 - Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main`; local commits do not reconcile until pushed.
+- `nix develop` (direnv `use flake`) provides `kubeconform`, `flux`, and `flux-operator-mcp` from `flake.lock`.
 
 ## Structure
 
@@ -130,19 +136,21 @@ Ignored local tool state, not part of the DOX tree: `.codex/`, `.omo/`, `.pi/`, 
 | Change k3s flags      | `modules/k3s/default.nix`                                      | servicelb/traefik disabled; metrics exposed.                              |
 | Change users/SOPS     | `modules/user.nix`, `modules/sops.nix`, `secrets/homelab.yaml` | Root secrets differ from Flux secrets.                                    |
 | Deploy NixOS          | `flake.nix`                                                    | Use Colmena; build before apply when possible.                            |
-| Node maintenance      | `UPGRADE.md`                                                   | Drain → apply/reboot → uncordon; CNPG pre/post checks still TODO.         |
+| Node maintenance      | `UPGRADE.md`                                                   | Preflight → move CNPG primaries → drain → apply/reboot → verify.          |
 | Kubernetes apps/infra | `flux/`                                                        | Read `flux/AGENTS.md`; run `./flux/scripts/validate.sh`.                  |
 | CI behavior           | `.github/workflows/*.yaml`                                     | Flux manifests/e2e + Paperclip runtime image; no NixOS CI build.          |
-| Renovate rules        | `renovate.json`                                                | Nix + Kubernetes managers; gotk-components ignored by Kubernetes manager. |
-| MCP hints             | `mcp.json`                                                     | `context7`, `nixos` MCP servers configured lazy.                          |
+| Renovate rules        | `renovate.json`                                                | Nix + Kubernetes managers; Flux itself follows `flake.lock`.              |
+| MCP config            | `mcp.json`, `.pi/mcp.json` (Pi)                                | Read-only Flux MCP via `nix run .#flux-operator-mcp`; lazy.               |
 
 ## Host Map
 
-| Host        | Role              | IP               | Notes                                                       |
-| ----------- | ----------------- | ---------------- | ----------------------------------------------------------- |
-| `homelab-0` | k3s server/master | `192.168.50.104` | `isMaster = true`, label `n8n-node=true`.                   |
-| `homelab-1` | k3s server/worker | `192.168.50.103` | Joins `https://192.168.50.104:6443`.                        |
-| `homelab-2` | k3s server/worker | `192.168.50.105` | Present in flake + hardware config; older docs may omit it. |
+| Host        | Role                         | IP               | Hardware                                  | Notes                                                                 |
+| ----------- | ---------------------------- | ---------------- | ----------------------------------------- | --------------------------------------------------------------------- |
+| `homelab-0` | k3s server, etcd, clusterInit | `192.168.50.104` | Lenovo ThinkCentre M70q, i7-10700T, 32G   | `isMaster = true`, label `n8n-node=true`.                             |
+| `homelab-1` | k3s server, etcd             | `192.168.50.103` | Lenovo ThinkCentre M70q, i5-10500T, 32G   | Joins `https://192.168.50.104:6443`.                                  |
+| `homelab-2` | k3s server, etcd             | `192.168.50.105` | HP EliteDesk 800 G4 DM 35W, i5-8500T      | External power adapter; history of abrupt power loss. Smaller disk.   |
+
+- All three nodes are k3s servers and etcd voters; etcd survives one node down. Colmena `master`/`worker` tags are deploy tags only.
 
 ## Code Map
 
@@ -165,10 +173,7 @@ colmena apply --on homelab-1
 colmena apply --on homelab-2
 colmena apply --on homelab-0 --reboot
 
-# Node maintenance pattern
-kubectl drain <node> --ignore-daemonsets --disable-eviction --delete-emptydir-data --force
-colmena apply --on <node> --reboot
-kubectl uncordon <node>
+# Node maintenance: follow UPGRADE.md (one node at a time)
 
 # NixOS secrets
 sops secrets/homelab.yaml
@@ -201,17 +206,16 @@ kustomize build ./flux/apps/production-nondb
 
 ## Never
 
-- Do not edit `flux/clusters/*/flux-system/gotk-components.yaml` or `gotk-sync.yaml` directly; generated by Flux.
+- Do not reintroduce `flux bootstrap` output (`gotk-components.yaml`, `gotk-sync.yaml`); flux-operator installs Flux from `flux/clusters/production/flux-system/`.
+- Do not drain with `--disable-eviction`; it bypasses CNPG PodDisruptionBudgets.
 - Do not rely on README nixos-anywhere examples without checking `flake.nix`; current docs have stale IP/hardware-config examples.
 - Do not commit decrypted `secrets/homelab.yaml` or ad-hoc plaintext Kubernetes Secrets.
 - Do not enable k3s servicelb/traefik unless also redesigning Flux infrastructure.
 
 ## Gotchas
 
-- `homelab-2` exists in `flake.nix` and hardware configs; older docs mention only homelab-0/1.
 - Disko device is hardcoded: `/dev/nvme0n1` in `hosts/k3s/configuration.nix`. Verify before nixos-anywhere.
 - Hardware config inclusion is filename-sensitive: `hardware-configuration-${hostName}.nix`; mismatches silently skip.
 - `modules/k3s/default.nix` sets `sops.age.keyFile = "keys.txt"`, overriding the absolute default from `modules/sops.nix`.
 - k3s metrics bind to `0.0.0.0`; firewall assumes trusted LAN.
-- CNPG-aware node upgrade steps are incomplete in `UPGRADE.md`; check PostgreSQL cluster health manually before drains.
 - Older AGENTS content referenced absent OpenCode context files; do not add path references unless files exist.
