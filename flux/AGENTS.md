@@ -65,13 +65,13 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./infrastructure/controll
 - Read the child `AGENTS.md` for the subtree you are editing when one exists.
 - Use the default Kubernetes context unless the user specifies a different context.
 - Keep changes declarative and GitOps-managed; prefer manifests over live-only cluster edits.
-- IMPORTANT: Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main` via `clusters/production/flux-system/gotk-sync.yaml`; local commits do not reconcile until pushed. `flux reconcile source git flux-system -n flux-system` fetches that remote source, not this local checkout.
+- IMPORTANT: Production Flux tracks remote GitHub `ssh://git@github.com/zhongjis/server-config` branch `main` via the `FluxInstance` sync in `clusters/production/flux-system/flux-instance.yaml`; local commits do not reconcile until pushed. `flux reconcile source git flux-system -n flux-system` fetches that remote source, not this local checkout.
 - For new manually-managed Kubernetes Secrets, prefer one SOPS file per namespace; see `secrets/AGENTS.md`.
 - Validate with `./scripts/validate.sh` from `flux/` or `./flux/scripts/validate.sh` from repo root before commit.
 
 ## ASK FIRST
 - Changing reconciliation topology, app split ownership, or `dependsOn` relationships.
-- Editing generated Flux bootstrap files under `clusters/*/flux-system/`.
+- Editing `clusters/production/flux-system/` (flux-operator chart, `FluxInstance`); Flux versions follow `flake.lock`.
 - Renaming namespaces, applications, HelmReleases, or Secret resources.
 - Changing storage classes, ingress class behavior, DNS/TLS issuers, or production endpoints.
 - Decrypting or rotating secrets, or changing SOPS creation rules.
@@ -80,7 +80,6 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./infrastructure/controll
 ## NEVER
 - Do not commit plaintext Kubernetes Secrets or decrypted SOPS output.
 - Do not create ad-hoc Secret manifests outside SOPS policy.
-- Do not edit `gotk-components.yaml` or `gotk-sync.yaml` directly unless explicitly regenerating Flux bootstrap output.
 - Do not bypass overlays by changing only rendered output.
 - Do not add references to files or workflows that are not present in this repo.
 - Do not duplicate root host, NixOS, or Colmena instructions here.
@@ -99,4 +98,4 @@ kustomize build --load-restrictor=LoadRestrictionsNone ./infrastructure/controll
 - `infrastructure/AGENTS.md` — platform controllers and cluster configs.
 - `monitoring/AGENTS.md` — observability stack.
 - `secrets/AGENTS.md` — Kubernetes SOPS secrets.
-- Owned here (no child doc): `scripts/validate.sh`, `README.md`, `UPGRADE.md`.
+- Owned here (no child doc): `scripts/validate.sh`, `README.md`.

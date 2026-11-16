@@ -6,14 +6,6 @@
   "kubernetes": {
     "managerFilePatterns": [
       "/flux/.+\\.yaml$/"
-    ],
-    "ignorePaths": [
-      "/(?:^|/)gotk-components\\.ya?ml$/"
-    ]
-  },
-  "flux": {
-    "managerFilePatterns": [
-      "/(?:^|/)gotk-components\\.ya?ml$/"
     ]
   },
   "extends": [

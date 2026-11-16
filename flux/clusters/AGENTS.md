@@ -1,26 +1,22 @@
 # flux/clusters
 
-> Flux reconciliation entrypoints for production and staging clusters.
+> Flux reconciliation entrypoints for the single production cluster.
 
 ## Overview
 
 - Owns top-level Flux `Kustomization` entrypoints; `spec.path` values keep the `./flux/...` prefix because the Git source root is repo root.
 - `production/` is split into infrastructure, monitoring, legacy apps, database apps, and non-database apps.
-- `staging/` is smaller and currently reconciles infrastructure plus the staging app overlay.
 
 ## Where to Look
 
 | Need | File or directory | Notes |
 |------|-------------------|-------|
-| Production Flux bootstrap | `production/flux-system/` | Generated Flux install and sync manifests. |
+| Production Flux install | `production/flux-system/` | `flux-operator.yaml` (operator chart) and `flux-instance.yaml` (`FluxInstance`: distribution version, components, Git sync, controller patches). |
 | Production infrastructure entrypoint | `production/infrastructure.yaml` | Defines controller/config reconciliation ordering. |
 | Production monitoring entrypoint | `production/monitoring.yaml` | Monitoring stack entrypoint. |
 | Production legacy app owner | `production/apps.yaml` | Monolithic app owner retained during split. |
 | Production DB app owner | `production/apps-db.yaml` | DB-backed app split owner with CNPG health checks. |
 | Production non-DB app owner | `production/apps-nondb.yaml` | Depends on DB app split being healthy. |
-| Staging Flux bootstrap | `staging/flux-system/` | Generated Flux install and sync manifests. |
-| Staging infrastructure entrypoint | `staging/infrastructure.yaml` | Staging infrastructure entrypoint. |
-| Staging app entrypoint | `staging/apps.yaml` | Staging app overlay entrypoint. |
 
 ## Ownership / Split Rules
 
@@ -33,11 +29,10 @@
 - Suspend the legacy `apps` Kustomization before removing resources from its ownership.
 - Keep legacy `apps` pruning disabled during the split (`prune: false`).
 
-## Generated Manifest Anti-Patterns
+## Flux Install Rules
 
-- Do not hand-edit `gotk-components.yaml`.
-- Do not hand-edit `gotk-sync.yaml`.
-- Regenerate Flux bootstrap manifests with the Flux CLI when they need to change.
+- flux-operator installs Flux; do not add `flux bootstrap` output (`gotk-components.yaml`, `gotk-sync.yaml`).
+- Set `FluxInstance` `distribution.version` to the Flux CLI version from `flake.lock`, and the flux-operator chart `semver` to the nixpkgs `fluxcd-operator` version.
 - Do not add app, infrastructure, or monitoring child resources directly under `flux-system/`.
 - Do not remove the `./flux/` path prefix from Kustomization `spec.path` values.
 
@@ -63,5 +58,3 @@ flux reconcile kustomization <name> -n flux-system --with-source
 - Production app ownership is intentionally duplicated during the split; change ownership in one small step at a time.
 - `apps-nondb` intentionally waits for `apps-db`, so non-DB apps can be blocked by database app health.
 - CNPG health checks belong to the split owner that needs database readiness, not the legacy app owner.
-- The staging layout is not a complete mirror of production; do not assume production-only split files exist there.
-- Generated Flux files live in both environments, but they are artifacts, not normal hand-authored manifests.
