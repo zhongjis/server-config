@@ -51,6 +51,10 @@ infrastructure/
 - Do not hand-copy generated CRDs into this tree unless an upstream chart cannot manage them and the change is explicit.
 - For CRD schema changes, validate both `controllers/` and `configs/` because configs may fail only after CRDs change.
 
+## CNPG Operator
+- `controllers/cnpg-operator.yaml` runs 2 leader-elected replicas with required pod anti-affinity on `kubernetes.io/hostname`; CNPG failover needs a live operator, so keep a standby on another node.
+- Kubernetes reschedules pods only when a node goes `NotReady`; a node that stays `Ready` without pod networking strands single-replica controllers.
+
 ## Longhorn
 - Each node's Longhorn disk is `/var/lib/longhorn` on the root filesystem; Longhorn data growth is root disk growth.
 - `controllers/longhorn.yaml` sets `orphanResourceAutoDeletion: replica-data`; orphans on failed or unknown nodes are not auto-deleted.

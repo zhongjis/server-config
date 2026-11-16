@@ -31,6 +31,16 @@ spec:
         namespace: cnpg-system
       version: 0.27.0
   values:
+    # Active/standby via --leader-elect; one replica per node so a node failure
+    # leaves a standby to take the lease and run CNPG failover.
+    replicaCount: 2
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: cloudnative-pg
     monitoring:
       podMonitorEnabled: true
       grafanaDashboard:
