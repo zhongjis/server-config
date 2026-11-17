@@ -38,12 +38,9 @@ Stop and diagnose on anything else; a red preflight is how a second node gets lo
    Longhorn `instance-manager` PDB is safe to continue when no Kubernetes `VolumeAttachment`
    on the node remains.
 4. Restart: `ssh root@<ip> reboot`, or `colmena apply --on <node> --reboot` when called for a deploy.
-5. Wait for `Ready` and for `/run/flannel/subnet.env` on the node. If it is missing and k3s logs
-   `failed calling webhook "validator.longhorn.io"`, set `failurePolicy: Ignore` on
-   `validatingwebhookconfiguration/longhorn-webhook-validator` and
-   `mutatingwebhookconfiguration/longhorn-webhook-mutator`, `systemctl restart k3s` on the node,
-   wait for the file, then set both back to `Fail`. When the node is homelab-0, pass
-   `--server https://<homelab-1 IP>:6443` to kubectl. Then `kubectl uncordon <node>`.
+5. Wait for `Ready` and for `/run/flannel/subnet.env` on the node; `Ready` alone does not prove
+   pod networking. If the file never appears, read the k3s journal for `failed calling webhook`
+   and stop. Then `kubectl uncordon <node>`.
 6. Done when preflight is green again, including Longhorn rebuilds finished. Only then start another node.
 
 ## Branch B: whole cluster off and on
