@@ -29,7 +29,7 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: longhorn-system
-      version: 1.11.0
+      version: 1.11.3
   values:
     defaultSettings:
       orphanResourceAutoDeletion: replica-data
